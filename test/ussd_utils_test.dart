@@ -66,7 +66,10 @@ void main() {
     group('isSessionEndResponse', () {
       test('should detect session end indicators', () {
         expect(UssdUtils.isSessionEndResponse('END Thank you'), true);
-        expect(UssdUtils.isSessionEndResponse('Thank you for using our service'), true);
+        expect(
+          UssdUtils.isSessionEndResponse('Thank you for using our service'),
+          true,
+        );
         expect(UssdUtils.isSessionEndResponse('Session ended'), true);
         expect(UssdUtils.isSessionEndResponse('Goodbye'), true);
         expect(UssdUtils.isSessionEndResponse('Transaction completed'), true);
@@ -74,7 +77,10 @@ void main() {
 
       test('should not detect continuation responses as end', () {
         expect(UssdUtils.isSessionEndResponse('CON Welcome'), false);
-        expect(UssdUtils.isSessionEndResponse('Please select an option'), false);
+        expect(
+          UssdUtils.isSessionEndResponse('Please select an option'),
+          false,
+        );
         expect(UssdUtils.isSessionEndResponse('Enter your PIN'), false);
       });
     });
@@ -83,7 +89,10 @@ void main() {
       test('should format path correctly for display', () {
         expect(UssdUtils.formatPathForDisplay([]), 'Initial Request');
         expect(UssdUtils.formatPathForDisplay(['1']), 'Path: 1');
-        expect(UssdUtils.formatPathForDisplay(['1', '2', '3']), 'Path: 1 → 2 → 3');
+        expect(
+          UssdUtils.formatPathForDisplay(['1', '2', '3']),
+          'Path: 1 → 2 → 3',
+        );
       });
     });
 
