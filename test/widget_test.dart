@@ -14,7 +14,7 @@ void main() {
   testWidgets('USSD Emulator app starts', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const UssdEmulatorApp());
-    
+
     // Verify that our app starts with a loading indicator
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.text('Initializing USSD Emulator...'), findsOneWidget);
