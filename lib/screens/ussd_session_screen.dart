@@ -10,7 +10,7 @@ class UssdSessionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('USSD Emulator'),
@@ -96,13 +96,9 @@ class UssdSessionScreen extends StatelessWidget {
               ),
             ),
           if (provider.currentSession == null)
-            const Expanded(
-              child: UssdSessionForm(),
-            )
+            const Expanded(child: UssdSessionForm())
           else
-            const Expanded(
-              child: UssdConversationView(),
-            ),
+            const Expanded(child: UssdConversationView()),
         ],
       ),
     );
