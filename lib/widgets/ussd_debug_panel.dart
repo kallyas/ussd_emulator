@@ -8,20 +8,21 @@ class UssdDebugPanel extends StatelessWidget {
   final UssdSession? session;
   final UssdRequest? lastRequest;
 
-  const UssdDebugPanel({
-    super.key,
-    this.session,
-    this.lastRequest,
-  });
+  const UssdDebugPanel({super.key, this.session, this.lastRequest});
 
-  static void show(BuildContext context, {UssdSession? session, UssdRequest? lastRequest}) {
+  static void show(
+    BuildContext context, {
+    UssdSession? session,
+    UssdRequest? lastRequest,
+  }) {
     if (session == null && lastRequest == null) return;
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => UssdDebugPanel(session: session, lastRequest: lastRequest),
+      builder: (context) =>
+          UssdDebugPanel(session: session, lastRequest: lastRequest),
     );
   }
 
@@ -43,7 +44,9 @@ class UssdDebugPanel extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
             ),
             child: Row(
               children: [
@@ -102,9 +105,9 @@ class UssdDebugPanel extends StatelessWidget {
       children: [
         Text(
           'Session Information',
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         _buildInfoRow('Session ID', session!.id),
@@ -112,14 +115,19 @@ class UssdDebugPanel extends StatelessWidget {
         _buildInfoRow('Phone Number', session!.phoneNumber),
         _buildInfoRow('Current Path', session!.ussdPath.join(' → ')),
         _buildInfoRow('Path as Text', '"${session!.pathAsText}"'),
-        _buildInfoRow('Is Initial Request', session!.isInitialRequest.toString()),
+        _buildInfoRow(
+          'Is Initial Request',
+          session!.isInitialRequest.toString(),
+        ),
       ],
     );
   }
 
   Widget _buildRequestFormat(BuildContext context) {
-    final requestJson = JsonEncoder.withIndent('  ').convert(lastRequest!.toJson());
-    
+    final requestJson = JsonEncoder.withIndent(
+      '  ',
+    ).convert(lastRequest!.toJson());
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -127,9 +135,9 @@ class UssdDebugPanel extends StatelessWidget {
           children: [
             Text(
               'API Request Format',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             IconButton(
@@ -137,7 +145,9 @@ class UssdDebugPanel extends StatelessWidget {
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: requestJson));
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Request JSON copied to clipboard')),
+                  const SnackBar(
+                    content: Text('Request JSON copied to clipboard'),
+                  ),
                 );
               },
               tooltip: 'Copy to clipboard',
@@ -154,10 +164,7 @@ class UssdDebugPanel extends StatelessWidget {
           ),
           child: Text(
             requestJson,
-            style: const TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-            ),
+            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
           ),
         ),
       ],
@@ -174,9 +181,9 @@ class UssdDebugPanel extends StatelessWidget {
       children: [
         Text(
           'Path Evolution',
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Container(
@@ -201,7 +208,10 @@ class UssdDebugPanel extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
                     'Selection ${index + 1}: {"text": "$pathSoFar"}',
-                    style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                    ),
                   ),
                 );
               }),
