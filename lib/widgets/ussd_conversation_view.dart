@@ -234,7 +234,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
               color: Theme.of(context).colorScheme.surface,
               border: Border(
                 top: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withValues(alpha: 0.2),
                 ),
               ),
             ),
