@@ -9,7 +9,7 @@ class EndpointConfigScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Endpoint Configuration'),
@@ -21,12 +21,14 @@ class EndpointConfigScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final config = provider.endpointConfigs[index];
           final isActive = provider.activeEndpointConfig?.name == config.name;
-          
+
           return Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               leading: Icon(
-                isActive ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                isActive
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
                 color: isActive ? Colors.green : null,
               ),
               title: Text(
@@ -69,18 +71,9 @@ class EndpointConfigScreen extends StatelessWidget {
                       value: 'activate',
                       child: Text('Activate'),
                     ),
-                  const PopupMenuItem(
-                    value: 'test',
-                    child: Text('Test'),
-                  ),
-                  const PopupMenuItem(
-                    value: 'edit',
-                    child: Text('Edit'),
-                  ),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: Text('Delete'),
-                  ),
+                  const PopupMenuItem(value: 'test', child: Text('Test')),
+                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
                 ],
               ),
               onTap: () {
@@ -99,7 +92,11 @@ class EndpointConfigScreen extends StatelessWidget {
     );
   }
 
-  void _testEndpoint(BuildContext context, UssdProvider provider, EndpointConfig config) async {
+  void _testEndpoint(
+    BuildContext context,
+    UssdProvider provider,
+    EndpointConfig config,
+  ) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -115,10 +112,10 @@ class EndpointConfigScreen extends StatelessWidget {
     );
 
     final success = await provider.testEndpointConfig(config);
-    
+
     if (context.mounted) {
       Navigator.of(context).pop();
-      
+
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -143,7 +140,12 @@ class EndpointConfigScreen extends StatelessWidget {
     _showEndpointDialog(context, provider);
   }
 
-  void _editEndpoint(BuildContext context, UssdProvider provider, EndpointConfig config, int index) {
+  void _editEndpoint(
+    BuildContext context,
+    UssdProvider provider,
+    EndpointConfig config,
+    int index,
+  ) {
     _showEndpointDialog(context, provider, config: config, index: index);
   }
 
@@ -152,7 +154,9 @@ class EndpointConfigScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Endpoint'),
-        content: const Text('Are you sure you want to delete this endpoint configuration?'),
+        content: const Text(
+          'Are you sure you want to delete this endpoint configuration?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -170,12 +174,21 @@ class EndpointConfigScreen extends StatelessWidget {
     );
   }
 
-  void _showEndpointDialog(BuildContext context, UssdProvider provider, {EndpointConfig? config, int? index}) {
+  void _showEndpointDialog(
+    BuildContext context,
+    UssdProvider provider, {
+    EndpointConfig? config,
+    int? index,
+  }) {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: config?.name ?? '');
     final urlController = TextEditingController(text: config?.url ?? '');
     final headersController = TextEditingController(
-      text: config?.headers.entries.map((e) => '${e.key}: ${e.value}').join('\n') ?? '',
+      text:
+          config?.headers.entries
+              .map((e) => '${e.key}: ${e.value}')
+              .join('\n') ??
+          '',
     );
 
     showDialog(
@@ -215,7 +228,8 @@ class EndpointConfigScreen extends StatelessWidget {
                     if (value == null || value.trim().isEmpty) {
                       return 'URL is required';
                     }
-                    if (!value.startsWith('http://') && !value.startsWith('https://')) {
+                    if (!value.startsWith('http://') &&
+                        !value.startsWith('https://')) {
                       return 'URL must start with http:// or https://';
                     }
                     return null;
@@ -227,7 +241,8 @@ class EndpointConfigScreen extends StatelessWidget {
                   decoration: const InputDecoration(
                     labelText: 'Headers (key: value, one per line)',
                     border: OutlineInputBorder(),
-                    hintText: 'Content-Type: application/json\nAuthorization: Bearer token',
+                    hintText:
+                        'Content-Type: application/json\nAuthorization: Bearer token',
                   ),
                   maxLines: 3,
                   validator: (value) {
