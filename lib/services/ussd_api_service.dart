@@ -13,25 +13,18 @@ class UssdApiService {
   ) async {
     try {
       final uri = Uri.parse(config.url);
-      
-      final headers = {
-        'Content-Type': 'application/json',
-        ...config.headers,
-      };
+
+      final headers = {'Content-Type': 'application/json', ...config.headers};
 
       final body = jsonEncode(request.toJson());
 
       final response = await http
-          .post(
-            uri,
-            headers: headers,
-            body: body,
-          )
+          .post(uri, headers: headers, body: body)
           .timeout(const Duration(seconds: _timeoutSeconds));
 
       if (response.statusCode == 200) {
         final responseBody = response.body.trim();
-        
+
         // Try to parse as JSON first (for backward compatibility)
         try {
           final responseData = jsonDecode(responseBody);
@@ -51,22 +44,15 @@ class UssdApiService {
       if (e is UssdApiException) {
         rethrow;
       }
-      throw UssdApiException(
-        'Network error: ${e.toString()}',
-        0,
-        null,
-      );
+      throw UssdApiException('Network error: ${e.toString()}', 0, null);
     }
   }
 
   Future<bool> testEndpoint(EndpointConfig config) async {
     try {
       final uri = Uri.parse(config.url);
-      
-      final headers = {
-        'Content-Type': 'application/json',
-        ...config.headers,
-      };
+
+      final headers = {'Content-Type': 'application/json', ...config.headers};
 
       final testRequest = UssdRequest(
         sessionId: 'test-session',
@@ -78,11 +64,7 @@ class UssdApiService {
       final body = jsonEncode(testRequest.toJson());
 
       final response = await http
-          .post(
-            uri,
-            headers: headers,
-            body: body,
-          )
+          .post(uri, headers: headers, body: body)
           .timeout(const Duration(seconds: _timeoutSeconds));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -95,9 +77,9 @@ class UssdApiService {
             return true;
           } catch (e) {
             // Check if it's a valid CON/END format
-            return responseBody.startsWith('CON ') || 
-                   responseBody.startsWith('END ') ||
-                   responseBody.isNotEmpty;
+            return responseBody.startsWith('CON ') ||
+                responseBody.startsWith('END ') ||
+                responseBody.isNotEmpty;
           }
         }
         return true;
