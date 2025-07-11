@@ -8,7 +8,7 @@ void main() {
   group('Core Integration Tests', () {
     test('should handle complete USSD session flow correctly', () {
       // Test the complete flow of USSD session management
-      
+
       // Create initial session
       final session = UssdSession(
         id: 'test-session',
@@ -30,14 +30,14 @@ void main() {
       // Add some path elements
       final updatedPath = ['1', '2', '1'];
       final updatedSession = session.copyWith(ussdPath: updatedPath);
-      
+
       expect(updatedSession.pathAsText, '1*2*1');
       expect(updatedSession.isInitialRequest, false);
     });
 
     test('should build correct text payload for requests', () {
       // Test the critical text payload building logic
-      
+
       expect(UssdUtils.buildTextInput([]), '');
       expect(UssdUtils.buildTextInput(['1']), '1');
       expect(UssdUtils.buildTextInput(['1', '2']), '1*2');
@@ -46,7 +46,7 @@ void main() {
 
     test('should validate USSD codes correctly', () {
       // Test USSD validation
-      
+
       expect(UssdUtils.isUssdCode('*123#'), true);
       expect(UssdUtils.isUssdCode('*555#'), true);
       expect(UssdUtils.isUssdCode('123'), false);
@@ -55,7 +55,7 @@ void main() {
 
     test('should extract service codes correctly', () {
       // Test service code extraction
-      
+
       expect(UssdUtils.extractServiceCode('*123#'), '123');
       expect(UssdUtils.extractServiceCode('*555#'), '555');
       expect(UssdUtils.extractServiceCode('*777*'), '777');
@@ -63,8 +63,10 @@ void main() {
 
     test('should handle USSD responses correctly', () {
       // Test response parsing
-      
-      final conResponse = UssdResponse.fromTextResponse('CON Welcome to service');
+
+      final conResponse = UssdResponse.fromTextResponse(
+        'CON Welcome to service',
+      );
       expect(conResponse.continueSession, true);
       expect(conResponse.text, 'Welcome to service');
 
@@ -75,7 +77,7 @@ void main() {
 
     test('should create proper request objects', () {
       // Test request creation
-      
+
       final request = UssdRequest(
         sessionId: 'test-session',
         phoneNumber: '+256700000000',
