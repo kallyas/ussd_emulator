@@ -5,10 +5,7 @@ import '../utils/ussd_utils.dart';
 class UssdSessionDetails extends StatelessWidget {
   final UssdSession session;
 
-  const UssdSessionDetails({
-    super.key,
-    required this.session,
-  });
+  const UssdSessionDetails({super.key, required this.session});
 
   static void show(BuildContext context, UssdSession session) {
     showModalBottomSheet(
@@ -33,7 +30,9 @@ class UssdSessionDetails extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
             ),
             child: Row(
               children: [
@@ -80,30 +79,45 @@ class UssdSessionDetails extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  _buildDetailCard(
-                    context,
-                    'Session Status',
-                    Icons.settings,
-                    [
-                      _buildDetailRow('Session ID', session.id),
-                      _buildDetailRow('Status', session.isActive ? 'Active' : 'Ended'),
-                      _buildDetailRow('Created', _formatDateTime(session.createdAt)),
-                      if (session.endedAt != null)
-                        _buildDetailRow('Ended', _formatDateTime(session.endedAt!)),
-                    ],
-                  ),
+                  _buildDetailCard(context, 'Session Status', Icons.settings, [
+                    _buildDetailRow('Session ID', session.id),
+                    _buildDetailRow(
+                      'Status',
+                      session.isActive ? 'Active' : 'Ended',
+                    ),
+                    _buildDetailRow(
+                      'Created',
+                      _formatDateTime(session.createdAt),
+                    ),
+                    if (session.endedAt != null)
+                      _buildDetailRow(
+                        'Ended',
+                        _formatDateTime(session.endedAt!),
+                      ),
+                  ]),
                   const SizedBox(height: 16),
-                  _buildDetailCard(
-                    context,
-                    'Navigation Path',
-                    Icons.route,
-                    [
-                      _buildDetailRow('Current Path', session.ussdPath.isEmpty ? 'Initial Request' : UssdUtils.formatPathForDisplay(session.ussdPath)),
-                      _buildDetailRow('Path as Text', session.pathAsText.isEmpty ? '(empty)' : '"${session.pathAsText}"'),
-                      _buildDetailRow('Total Requests', session.requests.length.toString()),
-                      _buildDetailRow('Total Responses', session.responses.length.toString()),
-                    ],
-                  ),
+                  _buildDetailCard(context, 'Navigation Path', Icons.route, [
+                    _buildDetailRow(
+                      'Current Path',
+                      session.ussdPath.isEmpty
+                          ? 'Initial Request'
+                          : UssdUtils.formatPathForDisplay(session.ussdPath),
+                    ),
+                    _buildDetailRow(
+                      'Path as Text',
+                      session.pathAsText.isEmpty
+                          ? '(empty)'
+                          : '"${session.pathAsText}"',
+                    ),
+                    _buildDetailRow(
+                      'Total Requests',
+                      session.requests.length.toString(),
+                    ),
+                    _buildDetailRow(
+                      'Total Responses',
+                      session.responses.length.toString(),
+                    ),
+                  ]),
                 ],
               ),
             ),
@@ -113,7 +127,12 @@ class UssdSessionDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailCard(BuildContext context, String title, IconData icon, List<Widget> children) {
+  Widget _buildDetailCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    List<Widget> children,
+  ) {
     return Card(
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
