@@ -9,7 +9,7 @@ class SessionHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Session History'),
@@ -24,7 +24,9 @@ class SessionHistoryScreen extends StatelessWidget {
                 tooltip: 'Clear History',
                 style: IconButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                  foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onErrorContainer,
                 ),
               ),
             ),
@@ -35,18 +37,11 @@ class SessionHistoryScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.history,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
+                  Icon(Icons.history, size: 64, color: Colors.grey),
                   SizedBox(height: 16),
                   Text(
                     'No session history yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ],
               ),
@@ -73,7 +68,9 @@ class SessionHistoryScreen extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: session.isActive ? Colors.green : Theme.of(context).colorScheme.outline,
+                                  color: session.isActive
+                                      ? Colors.green
+                                      : Theme.of(context).colorScheme.outline,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
@@ -97,7 +94,9 @@ class SessionHistoryScreen extends StatelessWidget {
                                     Text(
                                       session.serviceCode,
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -105,9 +104,14 @@ class SessionHistoryScreen extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: session.isActive ? Colors.green : Colors.grey,
+                                  color: session.isActive
+                                      ? Colors.green
+                                      : Colors.grey,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -132,7 +136,9 @@ class SessionHistoryScreen extends StatelessWidget {
                                       'Started: ${_formatDateTime(session.createdAt)}',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                     if (session.endedAt != null)
@@ -140,16 +146,23 @@ class SessionHistoryScreen extends StatelessWidget {
                                         'Ended: ${_formatDateTime(session.endedAt!)}',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                   ],
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -157,7 +170,9 @@ class SessionHistoryScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                               ),
@@ -178,7 +193,9 @@ class SessionHistoryScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Clear History'),
-        content: const Text('Are you sure you want to clear all session history?'),
+        content: const Text(
+          'Are you sure you want to clear all session history?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -195,7 +212,6 @@ class SessionHistoryScreen extends StatelessWidget {
       ),
     );
   }
-
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
