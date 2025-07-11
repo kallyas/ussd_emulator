@@ -28,11 +28,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
     final session = provider.currentSession;
-    
+
     if (session == null) {
-      return const Center(
-        child: Text('No active session'),
-      );
+      return const Center(child: Text('No active session'));
     }
 
     return Column(
@@ -42,7 +40,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(16),
+            ),
           ),
           child: Row(
             children: [
@@ -68,7 +68,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                       session.phoneNumber,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onPrimaryContainer.withOpacity(0.8),
                       ),
                     ),
                   ],
@@ -77,7 +79,10 @@ class _UssdConversationViewState extends State<UssdConversationView> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: session.isActive ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
@@ -112,8 +117,10 @@ class _UssdConversationViewState extends State<UssdConversationView> {
             itemCount: session.responses.length,
             itemBuilder: (context, index) {
               final response = session.responses[index];
-              final request = index < session.requests.length ? session.requests[index] : null;
-              
+              final request = index < session.requests.length
+                  ? session.requests[index]
+                  : null;
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -125,7 +132,10 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                         children: [
                           Flexible(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.primary,
                                 borderRadius: const BorderRadius.only(
@@ -138,7 +148,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                               child: Text(
                                 request.text,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
                                   fontSize: 16,
                                 ),
                               ),
@@ -154,7 +166,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(16),
                               topRight: Radius.circular(16),
@@ -169,9 +183,14 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: response.continueSession ? Colors.green : Colors.red,
+                                      color: response.continueSession
+                                          ? Colors.green
+                                          : Colors.red,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -189,7 +208,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                               Text(
                                 response.text,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontSize: 16,
                                   height: 1.4,
                                 ),
@@ -222,17 +243,22 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: TextField(
                       controller: _inputController,
                       decoration: InputDecoration(
-                        hintText: session.requests.isEmpty 
+                        hintText: session.requests.isEmpty
                             ? 'Enter USSD code (e.g., *123#)'
                             : 'Enter your menu selection...',
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.dialpad),
                           onPressed: () {
@@ -306,7 +332,7 @@ class _UssdConversationViewState extends State<UssdConversationView> {
               ],
             ),
           ),
-        
+
         // Debug Button
         Container(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
@@ -318,13 +344,18 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                   UssdDebugPanel.show(
                     context,
                     session: session,
-                    lastRequest: session.requests.isNotEmpty ? session.requests.last : null,
+                    lastRequest: session.requests.isNotEmpty
+                        ? session.requests.last
+                        : null,
                   );
                 },
                 icon: const Icon(Icons.bug_report, size: 16),
                 label: const Text('API Debug'),
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -343,16 +374,19 @@ class _UssdConversationViewState extends State<UssdConversationView> {
 
     final provider = context.read<UssdProvider>();
     final session = provider.currentSession;
-    
+
     if (session == null) return;
 
     // Validate input based on session state
     if (session.isInitialRequest) {
       // For initial request, expect USSD code or allow any input
-      if (!UssdUtils.isUssdCode(input) && !UssdUtils.isValidMenuSelection(input)) {
+      if (!UssdUtils.isUssdCode(input) &&
+          !UssdUtils.isValidMenuSelection(input)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Please enter a valid USSD code (e.g., *123#) or menu selection'),
+            content: Text(
+              'Please enter a valid USSD code (e.g., *123#) or menu selection',
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -363,7 +397,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
       if (!UssdUtils.isValidMenuSelection(input)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Please enter a valid menu selection (numbers, *, #)'),
+            content: Text(
+              'Please enter a valid menu selection (numbers, *, #)',
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -373,7 +409,7 @@ class _UssdConversationViewState extends State<UssdConversationView> {
 
     provider.sendUssdInput(input);
     _inputController.clear();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
