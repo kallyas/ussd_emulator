@@ -1,0 +1,82 @@
+name: General Issue
+description: Report a general issue, question, or discussion topic
+title: "[General]: "
+labels: ["question", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for general questions, discussions, or issues that don't fit into bug reports or feature requests.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - Question - I have a question about usage
+        - Documentation - Documentation related issue
+        - Configuration - Help with configuration/setup
+        - API/Integration - API or integration question
+        - Performance - Performance related discussion
+        - Security - Security related question
+        - Discussion - General discussion topic
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a clear and detailed description of your issue, question, or topic
+      placeholder: Describe your issue, question, or topic in detail
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context/Background
+      description: Provide any relevant context or background information
+      placeholder: What are you trying to achieve? What have you already tried?
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: App Version (if applicable)
+      description: What version of the USSD Emulator are you using?
+      placeholder: e.g., v1.0.1
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details (if applicable)
+      description: Provide details about your environment if relevant
+      placeholder: Platform, device, network setup, etc.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Add any other information that might be helpful
+      placeholder: Screenshots, logs, links to documentation, etc.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided sufficient detail in my description
+          required: true
