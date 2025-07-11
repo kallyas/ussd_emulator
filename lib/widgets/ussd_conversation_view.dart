@@ -70,7 +70,7 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                         fontSize: 12,
                         color: Theme.of(
                           context,
-                        ).colorScheme.onPrimaryContainer.withOpacity(0.8),
+                        ).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                       ),
                     ),
                   ],
@@ -234,7 +234,7 @@ class _UssdConversationViewState extends State<UssdConversationView> {
               color: Theme.of(context).colorScheme.surface,
               border: Border(
                 top: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
                 ),
               ),
             ),
