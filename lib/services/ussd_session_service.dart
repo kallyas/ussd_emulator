@@ -8,7 +8,7 @@ import '../utils/ussd_utils.dart';
 class UssdSessionService {
   static const String _sessionKey = 'ussd_session';
   static const String _sessionsHistoryKey = 'ussd_sessions_history';
-  
+
   UssdSession? _currentSession;
   List<UssdSession> _sessionHistory = [];
 
@@ -83,11 +83,12 @@ class UssdSessionService {
     }
 
     final cleanInput = UssdUtils.cleanUserInput(userInput);
-    final updatedPath = UssdUtils.addToPath(_currentSession!.ussdPath, cleanInput);
-    
-    final updatedSession = _currentSession!.copyWith(
-      ussdPath: updatedPath,
+    final updatedPath = UssdUtils.addToPath(
+      _currentSession!.ussdPath,
+      cleanInput,
     );
+
+    final updatedSession = _currentSession!.copyWith(ussdPath: updatedPath);
 
     _currentSession = updatedSession;
     await _saveCurrentSession();
@@ -121,7 +122,7 @@ class UssdSessionService {
 
   Future<void> _saveCurrentSession() async {
     if (_currentSession == null) return;
-    
+
     final prefs = await SharedPreferences.getInstance();
     final sessionJson = jsonEncode(_currentSession!.toJson());
     await prefs.setString(_sessionKey, sessionJson);
@@ -130,7 +131,7 @@ class UssdSessionService {
   Future<void> _loadCurrentSession() async {
     final prefs = await SharedPreferences.getInstance();
     final sessionJson = prefs.getString(_sessionKey);
-    
+
     if (sessionJson != null) {
       try {
         final sessionData = jsonDecode(sessionJson);
@@ -148,18 +149,22 @@ class UssdSessionService {
 
   Future<void> _saveSessionHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    final historyJson = jsonEncode(_sessionHistory.map((s) => s.toJson()).toList());
+    final historyJson = jsonEncode(
+      _sessionHistory.map((s) => s.toJson()).toList(),
+    );
     await prefs.setString(_sessionsHistoryKey, historyJson);
   }
 
   Future<void> _loadSessionHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final historyJson = prefs.getString(_sessionsHistoryKey);
-    
+
     if (historyJson != null) {
       try {
         final List<dynamic> historyData = jsonDecode(historyJson);
-        _sessionHistory = historyData.map((data) => UssdSession.fromJson(data)).toList();
+        _sessionHistory = historyData
+            .map((data) => UssdSession.fromJson(data))
+            .toList();
       } catch (e) {
         _sessionHistory = [];
       }
