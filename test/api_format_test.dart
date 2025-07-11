@@ -26,7 +26,7 @@ void main() {
       );
 
       final requestJson = request.toJson();
-      
+
       expect(requestJson['serviceCode'], '123');
       expect(requestJson['phoneNumber'], '+256700000000');
       expect(requestJson['text'], ''); // Empty for initial request
@@ -54,7 +54,7 @@ void main() {
       );
 
       final requestJson = request.toJson();
-      
+
       expect(requestJson['serviceCode'], '123');
       expect(requestJson['phoneNumber'], '+256700000000');
       expect(requestJson['text'], '1*2*1*0*1');
@@ -83,8 +83,12 @@ void main() {
 
       for (int i = 0; i < pathSteps.length; i++) {
         final textResult = UssdUtils.buildTextInput(pathSteps[i]);
-        expect(textResult, expectedTexts[i], 
-            reason: 'Step $i: path ${pathSteps[i]} should produce "${expectedTexts[i]}"');
+        expect(
+          textResult,
+          expectedTexts[i],
+          reason:
+              'Step $i: path ${pathSteps[i]} should produce "${expectedTexts[i]}"',
+        );
       }
     });
 
@@ -98,14 +102,18 @@ void main() {
 
       for (final testCase in testCases) {
         final result = UssdUtils.extractServiceCode(testCase['input']!);
-        expect(result, testCase['expected'],
-            reason: 'Input "${testCase['input']}" should extract service code "${testCase['expected']}"');
+        expect(
+          result,
+          testCase['expected'],
+          reason:
+              'Input "${testCase['input']}" should extract service code "${testCase['expected']}"',
+        );
       }
     });
 
     test('should generate proper session ID format', () {
       final sessionId = UssdUtils.generateSessionId();
-      
+
       expect(sessionId, startsWith('ussd_'));
       expect(sessionId.split('_').length, 3);
       expect(sessionId.split('_')[1], matches(r'^\d+$')); // Timestamp
@@ -115,7 +123,7 @@ void main() {
     test('should create exact API format as specified', () {
       // Test the exact format from the specification
       final sessionId = 'ussd_1704123456789_123';
-      
+
       // Initial request simulation
       final initialRequest = UssdRequest(
         serviceCode: '123',
