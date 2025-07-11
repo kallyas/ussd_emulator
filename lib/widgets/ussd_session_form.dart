@@ -26,7 +26,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -163,7 +163,9 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
       provider.startSession(
         phoneNumber: _phoneController.text,
         serviceCode: _serviceCodeController.text,
-        networkCode: _networkCodeController.text.isNotEmpty ? _networkCodeController.text : null,
+        networkCode: _networkCodeController.text.isNotEmpty
+            ? _networkCodeController.text
+            : null,
       );
     }
   }
