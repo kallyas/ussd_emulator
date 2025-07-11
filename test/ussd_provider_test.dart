@@ -19,13 +19,16 @@ void main() {
       expect(provider.isInitialized, false);
     });
 
-    test('should handle error when no active session for sendUssdInput', () async {
-      // Act
-      await provider.sendUssdInput('1');
+    test(
+      'should handle error when no active session for sendUssdInput',
+      () async {
+        // Act
+        await provider.sendUssdInput('1');
 
-      // Assert
-      expect(provider.error, 'No active session');
-    });
+        // Assert
+        expect(provider.error, 'No active session');
+      },
+    );
 
     test('should validate empty input', () async {
       // Act
@@ -43,22 +46,25 @@ void main() {
       expect(provider.error, 'No active session');
     });
 
-    test('should handle error when no active endpoint for sendUssdInput', () async {
-      // Arrange - Start a session first
-      await provider.startSession(
-        phoneNumber: '+256700000000',
-        serviceCode: '*123#',
-      );
-      
-      // Clear any error from session start
-      provider.clearError();
+    test(
+      'should handle error when no active endpoint for sendUssdInput',
+      () async {
+        // Arrange - Start a session first
+        await provider.startSession(
+          phoneNumber: '+256700000000',
+          serviceCode: '*123#',
+        );
 
-      // Act
-      await provider.sendUssdInput('1');
+        // Clear any error from session start
+        provider.clearError();
 
-      // Assert - Should error due to no active endpoint
-      expect(provider.error, 'No active endpoint configuration');
-    });
+        // Act
+        await provider.sendUssdInput('1');
+
+        // Assert - Should error due to no active endpoint
+        expect(provider.error, 'No active endpoint configuration');
+      },
+    );
 
     test('should handle initialization', () async {
       // Act
@@ -69,34 +75,40 @@ void main() {
       expect(provider.isInitialized, true);
     });
 
-    test('should validate empty input when session exists but no endpoint', () async {
-      // Arrange - Start a session first (but no endpoint configured)
-      await provider.startSession(
-        phoneNumber: '+256700000000',
-        serviceCode: '*123#',
-      );
-      provider.clearError(); // Clear any startup errors
-      
-      // Act
-      await provider.sendUssdInput('');
+    test(
+      'should validate empty input when session exists but no endpoint',
+      () async {
+        // Arrange - Start a session first (but no endpoint configured)
+        await provider.startSession(
+          phoneNumber: '+256700000000',
+          serviceCode: '*123#',
+        );
+        provider.clearError(); // Clear any startup errors
 
-      // Assert - Should fail due to no active endpoint (checked before input validation)
-      expect(provider.error, 'No active endpoint configuration');
-    });
+        // Act
+        await provider.sendUssdInput('');
 
-    test('should validate whitespace-only input when session exists but no endpoint', () async {
-      // Arrange - Start a session first (but no endpoint configured)
-      await provider.startSession(
-        phoneNumber: '+256700000000',
-        serviceCode: '*123#',
-      );
-      provider.clearError(); // Clear any startup errors
-      
-      // Act
-      await provider.sendUssdInput('   ');
+        // Assert - Should fail due to no active endpoint (checked before input validation)
+        expect(provider.error, 'No active endpoint configuration');
+      },
+    );
 
-      // Assert - Should fail due to no active endpoint (checked before input validation)
-      expect(provider.error, 'No active endpoint configuration');
-    });
+    test(
+      'should validate whitespace-only input when session exists but no endpoint',
+      () async {
+        // Arrange - Start a session first (but no endpoint configured)
+        await provider.startSession(
+          phoneNumber: '+256700000000',
+          serviceCode: '*123#',
+        );
+        provider.clearError(); // Clear any startup errors
+
+        // Act
+        await provider.sendUssdInput('   ');
+
+        // Assert - Should fail due to no active endpoint (checked before input validation)
+        expect(provider.error, 'No active endpoint configuration');
+      },
+    );
   });
 }
