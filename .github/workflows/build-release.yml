@@ -1,0 +1,187 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'
+        channel: 'stable'
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Run tests
+      run: flutter test
+
+    - name: Build generated files
+      run: flutter packages pub run build_runner build --delete-conflicting-outputs
+
+    - name: Create keystore from secrets
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Create key.properties
+      run: |
+        echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+        echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+        echo "storeFile=keystore.jks" >> android/key.properties
+      if: ${{ secrets.STORE_PASSWORD }}
+
+    - name: Build APK (Release)
+      run: flutter build apk --release --split-per-abi
+
+    - name: Build AAB (Release)
+      run: flutter build appbundle --release
+
+    - name: Build APK (Debug) - fallback if no signing
+      run: flutter build apk --debug
+      if: ${{ !secrets.KEYSTORE_BASE64 }}
+
+    - name: Update version in pubspec.yaml
+      run: |
+        VERSION="${{ github.event.inputs.version }}"
+        
+        # Get current build number and increment it
+        CURRENT_BUILD=$(grep "^version:" pubspec.yaml | cut -d'+' -f2 | tr -d '\r')
+        if [ -z "$CURRENT_BUILD" ]; then
+          NEW_BUILD=1
+        else
+          NEW_BUILD=$((CURRENT_BUILD + 1))
+        fi
+        
+        # Update pubspec.yaml
+        sed -i "s/^version:.*/version: $VERSION+$NEW_BUILD/" pubspec.yaml
+        
+        echo "Updated version to $VERSION+$NEW_BUILD"
+
+    - name: Get version info
+      id: version
+      run: |
+        VERSION=$(grep "^version:" pubspec.yaml | cut -d' ' -f2 | tr -d '\r')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        release_name: USSD Emulator v${{ github.event.inputs.version }}
+        body: |
+          ## 🚀 USSD Emulator v${{ github.event.inputs.version }} (Manual Release)
+          
+          ### 📱 Downloads
+          - **APK (Universal)**: For most Android devices
+          - **APK (ARM64)**: For modern Android devices (recommended)
+          - **APK (ARM)**: For older Android devices  
+          - **APK (x86_64)**: For Android emulators
+          - **AAB**: For Google Play Store distribution
+          
+          ### 📋 Installation
+          1. Download the appropriate APK for your device
+          2. Enable "Install from unknown sources" in Android settings
+          3. Install the APK file
+          
+          ### 🔧 For Developers
+          - Use the AAB file for Play Store uploads
+          - Source code is available in this repository
+          
+          ---
+          
+          **This is a manual release. For automatic releases, use conventional commits on the main branch.**
+        draft: false
+        prerelease: false
+
+    - name: Upload APK (Universal)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-release.apk
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}-universal.apk
+        asset_content_type: application/vnd.android.package-archive
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Upload APK (ARM64)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}-arm64.apk
+        asset_content_type: application/vnd.android.package-archive
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Upload APK (ARM)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}-arm.apk
+        asset_content_type: application/vnd.android.package-archive
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Upload APK (x86_64)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-x86_64-release.apk
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}-x86_64.apk
+        asset_content_type: application/vnd.android.package-archive
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Upload AAB
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/bundle/release/app-release.aab
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}.aab
+        asset_content_type: application/octet-stream
+      if: ${{ secrets.KEYSTORE_BASE64 }}
+
+    - name: Upload Debug APK (fallback)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-debug.apk
+        asset_name: ussd-emulator-${{ steps.version.outputs.version }}-debug.apk
+        asset_content_type: application/vnd.android.package-archive
+      if: ${{ !secrets.KEYSTORE_BASE64 }}
+
+    - name: Clean up keystore
+      run: rm -f android/app/keystore.jks android/key.properties
+      if: always()
