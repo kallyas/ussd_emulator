@@ -14,7 +14,7 @@ class UssdKeypad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final keys = UssdUtils.getKeypadButtons();
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -37,18 +37,20 @@ class UssdKeypad extends StatelessWidget {
             height: 4,
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Title
           Text(
             'Virtual Keypad',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 16),
-          
+
           // Keypad grid
           GridView.builder(
             shrinkWrap: true,
@@ -65,16 +67,16 @@ class UssdKeypad extends StatelessWidget {
               return _buildKeypadButton(context, key);
             },
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Quick USSD codes
           Text(
             'Quick USSD Codes',
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
-          
+
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -98,16 +100,20 @@ class UssdKeypad extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.outline.withValues(alpha: 0.3),
             ),
           ),
           child: Center(
             child: Text(
               key,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: enabled 
+                color: enabled
                     ? Theme.of(context).colorScheme.onPrimaryContainer
-                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    : Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.5),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -129,9 +135,11 @@ class UssdKeypad extends StatelessWidget {
           child: Text(
             code,
             style: TextStyle(
-              color: enabled 
+              color: enabled
                   ? Theme.of(context).colorScheme.onSecondaryContainer
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                  : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
               fontWeight: FontWeight.w500,
             ),
           ),
