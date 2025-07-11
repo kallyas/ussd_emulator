@@ -1,0 +1,60 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, master, develop, feature/* ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_call:
+    outputs:
+      test-status:
+        description: "Test status"
+        value: ${{ jobs.test.outputs.test-status }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      test-status: ${{ steps.test-result.outputs.status }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.6'
+        channel: 'stable'
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+
+    - name: Analyze project source
+      run: flutter analyze
+
+    - name: Build generated files
+      run: flutter packages pub run build_runner build --delete-conflicting-outputs
+
+    - name: Run tests
+      run: flutter test --coverage
+
+    - name: Set test result
+      id: test-result
+      run: echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: coverage/lcov.info
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
