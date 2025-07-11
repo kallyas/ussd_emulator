@@ -2,7 +2,7 @@ class UssdUtils {
   /// Check if input looks like a USSD code (*123# or *123 or similar)
   static bool isUssdCode(String input) {
     if (input.isEmpty) return false;
-    
+
     // Match patterns like *123#, *123*, *123, etc.
     final ussdPattern = RegExp(r'^\*\d+[#*]?$');
     return ussdPattern.hasMatch(input);
@@ -15,7 +15,7 @@ class UssdUtils {
     if (match != null) {
       return match.group(1) ?? '';
     }
-    
+
     // Fallback: remove all non-digits
     return ussdInput.replaceAll(RegExp(r'[^0-9]'), '');
   }
@@ -23,7 +23,7 @@ class UssdUtils {
   /// Validate menu selection input
   static bool isValidMenuSelection(String input) {
     if (input.isEmpty) return false;
-    
+
     // Allow digits, *, #, and simple combinations
     final validPattern = RegExp(r'^[\d*#]+$');
     return validPattern.hasMatch(input);
@@ -50,18 +50,22 @@ class UssdUtils {
       'Goodbye',
       'Transaction completed',
       'Invalid selection',
-      'Session timeout'
+      'Session timeout',
     ];
-    
+
     final upperResponse = responseText.toUpperCase();
-    return endIndicators.any((indicator) => 
-        upperResponse.contains(indicator.toUpperCase()));
+    return endIndicators.any(
+      (indicator) => upperResponse.contains(indicator.toUpperCase()),
+    );
   }
 
   /// Generate a unique session ID
   static String generateSessionId() {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final random = (DateTime.now().microsecond % 1000).toString().padLeft(3, '0');
+    final random = (DateTime.now().microsecond % 1000).toString().padLeft(
+      3,
+      '0',
+    );
     return 'ussd_${timestamp}_$random';
   }
 
@@ -95,35 +99,30 @@ class UssdUtils {
   static String formatPhoneNumber(String phoneNumber) {
     // Remove all non-digits except +
     String cleaned = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-    
+
     // Ensure it starts with +
     if (!cleaned.startsWith('+') && cleaned.isNotEmpty) {
       cleaned = '+$cleaned';
     }
-    
+
     return cleaned;
   }
 
   /// Extract numbers and special characters for keypad input
   static List<String> getKeypadButtons() {
-    return [
-      '1', '2', '3',
-      '4', '5', '6', 
-      '7', '8', '9',
-      '*', '0', '#'
-    ];
+    return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
   }
 
   /// Get quick USSD codes for testing
   static List<String> getCommonUssdCodes() {
     return [
-      '*123#',  // Common balance check
-      '*124#',  // Data balance
-      '*125#',  // Airtime balance
-      '*555#',  // Service menu
-      '*777#',  // Mobile money
-      '*144#',  // Customer care
-      '*100#',  // Main menu
+      '*123#', // Common balance check
+      '*124#', // Data balance
+      '*125#', // Airtime balance
+      '*555#', // Service menu
+      '*777#', // Mobile money
+      '*144#', // Customer care
+      '*100#', // Main menu
     ];
   }
 }
