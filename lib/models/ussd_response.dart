@@ -31,10 +31,7 @@ class UssdResponse {
       );
     } else {
       // Fallback: treat as continuation if no explicit prefix
-      return UssdResponse(
-        text: textResponse,
-        continueSession: true,
-      );
+      return UssdResponse(text: textResponse, continueSession: true);
     }
   }
 
