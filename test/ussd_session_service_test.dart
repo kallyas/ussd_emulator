@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('UssdSessionService', () {
     late UssdSessionService service;
 
@@ -106,50 +106,50 @@ void main() {
       expect(updatedSession.isActive, true);
     });
 
-    test('should end session when response has continueSession false', () async {
-      // Arrange
-      await service.startSession(
-        phoneNumber: '+256700000000',
-        serviceCode: '*123#',
-      );
+    test(
+      'should end session when response has continueSession false',
+      () async {
+        // Arrange
+        await service.startSession(
+          phoneNumber: '+256700000000',
+          serviceCode: '*123#',
+        );
 
-      final response = UssdResponse(
-        sessionId: service.currentSession!.id,
-        text: 'Thank you for using our service',
-        continueSession: false,
-      );
+        final response = UssdResponse(
+          sessionId: service.currentSession!.id,
+          text: 'Thank you for using our service',
+          continueSession: false,
+        );
 
-      // Act
-      final updatedSession = await service.addResponse(response);
+        // Act
+        final updatedSession = await service.addResponse(response);
 
-      // Assert
-      expect(updatedSession.isActive, false);
-      expect(updatedSession.endedAt, isNotNull);
-    });
+        // Assert
+        expect(updatedSession.isActive, false);
+        expect(updatedSession.endedAt, isNotNull);
+      },
+    );
 
     test('should throw exception when adding input without session', () async {
       // Act & Assert
-      expect(
-        () => service.addUserInputToPath('1'),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => service.addUserInputToPath('1'), throwsA(isA<Exception>()));
     });
 
-    test('should throw exception when adding request without session', () async {
-      // Arrange
-      final request = UssdRequest(
-        sessionId: 'non-existent',
-        phoneNumber: '+256700000000',
-        serviceCode: '*123#',
-        text: '',
-      );
+    test(
+      'should throw exception when adding request without session',
+      () async {
+        // Arrange
+        final request = UssdRequest(
+          sessionId: 'non-existent',
+          phoneNumber: '+256700000000',
+          serviceCode: '*123#',
+          text: '',
+        );
 
-      // Act & Assert
-      expect(
-        () => service.addRequest(request),
-        throwsA(isA<Exception>()),
-      );
-    });
+        // Act & Assert
+        expect(() => service.addRequest(request), throwsA(isA<Exception>()));
+      },
+    );
 
     test('should clean user input correctly', () async {
       // Arrange
