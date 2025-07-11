@@ -27,7 +27,7 @@ class UssdProvider with ChangeNotifier {
 
   Future<void> init() async {
     if (_isInitialized) return;
-    
+
     _setLoading(true);
     try {
       await _sessionService.init();
@@ -48,7 +48,7 @@ class UssdProvider with ChangeNotifier {
   }) async {
     _setLoading(true);
     _clearError();
-    
+
     try {
       await _sessionService.startSession(
         phoneNumber: phoneNumber,
@@ -86,7 +86,7 @@ class UssdProvider with ChangeNotifier {
     try {
       // Check if this is the very first request (no previous requests)
       final isInitialRequest = currentSession!.requests.isEmpty;
-      
+
       // Add user input to path (except for initial request)
       if (!isInitialRequest) {
         await _sessionService.addUserInputToPath(cleanInput);
@@ -94,7 +94,7 @@ class UssdProvider with ChangeNotifier {
       }
 
       // Build the text field using the updated path
-      final textForRequest = isInitialRequest 
+      final textForRequest = isInitialRequest
           ? '' // Empty text for initial USSD request
           : UssdUtils.buildTextInput(currentSession!.ussdPath);
 
@@ -108,8 +108,11 @@ class UssdProvider with ChangeNotifier {
       await _sessionService.addRequest(request);
       notifyListeners();
 
-      final response = await _apiService.sendUssdRequest(request, activeEndpointConfig!);
-      
+      final response = await _apiService.sendUssdRequest(
+        request,
+        activeEndpointConfig!,
+      );
+
       await _sessionService.addResponse(response);
       notifyListeners();
     } catch (e) {
@@ -122,7 +125,7 @@ class UssdProvider with ChangeNotifier {
   Future<void> endSession() async {
     _setLoading(true);
     _clearError();
-    
+
     try {
       await _sessionService.endSession();
       notifyListeners();
@@ -136,7 +139,7 @@ class UssdProvider with ChangeNotifier {
   Future<void> clearSessionHistory() async {
     _setLoading(true);
     _clearError();
-    
+
     try {
       await _sessionService.clearHistory();
       notifyListeners();
@@ -186,7 +189,7 @@ class UssdProvider with ChangeNotifier {
   Future<bool> testEndpointConfig(EndpointConfig config) async {
     _setLoading(true);
     _clearError();
-    
+
     try {
       final result = await _apiService.testEndpoint(config);
       return result;
