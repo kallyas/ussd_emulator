@@ -9,8 +9,13 @@ on:
         type: string
 
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+
   build:
     runs-on: ubuntu-latest
+    needs: test
     
     steps:
     - name: Checkout repository
@@ -30,9 +35,6 @@ jobs:
 
     - name: Install dependencies
       run: flutter pub get
-
-    - name: Run tests
-      run: flutter test
 
     - name: Build generated files
       run: flutter packages pub run build_runner build --delete-conflicting-outputs
