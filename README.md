@@ -1,7 +1,7 @@
 # USSD Emulator
 
-[![CI](https://github.com/yourusername/ussd_emulator/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/ussd_emulator/actions/workflows/ci.yml)
-[![Auto Release](https://github.com/yourusername/ussd_emulator/actions/workflows/auto-release.yml/badge.svg)](https://github.com/yourusername/ussd_emulator/actions/workflows/auto-release.yml)
+[![CI](https://github.com/kallyas/ussd_emulator/actions/workflows/ci.yml/badge.svg)](https://github.com/kallyas/ussd_emulator/actions/workflows/ci.yml)
+[![Auto Release](https://github.com/kallyas/ussd_emulator/actions/workflows/auto-release.yml/badge.svg)](https://github.com/kallyas/ussd_emulator/actions/workflows/auto-release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
@@ -22,7 +22,7 @@ An open-source Flutter app for testing USSD services during development.
 2. **Clone and setup**:
    ```bash
    fork this repository on GitHub
-   git clone https://github.com/yourusername/ussd_emulator.git
+   git clone https://github.com/kallyas/ussd_emulator.git
    cd ussd_emulator
    flutter pub get
    flutter run
@@ -42,7 +42,7 @@ An open-source Flutter app for testing USSD services during development.
 
 ## 📥 Download
 
-Get the latest release from the [Releases page](https://github.com/yourusername/ussd_emulator/releases):
+Get the latest release from the [Releases page](https://github.com/kallyas/ussd_emulator/releases):
 
 - **📱 APK files** - Direct install on Android devices
 - **🏪 AAB file** - For Google Play Store distribution
