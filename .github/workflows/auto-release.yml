@@ -28,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.22.2"
+          flutter-version: "3.32.6"
           channel: "stable"
           cache: true
 
@@ -51,12 +51,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx semantic-release
-          echo "new_version=$(cat package.json | jq -r '.version')" >> $GITHUB_OUTPUT
-        continue-on-error: true
+          # Run semantic-release and capture output
+          npx semantic-release > semantic-release-output.txt 2>&1 || true
+          
+          # Check if a new version was published
+          if grep -q "Published release" semantic-release-output.txt; then
+            NEW_VERSION=$(grep -o "Published release [0-9]\+\.[0-9]\+\.[0-9]\+" semantic-release-output.txt | cut -d' ' -f3)
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Output the semantic-release log for debugging
+          cat semantic-release-output.txt
 
       - name: Update pubspec.yaml version
-        if: steps.semantic_release.outputs.new_version
+        if: steps.semantic_release.outputs.should_release == 'true'
         run: |
           NEW_VERSION="${{ steps.semantic_release.outputs.new_version }}"
           # Validate version format
@@ -77,20 +88,30 @@ jobs:
         id: update_version
 
       - name: Commit version update
-        if: steps.semantic_release.outputs.new_version
+        if: steps.semantic_release.outputs.should_release == 'true'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git commit -am "chore(release): update version to ${{ steps.update_version.outputs.version }}"
+          git add pubspec.yaml
+          git commit -m "chore(release): update version to ${{ steps.update_version.outputs.version }}" || echo "No changes to commit"
           git push
 
+      - name: Check for keystore
+        id: check_keystore
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "has_keystore=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_keystore=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create keystore from secrets
-        if: secrets.KEYSTORE_BASE64
+        if: steps.check_keystore.outputs.has_keystore == 'true'
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
 
       - name: Create key.properties
-        if: secrets.STORE_PASSWORD
+        if: steps.check_keystore.outputs.has_keystore == 'true'
         run: |
           cat << EOF > android/key.properties
           storePassword=${{ secrets.STORE_PASSWORD }}
@@ -100,96 +121,63 @@ jobs:
           EOF
 
       - name: Build APK (Release)
-        if: secrets.KEYSTORE_BASE64
+        if: steps.check_keystore.outputs.has_keystore == 'true'
         run: flutter build apk --release --split-per-abi
 
       - name: Build AAB (Release)
-        if: secrets.KEYSTORE_BASE64
+        if: steps.check_keystore.outputs.has_keystore == 'true'
         run: flutter build appbundle --release
 
       - name: Build APK (Debug)
-        if: ${{ !secrets.KEYSTORE_BASE64 }}
+        if: steps.check_keystore.outputs.has_keystore == 'false'
         run: flutter build apk --debug
 
-      - name: Create Release
-        if: steps.semantic_release.outputs.new_version
-        id: create_release
+      - name: Upload APK (Universal)
+        if: steps.check_keystore.outputs.has_keystore == 'true' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.semantic_release.outputs.new_version }}
-          name: USSD Emulator v${{ steps.semantic_release.outputs.new_version }}
-          body: |
-            ## 🚀 USSD Emulator v${{ steps.semantic_release.outputs.new_version }} (Auto Release)
-
-            ### 📱 Downloads
-            - **APK (Universal)**: For most Android devices
-            - **APK (ARM64)**: For modern Android devices (recommended)
-            - **APK (ARM)**: For older Android devices  
-            - **APK (x86_64)**: For Android emulators
-            - **AAB**: For Google Play Store distribution
-
-            ### 📋 Installation
-            1. Download the appropriate APK for your device
-            2. Enable "Install from unknown sources" in Android settings
-            3. Install the APK file
-
-            ### 🔧 For Developers
-            - Use the AAB file for Play Store uploads
-            - Source code is available in this repository
-
-            ---
-
-            **This is an automatic release triggered by conventional commits on the main branch.**
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload APK (Universal)
-        if: secrets.KEYSTORE_BASE64 && steps.semantic_release.outputs.new_version
-        uses: softprops/action-gh-release@v2
-        with:
           files: build/app/outputs/flutter-apk/app-release.apk
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}-universal.apk
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload APK (ARM64)
-        if: secrets.KEYSTORE_BASE64 && steps.semantic_release.outputs.new_version
+        if: steps.check_keystore.outputs.has_keystore == 'true' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.semantic_release.outputs.new_version }}
           files: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}-arm64.apk
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload APK (ARM)
-        if: secrets.KEYSTORE_BASE64 && steps.semantic_release.outputs.new_version
+        if: steps.check_keystore.outputs.has_keystore == 'true' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.semantic_release.outputs.new_version }}
           files: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}-arm.apk
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload APK (x86_64)
-        if: secrets.KEYSTORE_BASE64 && steps.semantic_release.outputs.new_version
+        if: steps.check_keystore.outputs.has_keystore == 'true' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.semantic_release.outputs.new_version }}
           files: build/app/outputs/flutter-apk/app-x86_64-release.apk
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}-x86_64.apk
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload AAB
-        if: secrets.KEYSTORE_BASE64 && steps.semantic_release.outputs.new_version
+        if: steps.check_keystore.outputs.has_keystore == 'true' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.semantic_release.outputs.new_version }}
           files: build/app/outputs/bundle/release/app-release.aab
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}.aab
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Debug APK
-        if: ${{ !secrets.KEYSTORE_BASE64 }} && steps.semantic_release.outputs.new_version
+        if: steps.check_keystore.outputs.has_keystore == 'false' && steps.semantic_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.semantic_release.outputs.new_version }}
           files: build/app/outputs/flutter-apk/app-debug.apk
-          name: ussd-emulator-${{ steps.update_version.outputs.version }}-debug.apk
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clean up keystore

@@ -32,7 +32,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.2' # Updated to a more recent stable version
+        flutter-version: '3.32.6'
         channel: 'stable'
         cache: true # Enable caching for faster builds
 
@@ -42,13 +42,22 @@ jobs:
     - name: Build generated files
       run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
+    - name: Check for keystore
+      id: check_keystore
+      run: |
+        if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+          echo "has_keystore=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_keystore=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Create keystore from secrets
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
 
     - name: Create key.properties
-      if: secrets.STORE_PASSWORD
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       run: |
         cat << EOF > android/key.properties
         storePassword=${{ secrets.STORE_PASSWORD }}
@@ -82,18 +91,18 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git commit -am "Bump version to ${{ steps.update_version.outputs.version }}"
-        git push彼此
+        git push
 
     - name: Build APK (Release)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       run: flutter build apk --release --split-per-abi
 
     - name: Build AAB (Release)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       run: flutter build appbundle --release
 
     - name: Build APK (Debug)
-      if: ${{ !secrets.KEYSTORE_BASE64 }}
+      if: steps.check_keystore.outputs.has_keystore == 'false'
       run: flutter build apk --debug
 
     - name: Create Release
@@ -129,51 +138,51 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (Universal)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/flutter-apk/app-release.apk
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}-universal.apk
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (ARM64)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}-arm64.apk
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (ARM)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}-arm.apk
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (x86_64)
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/flutter-apk/app-x86_64-release.apk
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}-x86_64.apk
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload AAB
-      if: secrets.KEYSTORE_BASE64
+      if: steps.check_keystore.outputs.has_keystore == 'true'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/bundle/release/app-release.aab
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}.aab
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Debug APK
-      if: ${{ !secrets.KEYSTORE_BASE64 }}
+      if: steps.check_keystore.outputs.has_keystore == 'false'
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: build/app/outputs/flutter-apk/app-debug.apk
-        name: ussd-emulator-${{ steps.update_version.outputs.version }}-debug.apk
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Clean up keystore

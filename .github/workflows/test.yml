@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ main, master, develop, feature/* ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main ]
   workflow_call:
     outputs:
       test-status:
@@ -32,6 +32,7 @@ jobs:
       with:
         flutter-version: '3.32.6'
         channel: 'stable'
+        cache: true
 
     - name: Install dependencies
       run: flutter pub get

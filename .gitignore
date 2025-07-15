@@ -49,3 +49,7 @@ android/app/keystore.jks
 android/key.properties
 *.keystore
 *.jks
+
+# Semantic Release
+node_modules/
+semantic-release-output.txt
