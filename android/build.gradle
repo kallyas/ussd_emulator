@@ -1,7 +1,0 @@
-allprojects {
-    afterEvaluate {
-        tasks.withType(com.android.build.gradle.tasks.LintModelWriterTask) {
-            dependsOn(":app:extractProguardFiles")
-        }
-    }
-}
