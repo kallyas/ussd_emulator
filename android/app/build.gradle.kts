@@ -1,10 +1,8 @@
 import java.util.Properties
-import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -12,7 +10,7 @@ plugins {
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 
 android {
@@ -35,21 +33,16 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        
-        // Support for split APKs per ABI
-        ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
-        }
     }
 
     // Configure signing configs
     signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
-                keyAlias = keystoreProperties["keyAlias"] as String?
-                keyPassword = keystoreProperties["keyPassword"] as String?
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String?
+                keyAlias = keystoreProperties.getProperty("keyAlias") ?: error("Missing keyAlias in key.properties")
+                keyPassword = keystoreProperties.getProperty("keyPassword") ?: error("Missing keyPassword in key.properties")
+                storeFile = file(keystoreProperties.getProperty("storeFile") ?: error("Missing storeFile in key.properties"))
+                storePassword = keystoreProperties.getProperty("storePassword") ?: error("Missing storePassword in key.properties")
             }
         }
     }
@@ -57,29 +50,21 @@ android {
     buildTypes {
         debug {
             isDebuggable = true
-            signingConfig = signingConfigs.getByName("debug")
+            // No need to specify signingConfig; defaults to AGP's debug signing config
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
-            
-            // Use release signing if available, otherwise fall back to debug
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {
-                signingConfigs.getByName("debug")
+                signingConfigs.getByName("debug") // Use default debug signing config if release keystore is missing
             }
-
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        getByName("profile") {
-            initWith(getByName("release"))
-            isDebuggable = false
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
