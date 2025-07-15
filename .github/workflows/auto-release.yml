@@ -1,11 +1,11 @@
-name: Auto Release
+name: Manual Release
 
 on:
-  push:
-    branches:
-      - main
-      - master
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to release (e.g., 1.2.3)'
+        required: true
 
 jobs:
   test:
@@ -15,148 +15,142 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: test
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    env:
-      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Install semantic-release
-      run: |
-        npm install -g semantic-release @semantic-release/changelog @semantic-release/exec @semantic-release/git @semantic-release/github conventional-changelog-conventionalcommits
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: 'stable'
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.22.0'
-        channel: 'stable'
+      - name: Update pubspec.yaml version
+        run: |
+          # Update pubspec.yaml
+          awk -v ver="${{ github.event.inputs.version }}" '/^version:/ {$2=ver} {print}' pubspec.yaml > pubspec.yaml.tmp && mv pubspec.yaml.tmp pubspec.yaml
 
-    - name: Install dependencies
-      run: flutter pub get
+          # Update build number
+          BUILD_NUMBER=$(grep "^version:" pubspec.yaml | cut -d'+' -f2 | tr -d '\r')
+          if [ -z "$BUILD_NUMBER" ]; then
+            NEW_BUILD=1
+          else
+            NEW_BUILD=$((BUILD_NUMBER + 1))
+          fi
 
-    - name: Build generated files
-      run: flutter packages pub run build_runner build --delete-conflicting-outputs
+          awk -v build="$NEW_BUILD" '/^version:/ {$0=$0"+"build} {print}' pubspec.yaml > pubspec.yaml.tmp && mv pubspec.yaml.tmp pubspec.yaml
 
-    - name: Run semantic-release
-      id: semantic
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npx semantic-release
+      - name: Create keystore from secrets
+        if: secrets.KEYSTORE_BASE64 != ''
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
-    - name: Get release info
-      id: release_info
-      if: steps.semantic.outputs.new_release_published == 'true'
-      run: |
-        RELEASE_ID=$(gh release view "${{ steps.semantic.outputs.new_release_version }}" --json id --jq '.id')
-        UPLOAD_URL=$(gh release view "${{ steps.semantic.outputs.new_release_version }}" --json uploadUrl --jq '.uploadUrl')
-        echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
-        echo "upload_url=$UPLOAD_URL" >> $GITHUB_OUTPUT
-        echo "tag_name=${{ steps.semantic.outputs.new_release_version }}" >> $GITHUB_OUTPUT
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create key.properties
+        if: secrets.KEYSTORE_BASE64 != ''
+        run: |
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
-    - name: Get version for file names
-      id: file_version
-      if: steps.semantic.outputs.new_release_published == 'true'
-      run: |
-        VERSION_BUILD=$(grep "^version:" pubspec.yaml | cut -d' ' -f2 | tr -d '')
-        echo "version_build=$VERSION_BUILD" >> $GITHUB_OUTPUT
+      - name: Build APK (Release)
+        if: secrets.KEYSTORE_BASE64 != ''
+        run: flutter build apk --release --split-per-abi
 
-    - name: Create keystore from secrets
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-      env:
-        KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Build AAB (Release)
+        if: secrets.KEYSTORE_BASE64 != ''
+        run: flutter build appbundle --release
 
-    - name: Create key.properties
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
-        echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-        echo "storeFile=keystore.jks" >> android/key.properties
-      env:
-        STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      - name: Build APK (Debug) - fallback if no signing
+        if: secrets.KEYSTORE_BASE64 == ''
+        run: flutter build apk --debug
 
-    - name: Build APK (Release)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: flutter build apk --release --split-per-abi
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
 
-    - name: Build AAB (Release)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: flutter build appbundle --release
+      - name: Get version for file names
+        id: file_version
+        run: |
+          VERSION_BUILD=$(grep "^version:" pubspec.yaml | cut -d' ' -f2 | tr -d '\r')
+          echo "version_build=$VERSION_BUILD" >> $GITHUB_OUTPUT
 
-    - name: Build APK (Debug) - fallback if no signing
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 == ''
-      run: flutter build apk --debug
+      - name: Upload APK (Universal)
+        if: secrets.KEYSTORE_BASE64 != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-release.apk
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}-universal.apk
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload APK (Universal)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/flutter-apk/app-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-universal.apk"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload APK (ARM64)
+        if: secrets.KEYSTORE_BASE64 != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm64.apk
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload APK (ARM64)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/flutter-apk/app-arm64-v8a-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm64.apk"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload APK (ARM)
+        if: secrets.KEYSTORE_BASE64 != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm.apk
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload APK (ARM)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm.apk"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload APK (x86_64)
+        if: secrets.KEYSTORE_BASE64 != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-x86_64-release.apk
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}-x86_64.apk
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload APK (x86_64)
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/flutter-apk/app-x86_64-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-x86_64.apk"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload AAB
+        if: secrets.KEYSTORE_BASE64 != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/bundle/release/app-release.aab
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}.aab
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload AAB
-      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/bundle/release/app-release.aab#ussd-emulator-${{ steps.file_version.outputs.version_build }}.aab"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Debug APK (fallback)
+        if: secrets.KEYSTORE_BASE64 == ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-debug.apk
+          asset_name: ussd-emulator-${{ steps.file_version.outputs.version_build }}-debug.apk
+          asset_content_type: application/vnd.android.package-archive
 
-    - name: Upload Debug APK (fallback)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 == ''
-      run: |
-        gh release upload "${{ steps.release_info.outputs.tag_name }}" 
-          "build/app/outputs/flutter-apk/app-debug.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-debug.apk"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Clean up keystore
-      if: always()
-      run: rm -f android/app/keystore.jks android/key.properties
+      - name: Clean up keystore
+        if: always()
+        run: rm -f android/app/keystore.jks android/key.properties
