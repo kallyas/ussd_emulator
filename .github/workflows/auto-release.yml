@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    env:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
     
     steps:
     - name: Checkout repository
@@ -77,14 +79,14 @@ jobs:
         echo "version_build=$VERSION_BUILD" >> $GITHUB_OUTPUT
 
     - name: Create keystore from secrets
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
       env:
         KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
     - name: Create key.properties
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
         echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
@@ -96,11 +98,11 @@ jobs:
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
     - name: Build APK (Release)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: flutter build apk --release --split-per-abi
 
     - name: Build AAB (Release)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: flutter build appbundle --release
 
     - name: Build APK (Debug) - fallback if no signing
@@ -108,7 +110,7 @@ jobs:
       run: flutter build apk --debug
 
     - name: Upload APK (Universal)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         gh release upload "${{ steps.release_info.outputs.tag_name }}" 
           "build/app/outputs/flutter-apk/app-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-universal.apk"
@@ -116,7 +118,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (ARM64)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         gh release upload "${{ steps.release_info.outputs.tag_name }}" 
           "build/app/outputs/flutter-apk/app-arm64-v8a-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm64.apk"
@@ -124,7 +126,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (ARM)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         gh release upload "${{ steps.release_info.outputs.tag_name }}" 
           "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-arm.apk"
@@ -132,7 +134,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK (x86_64)
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         gh release upload "${{ steps.release_info.outputs.tag_name }}" 
           "build/app/outputs/flutter-apk/app-x86_64-release.apk#ussd-emulator-${{ steps.file_version.outputs.version_build }}-x86_64.apk"
@@ -140,7 +142,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload AAB
-      if: steps.semantic.outputs.new_release_published == 'true' && secrets.KEYSTORE_BASE64 != ''
+      if: steps.semantic.outputs.new_release_published == 'true' && env.KEYSTORE_BASE64 != ''
       run: |
         gh release upload "${{ steps.release_info.outputs.tag_name }}" 
           "build/app/outputs/bundle/release/app-release.aab#ussd-emulator-${{ steps.file_version.outputs.version_build }}.aab"
