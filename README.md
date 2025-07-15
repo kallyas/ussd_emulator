@@ -7,6 +7,12 @@
 
 An open-source Flutter app for testing USSD services during development.
 
+## 📸 Screenshots
+
+| Main Screen | Config Screen |
+| :-: | :-: |
+| ![Simulator Screenshot - iPhone 16 Pro Max - 2025-07-15 at 12.05.15](docs/screenshots/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20Max%20-%202025-07-15%20at%2012.05.15.png) | ![Simulator Screenshot - iPhone 16 Pro Max - 2025-07-15 at 12.05.26](docs/screenshots/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20Max%20-%202025-07-15%20at%2012.05.26.png) |
+
 ## 🚀 Features
 
 - **USSD Testing**: Test USSD sessions with real phone numbers and service codes
