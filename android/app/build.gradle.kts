@@ -76,7 +76,7 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("profile") {
+        getByName("profile") {
             initWith(getByName("release"))
             isDebuggable = false
             signingConfig = signingConfigs.getByName("debug")
