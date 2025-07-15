@@ -1,5 +1,7 @@
 allprojects {
-    tasks.withType(com.android.build.gradle.tasks.LintModelWriterTask) {
-        dependsOn(":app:extractProguardFiles")
+    afterEvaluate {
+        tasks.withType(com.android.build.gradle.tasks.LintModelWriterTask) {
+            dependsOn(":app:extractProguardFiles")
+        }
     }
 }
