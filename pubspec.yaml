@@ -46,6 +46,13 @@ dependencies:
   
   # Local storage
   shared_preferences: ^2.2.2
+  
+  # Export functionality
+  pdf: ^3.10.4
+  share_plus: ^7.2.1
+  file_picker: ^6.1.1
+  path_provider: ^2.1.1
+  csv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
