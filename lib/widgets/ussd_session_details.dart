@@ -9,20 +9,22 @@ class UssdSessionDetails extends StatelessWidget {
   final EndpointConfig? endpointConfig;
 
   const UssdSessionDetails({
-    super.key, 
+    super.key,
     required this.session,
     this.endpointConfig,
   });
 
-  static void show(BuildContext context, UssdSession session, {EndpointConfig? endpointConfig}) {
+  static void show(
+    BuildContext context,
+    UssdSession session, {
+    EndpointConfig? endpointConfig,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => UssdSessionDetails(
-        session: session,
-        endpointConfig: endpointConfig,
-      ),
+      builder: (context) =>
+          UssdSessionDetails(session: session, endpointConfig: endpointConfig),
     );
   }
 
@@ -218,14 +220,12 @@ class UssdSessionDetails extends StatelessWidget {
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
-  
+
   void _showExportDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => ExportDialog(
-        session: session,
-        endpointConfig: endpointConfig,
-      ),
+      builder: (context) =>
+          ExportDialog(session: session, endpointConfig: endpointConfig),
     );
   }
 }

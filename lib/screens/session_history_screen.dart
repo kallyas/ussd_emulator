@@ -24,7 +24,9 @@ class SessionHistoryScreen extends StatelessWidget {
                 onPressed: () => _showBulkExportDialog(context, provider),
                 tooltip: 'Export All Sessions',
                 style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   foregroundColor: Theme.of(
                     context,
                   ).colorScheme.onPrimaryContainer,
@@ -232,10 +234,10 @@ class SessionHistoryScreen extends StatelessWidget {
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
-  
+
   void _showBulkExportDialog(BuildContext context, UssdProvider provider) {
     if (provider.sessionHistory.isEmpty) return;
-    
+
     showDialog(
       context: context,
       builder: (context) => ExportDialog(

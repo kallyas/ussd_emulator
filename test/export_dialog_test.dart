@@ -46,7 +46,9 @@ void main() {
   });
 
   group('ExportDialog Widget Tests', () {
-    testWidgets('should display single session export dialog correctly', (tester) async {
+    testWidgets('should display single session export dialog correctly', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -60,29 +62,37 @@ void main() {
 
       // Verify dialog title
       expect(find.text('Export Session'), findsOneWidget);
-      
+
       // Verify session info is displayed
       expect(find.text('Session: *123#'), findsOneWidget);
-      
+
       // Verify all format options are available
       expect(find.text('JSON'), findsOneWidget);
       expect(find.text('PDF'), findsOneWidget);
       expect(find.text('CSV'), findsOneWidget);
       expect(find.text('Text'), findsOneWidget);
-      
+
       // Verify format descriptions
-      expect(find.text('Machine-readable format for API integration'), findsOneWidget);
-      expect(find.text('Human-readable format for documentation'), findsOneWidget);
+      expect(
+        find.text('Machine-readable format for API integration'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Human-readable format for documentation'),
+        findsOneWidget,
+      );
       expect(find.text('Spreadsheet format for data analysis'), findsOneWidget);
       expect(find.text('Simple plain text format'), findsOneWidget);
-      
+
       // Verify action buttons
       expect(find.text('Cancel'), findsOneWidget);
       expect(find.text('Share'), findsOneWidget);
       expect(find.text('Save'), findsOneWidget);
     });
 
-    testWidgets('should display multiple sessions export dialog correctly', (tester) async {
+    testWidgets('should display multiple sessions export dialog correctly', (
+      tester,
+    ) async {
       final multipleSessions = [
         testSession,
         testSession.copyWith(id: 'session-2'),
@@ -102,20 +112,20 @@ void main() {
 
       // Verify dialog title for multiple sessions
       expect(find.text('Export Sessions'), findsOneWidget);
-      
+
       // Verify session count is displayed
       expect(find.text('Exporting 3 sessions'), findsOneWidget);
-      
+
       // Verify only CSV and JSON are enabled for multiple sessions
       final jsonRadio = find.byType(RadioListTile<ExportFormat>).at(0);
       final csvRadio = find.byType(RadioListTile<ExportFormat>).at(2);
-      
+
       await tester.tap(jsonRadio);
       await tester.pump();
-      
+
       await tester.tap(csvRadio);
       await tester.pump();
-      
+
       // PDF and Text should be disabled (grayed out)
       // This is a basic check - in a real test you'd verify the visual state
       expect(find.text('PDF'), findsOneWidget);
@@ -125,30 +135,26 @@ void main() {
     testWidgets('should allow format selection', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ExportDialog(
-              session: testSession,
-            ),
-          ),
+          home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
 
       // Initially JSON should be selected
       final radioTiles = find.byType(RadioListTile<ExportFormat>);
       expect(radioTiles, findsNWidgets(4));
-      
+
       // Tap on PDF option
       await tester.tap(find.text('PDF'));
       await tester.pump();
-      
+
       // Tap on CSV option
       await tester.tap(find.text('CSV'));
       await tester.pump();
-      
+
       // Tap on Text option
       await tester.tap(find.text('Text'));
       await tester.pump();
-      
+
       // Should complete without error
     });
 
@@ -187,18 +193,14 @@ void main() {
     testWidgets('should show loading state when exporting', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ExportDialog(
-              session: testSession,
-            ),
-          ),
+          home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
 
       // The Share and Save buttons should be present
       expect(find.text('Share'), findsOneWidget);
       expect(find.text('Save'), findsOneWidget);
-      
+
       // Both buttons should be ElevatedButton.icon widgets
       expect(find.byType(ElevatedButton), findsNWidgets(2));
     });

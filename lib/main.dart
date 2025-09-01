@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/ussd_provider.dart';
+import 'providers/accessibility_provider.dart';
 import 'screens/home_screen.dart';
+import 'utils/accessibility_themes.dart';
 
 void main() {
   runApp(const UssdEmulatorApp());
@@ -12,45 +15,55 @@ class UssdEmulatorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => UssdProvider(),
-      child: MaterialApp(
-        title: 'USSD Emulator',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.light,
-          ),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
-          cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
-          cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-        themeMode: ThemeMode.system,
-        home: const HomeScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UssdProvider()),
+        ChangeNotifierProvider(create: (context) => AccessibilityProvider()),
+      ],
+      child: Consumer<AccessibilityProvider>(
+        builder: (context, accessibilityProvider, child) {
+          final settings = accessibilityProvider.settings;
+
+          return MaterialApp(
+            title: 'USSD Emulator',
+            debugShowCheckedModeBanner: false,
+
+            // Dynamic theme based on accessibility settings
+            theme: settings.useHighContrast
+                ? AccessibilityThemes.getHighContrastLightTheme()
+                : AccessibilityThemes.getAccessibleLightTheme(),
+
+            darkTheme: settings.useHighContrast
+                ? AccessibilityThemes.getHighContrastDarkTheme()
+                : AccessibilityThemes.getAccessibleDarkTheme(),
+
+            themeMode: ThemeMode.system,
+
+            // Apply text scale factor for accessibility
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaleFactor: settings.textScaleFactor),
+                child: child!,
+              );
+            },
+
+            home: const HomeScreen(),
+
+            // Accessibility shortcuts
+            shortcuts: const {
+              // Tab navigation
+              SingleActivator(LogicalKeyboardKey.tab): NextFocusIntent(),
+              SingleActivator(LogicalKeyboardKey.tab, shift: true):
+                  PreviousFocusIntent(),
+
+              // Enter to activate
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            },
+          );
+        },
       ),
     );
   }

@@ -23,7 +23,7 @@ class _ExportDialogState extends State<ExportDialog> {
   final SessionExportService _exportService = SessionExportService();
   ExportFormat _selectedFormat = ExportFormat.json;
   bool _isExporting = false;
-  
+
   final Map<ExportFormat, ExportFormatInfo> _formatInfo = {
     ExportFormat.json: ExportFormatInfo(
       icon: Icons.code,
@@ -58,7 +58,11 @@ class _ExportDialogState extends State<ExportDialog> {
         children: [
           Icon(Icons.file_download, color: Theme.of(context).primaryColor),
           const SizedBox(width: 8),
-          Text(widget.multipleSessions != null ? 'Export Sessions' : 'Export Session'),
+          Text(
+            widget.multipleSessions != null
+                ? 'Export Sessions'
+                : 'Export Session',
+          ),
         ],
       ),
       content: SizedBox(
@@ -78,32 +82,34 @@ class _ExportDialogState extends State<ExportDialog> {
             ] else ...[
               Text(
                 'Session: ${widget.session.serviceCode}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 16),
             ],
-            
+
             Text(
               'Select Format:',
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
-            
+
             Column(
               children: ExportFormat.values.map((format) {
                 final info = _formatInfo[format]!;
                 final isSupported = _isFormatSupported(format);
-                
+
                 return RadioListTile<ExportFormat>(
                   value: format,
                   groupValue: _selectedFormat,
-                  onChanged: isSupported ? (value) {
-                    setState(() {
-                      _selectedFormat = value!;
-                    });
-                  } : null,
+                  onChanged: isSupported
+                      ? (value) {
+                          setState(() {
+                            _selectedFormat = value!;
+                          });
+                        }
+                      : null,
                   title: Row(
                     children: [
                       Icon(
@@ -147,7 +153,7 @@ class _ExportDialogState extends State<ExportDialog> {
       ],
     );
   }
-  
+
   bool _isFormatSupported(ExportFormat format) {
     if (widget.multipleSessions != null) {
       return format == ExportFormat.csv || format == ExportFormat.json;
@@ -180,14 +186,14 @@ class _ExportDialogState extends State<ExportDialog> {
 
   Future<void> _shareSession() async {
     setState(() => _isExporting = true);
-    
+
     try {
       if (widget.multipleSessions != null) {
         await _exportService.exportMultipleSessions(
           widget.multipleSessions!,
           _selectedFormat,
         );
-        
+
         await _exportService.shareSession(
           widget.session, // Use first session for sharing metadata
           _selectedFormat,
@@ -200,7 +206,7 @@ class _ExportDialogState extends State<ExportDialog> {
           endpointConfig: widget.endpointConfig,
         );
       }
-      
+
       if (mounted) {
         Navigator.of(context).pop();
         _showSuccessMessage('Session shared successfully!');
@@ -218,10 +224,10 @@ class _ExportDialogState extends State<ExportDialog> {
 
   Future<void> _saveSession() async {
     setState(() => _isExporting = true);
-    
+
     try {
       String? result;
-      
+
       if (widget.multipleSessions != null) {
         await _exportService.exportMultipleSessions(
           widget.multipleSessions!,
@@ -235,7 +241,7 @@ class _ExportDialogState extends State<ExportDialog> {
           endpointConfig: widget.endpointConfig,
         );
       }
-      
+
       if (mounted) {
         Navigator.of(context).pop();
         if (result != null) {

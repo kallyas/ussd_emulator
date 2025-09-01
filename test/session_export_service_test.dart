@@ -28,7 +28,7 @@ void main() {
 
   setUp(() {
     exportService = SessionExportService();
-    
+
     testEndpointConfig = const EndpointConfig(
       name: 'Test Endpoint',
       url: 'https://test.example.com/ussd',
@@ -89,7 +89,7 @@ void main() {
       expect(content, contains('"serviceCode": "*123#"'));
       expect(content, contains('Test Endpoint'));
       expect(content, contains('exportedBy'));
-      
+
       await file.delete();
     });
 
@@ -102,12 +102,12 @@ void main() {
 
       expect(file.existsSync(), isTrue);
       expect(file.path.endsWith('.pdf'), isTrue);
-      
+
       // Check that file has content (PDF header)
       final bytes = await file.readAsBytes();
       expect(bytes.length, greaterThan(0));
       expect(bytes.take(4), equals([37, 80, 68, 70])); // %PDF header
-      
+
       await file.delete();
     });
 
@@ -128,7 +128,7 @@ void main() {
       expect(content, contains('test-session-123'));
       expect(content, contains('+256700000000'));
       expect(content, contains('*123#'));
-      
+
       await file.delete();
     });
 
@@ -149,13 +149,13 @@ void main() {
       expect(content, contains('CONVERSATION HISTORY'));
       expect(content, contains('USER: 1'));
       expect(content, contains('USSD: Welcome to Test USSD'));
-      
+
       await file.delete();
     });
 
     test('should export multiple sessions to JSON', () async {
       final sessions = [testSession, testSession.copyWith(id: 'session-2')];
-      
+
       final file = await exportService.exportMultipleSessions(
         sessions,
         ExportFormat.json,
@@ -168,13 +168,13 @@ void main() {
       expect(content, contains('"sessionCount": 2'));
       expect(content, contains('test-session-123'));
       expect(content, contains('session-2'));
-      
+
       await file.delete();
     });
 
     test('should export multiple sessions to CSV', () async {
       final sessions = [testSession, testSession.copyWith(id: 'session-2')];
-      
+
       final file = await exportService.exportMultipleSessions(
         sessions,
         ExportFormat.csv,
@@ -185,31 +185,31 @@ void main() {
 
       final content = await file.readAsString();
       final lines = content.split('\n');
-      expect(lines.length, greaterThanOrEqualTo(3)); // Header + 2 data rows + possible empty line
+      expect(
+        lines.length,
+        greaterThanOrEqualTo(3),
+      ); // Header + 2 data rows + possible empty line
       expect(lines[0], contains('Session ID')); // Header
       expect(lines[1], contains('test-session-123')); // First session
       expect(lines[2], contains('session-2')); // Second session
-      
+
       await file.delete();
     });
 
     test('should handle sessions without end date', () async {
-      final activeSession = testSession.copyWith(
-        endedAt: null,
-        isActive: true,
-      );
-      
+      final activeSession = testSession.copyWith(endedAt: null, isActive: true);
+
       final file = await exportService.exportSession(
         activeSession,
         ExportFormat.json,
       );
 
       expect(file.existsSync(), isTrue);
-      
+
       final content = await file.readAsString();
       expect(content, contains('"isActive": true'));
       expect(content, contains('"endedAt": null'));
-      
+
       await file.delete();
     });
 
@@ -219,18 +219,18 @@ void main() {
         responses: [],
         ussdPath: [],
       );
-      
+
       final file = await exportService.exportSession(
         emptySession,
         ExportFormat.text,
       );
 
       expect(file.existsSync(), isTrue);
-      
+
       final content = await file.readAsString();
       expect(content, contains('USSD SESSION EXPORT'));
       expect(content, contains('CONVERSATION HISTORY'));
-      
+
       await file.delete();
     });
 
@@ -239,7 +239,7 @@ void main() {
         testSession,
         ExportFormat.json,
       );
-      
+
       final file2 = await exportService.exportSession(
         testSession.copyWith(serviceCode: '*256*4#'),
         ExportFormat.pdf,
@@ -249,7 +249,7 @@ void main() {
       expect(file1.path, endsWith('.json'));
       expect(file2.path, contains('ussd_session_2564'));
       expect(file2.path, endsWith('.pdf'));
-      
+
       await file1.delete();
       await file2.delete();
     });
@@ -266,37 +266,54 @@ void main() {
       expect(content, contains('"totalResponses": 2'));
       expect(content, contains('"sessionDuration": 120')); // 2 minutes
       expect(content, contains('"ussdPath": "1"'));
-      
+
       await file.delete();
     });
 
-    test('should throw UnsupportedError for unsupported bulk export formats', () async {
-      final sessions = [testSession];
-      
-      expect(
-        () => exportService.exportMultipleSessions(sessions, ExportFormat.pdf),
-        throwsA(isA<UnsupportedError>()),
-      );
-      
-      expect(
-        () => exportService.exportMultipleSessions(sessions, ExportFormat.text),
-        throwsA(isA<UnsupportedError>()),
-      );
-    });
+    test(
+      'should throw UnsupportedError for unsupported bulk export formats',
+      () async {
+        final sessions = [testSession];
+
+        expect(
+          () =>
+              exportService.exportMultipleSessions(sessions, ExportFormat.pdf),
+          throwsA(isA<UnsupportedError>()),
+        );
+
+        expect(
+          () =>
+              exportService.exportMultipleSessions(sessions, ExportFormat.text),
+          throwsA(isA<UnsupportedError>()),
+        );
+      },
+    );
   });
 
   group('File Extension Utils', () {
     test('should return correct file extensions', () async {
-      final jsonFile = await exportService.exportSession(testSession, ExportFormat.json);
-      final pdfFile = await exportService.exportSession(testSession, ExportFormat.pdf);
-      final csvFile = await exportService.exportSession(testSession, ExportFormat.csv);
-      final textFile = await exportService.exportSession(testSession, ExportFormat.text);
+      final jsonFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.json,
+      );
+      final pdfFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.pdf,
+      );
+      final csvFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.csv,
+      );
+      final textFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.text,
+      );
 
       expect(jsonFile.path.endsWith('.json'), isTrue);
       expect(pdfFile.path.endsWith('.pdf'), isTrue);
       expect(csvFile.path.endsWith('.csv'), isTrue);
       expect(textFile.path.endsWith('.txt'), isTrue);
-      
+
       await jsonFile.delete();
       await pdfFile.delete();
       await csvFile.delete();

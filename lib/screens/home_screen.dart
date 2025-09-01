@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
+import '../providers/accessibility_provider.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
+import 'accessibility_settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UssdProvider>().init();
+      context.read<AccessibilityProvider>().init();
     });
   }
 
@@ -52,19 +55,74 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      body: screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.phone), label: 'USSD'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Config'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+      appBar: AppBar(
+        title: Semantics(
+          label: 'USSD Emulator main screen',
+          child: const Text('USSD Emulator'),
+        ),
+        actions: [
+          Semantics(
+            label: 'Open accessibility settings',
+            hint: 'Configure accessibility options',
+            child: IconButton(
+              icon: const Icon(Icons.accessibility),
+              onPressed: () {
+                final accessibilityProvider = context
+                    .read<AccessibilityProvider>();
+                accessibilityProvider.hapticFeedback();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AccessibilitySettingsScreen(),
+                  ),
+                );
+              },
+              tooltip: 'Accessibility Settings',
+            ),
+          ),
         ],
+      ),
+      body: screens[_selectedIndex],
+      bottomNavigationBar: Semantics(
+        label: 'Main navigation with ${screens.length} tabs',
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            final accessibilityProvider = context.read<AccessibilityProvider>();
+            accessibilityProvider.hapticFeedback();
+
+            setState(() {
+              _selectedIndex = index;
+            });
+
+            // Announce navigation change for screen readers
+            String screenName = [
+              'USSD Session',
+              'Configuration',
+              'Session History',
+            ][index];
+            accessibilityProvider.announceForScreenReader(
+              'Navigated to $screenName screen',
+            );
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.phone),
+              label: 'USSD',
+              tooltip: 'USSD Session Screen',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Config',
+              tooltip: 'Endpoint Configuration',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+              tooltip: 'Session History',
+            ),
+          ],
+        ),
       ),
     );
   }
