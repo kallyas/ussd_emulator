@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/ussd_session.dart';
+import '../models/endpoint_config.dart';
 import '../utils/ussd_utils.dart';
+import 'export_dialog.dart';
 
 class UssdSessionDetails extends StatelessWidget {
   final UssdSession session;
+  final EndpointConfig? endpointConfig;
 
-  const UssdSessionDetails({super.key, required this.session});
+  const UssdSessionDetails({
+    super.key, 
+    required this.session,
+    this.endpointConfig,
+  });
 
-  static void show(BuildContext context, UssdSession session) {
+  static void show(BuildContext context, UssdSession session, {EndpointConfig? endpointConfig}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => UssdSessionDetails(session: session),
+      builder: (context) => UssdSessionDetails(
+        session: session,
+        endpointConfig: endpointConfig,
+      ),
     );
   }
 
@@ -51,6 +61,14 @@ class UssdSessionDetails extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
+                IconButton(
+                  icon: Icon(
+                    Icons.file_download,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                  onPressed: () => _showExportDialog(context),
+                  tooltip: 'Export Session',
+                ),
                 IconButton(
                   icon: Icon(
                     Icons.close,
@@ -199,5 +217,15 @@ class UssdSessionDetails extends StatelessWidget {
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+  
+  void _showExportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => ExportDialog(
+        session: session,
+        endpointConfig: endpointConfig,
+      ),
+    );
   }
 }
