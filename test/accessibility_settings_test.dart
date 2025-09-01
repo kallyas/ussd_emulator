@@ -71,7 +71,9 @@ void main() {
       expect(restored.inputTimeout, original.inputTimeout);
       expect(restored.enableHapticFeedback, original.enableHapticFeedback);
       expect(
-          restored.enableKeyboardNavigation, original.enableKeyboardNavigation);
+        restored.enableKeyboardNavigation,
+        original.enableKeyboardNavigation,
+      );
       expect(restored.enableLiveRegions, original.enableLiveRegions);
     });
 

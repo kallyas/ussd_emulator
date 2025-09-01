@@ -41,7 +41,8 @@ class AccessibilitySettings {
       textScaleFactor: textScaleFactor ?? this.textScaleFactor,
       inputTimeout: inputTimeout ?? this.inputTimeout,
       enableHapticFeedback: enableHapticFeedback ?? this.enableHapticFeedback,
-      enableKeyboardNavigation: enableKeyboardNavigation ?? this.enableKeyboardNavigation,
+      enableKeyboardNavigation:
+          enableKeyboardNavigation ?? this.enableKeyboardNavigation,
       enableLiveRegions: enableLiveRegions ?? this.enableLiveRegions,
     );
   }

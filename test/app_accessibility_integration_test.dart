@@ -34,7 +34,9 @@ void main() {
       expect(find.text('Accessibility Settings'), findsOneWidget);
     });
 
-    testWidgets('should support keyboard navigation in main app', (tester) async {
+    testWidgets('should support keyboard navigation in main app', (
+      tester,
+    ) async {
       await tester.pumpWidget(const UssdEmulatorApp());
       await tester.pumpAndSettle();
 
@@ -61,7 +63,9 @@ void main() {
       expect(find.text('USSD Emulator'), findsOneWidget);
     });
 
-    testWidgets('should maintain accessibility across navigation', (tester) async {
+    testWidgets('should maintain accessibility across navigation', (
+      tester,
+    ) async {
       await tester.pumpWidget(const UssdEmulatorApp());
       await tester.pumpAndSettle();
 
@@ -69,10 +73,9 @@ void main() {
       final bottomNav = find.byType(BottomNavigationBar);
 
       // Tap Config tab
-      await tester.tap(find.descendant(
-        of: bottomNav,
-        matching: find.text('Config'),
-      ));
+      await tester.tap(
+        find.descendant(of: bottomNav, matching: find.text('Config')),
+      );
       await tester.pumpAndSettle();
 
       // Should still have semantic structure
@@ -80,10 +83,9 @@ void main() {
       expect(tester.takeException(), isNull);
 
       // Tap History tab
-      await tester.tap(find.descendant(
-        of: bottomNav,
-        matching: find.text('History'),
-      ));
+      await tester.tap(
+        find.descendant(of: bottomNav, matching: find.text('History')),
+      );
       await tester.pumpAndSettle();
 
       // Should maintain accessibility

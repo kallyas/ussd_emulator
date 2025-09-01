@@ -34,8 +34,8 @@ class ConnectivityService extends ChangeNotifier {
 
   bool get hasStableConnection {
     return _isOnline &&
-           _lastConnectionTime != null &&
-           DateTime.now().difference(_lastConnectionTime!).inSeconds > 5;
+        _lastConnectionTime != null &&
+        DateTime.now().difference(_lastConnectionTime!).inSeconds > 5;
   }
 
   Future<void> init() async {
@@ -71,8 +71,9 @@ class ConnectivityService extends ChangeNotifier {
   }
 
   void _updateOnlineStatus() {
-    _isOnline = _connectionStatus.any((result) =>
-        result != ConnectivityResult.none);
+    _isOnline = _connectionStatus.any(
+      (result) => result != ConnectivityResult.none,
+    );
   }
 
   void _onConnectionRestored() {
@@ -153,13 +154,7 @@ class ConnectivityService extends ChangeNotifier {
   }
 }
 
-enum ConnectionQuality {
-  none,
-  poor,
-  fair,
-  good,
-  excellent,
-}
+enum ConnectionQuality { none, poor, fair, good, excellent }
 
 extension ConnectionQualityExtension on ConnectionQuality {
   String get displayName {

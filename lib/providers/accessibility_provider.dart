@@ -79,44 +79,42 @@ class AccessibilityProvider extends ChangeNotifier {
 
   /// Toggle high contrast theme
   Future<void> toggleHighContrast() async {
-    await updateSettings(_settings.copyWith(
-      useHighContrast: !_settings.useHighContrast,
-    ));
+    await updateSettings(
+      _settings.copyWith(useHighContrast: !_settings.useHighContrast),
+    );
   }
 
   /// Toggle voice input
   Future<void> toggleVoiceInput() async {
-    await updateSettings(_settings.copyWith(
-      enableVoiceInput: !_settings.enableVoiceInput,
-    ));
+    await updateSettings(
+      _settings.copyWith(enableVoiceInput: !_settings.enableVoiceInput),
+    );
   }
 
   /// Toggle text-to-speech
   Future<void> toggleTextToSpeech() async {
-    await updateSettings(_settings.copyWith(
-      enableTextToSpeech: !_settings.enableTextToSpeech,
-    ));
+    await updateSettings(
+      _settings.copyWith(enableTextToSpeech: !_settings.enableTextToSpeech),
+    );
   }
 
   /// Set text scale factor
   Future<void> setTextScaleFactor(double factor) async {
-    await updateSettings(_settings.copyWith(
-      textScaleFactor: factor.clamp(0.8, 2.0),
-    ));
+    await updateSettings(
+      _settings.copyWith(textScaleFactor: factor.clamp(0.8, 2.0)),
+    );
   }
 
   /// Set input timeout
   Future<void> setInputTimeout(Duration timeout) async {
-    await updateSettings(_settings.copyWith(
-      inputTimeout: timeout,
-    ));
+    await updateSettings(_settings.copyWith(inputTimeout: timeout));
   }
 
   /// Toggle haptic feedback
   Future<void> toggleHapticFeedback() async {
-    await updateSettings(_settings.copyWith(
-      enableHapticFeedback: !_settings.enableHapticFeedback,
-    ));
+    await updateSettings(
+      _settings.copyWith(enableHapticFeedback: !_settings.enableHapticFeedback),
+    );
   }
 
   /// Provide haptic feedback if enabled
@@ -178,9 +176,4 @@ class AccessibilityProvider extends ChangeNotifier {
   }
 }
 
-enum HapticFeedback {
-  lightImpact,
-  mediumImpact,
-  heavyImpact,
-  selectionClick,
-}
+enum HapticFeedback { lightImpact, mediumImpact, heavyImpact, selectionClick }

@@ -46,7 +46,9 @@ void main() {
   });
 
   group('ExportDialog Widget Tests', () {
-    testWidgets('should display single session export dialog correctly', (tester) async {
+    testWidgets('should display single session export dialog correctly', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -71,8 +73,14 @@ void main() {
       expect(find.text('Text'), findsOneWidget);
 
       // Verify format descriptions
-      expect(find.text('Machine-readable format for API integration'), findsOneWidget);
-      expect(find.text('Human-readable format for documentation'), findsOneWidget);
+      expect(
+        find.text('Machine-readable format for API integration'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Human-readable format for documentation'),
+        findsOneWidget,
+      );
       expect(find.text('Spreadsheet format for data analysis'), findsOneWidget);
       expect(find.text('Simple plain text format'), findsOneWidget);
 
@@ -82,7 +90,9 @@ void main() {
       expect(find.text('Save'), findsOneWidget);
     });
 
-    testWidgets('should display multiple sessions export dialog correctly', (tester) async {
+    testWidgets('should display multiple sessions export dialog correctly', (
+      tester,
+    ) async {
       final multipleSessions = [
         testSession,
         testSession.copyWith(id: 'session-2'),
@@ -125,11 +135,7 @@ void main() {
     testWidgets('should allow format selection', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ExportDialog(
-              session: testSession,
-            ),
-          ),
+          home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
 
@@ -187,11 +193,7 @@ void main() {
     testWidgets('should show loading state when exporting', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: ExportDialog(
-              session: testSession,
-            ),
-          ),
+          home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
 

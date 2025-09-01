@@ -20,16 +20,18 @@ void main() {
         home: MultiProvider(
           providers: [
             ChangeNotifierProvider<UssdProvider>.value(value: ussdProvider),
-            ChangeNotifierProvider<AccessibilityProvider>.value(value: accessibilityProvider),
+            ChangeNotifierProvider<AccessibilityProvider>.value(
+              value: accessibilityProvider,
+            ),
           ],
-          child: const Scaffold(
-            body: UssdConversationView(),
-          ),
+          child: const Scaffold(body: UssdConversationView()),
         ),
       );
     }
 
-    testWidgets('should display no session message when no active session', (tester) async {
+    testWidgets('should display no session message when no active session', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       expect(find.text('No active session'), findsOneWidget);
@@ -73,7 +75,9 @@ void main() {
       expect(accessibilityProvider.settings.useHighContrast, true);
     });
 
-    testWidgets('should have proper widget structure for accessibility', (tester) async {
+    testWidgets('should have proper widget structure for accessibility', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       // Should have a scaffold structure
@@ -105,7 +109,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('should maintain accessibility during loading states', (tester) async {
+    testWidgets('should maintain accessibility during loading states', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       // Verify initial state is accessible

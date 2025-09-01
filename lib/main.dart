@@ -23,40 +23,41 @@ class UssdEmulatorApp extends StatelessWidget {
       child: Consumer<AccessibilityProvider>(
         builder: (context, accessibilityProvider, child) {
           final settings = accessibilityProvider.settings;
-          
+
           return MaterialApp(
             title: 'USSD Emulator',
             debugShowCheckedModeBanner: false,
-            
+
             // Dynamic theme based on accessibility settings
             theme: settings.useHighContrast
                 ? AccessibilityThemes.getHighContrastLightTheme()
                 : AccessibilityThemes.getAccessibleLightTheme(),
-            
+
             darkTheme: settings.useHighContrast
                 ? AccessibilityThemes.getHighContrastDarkTheme()
                 : AccessibilityThemes.getAccessibleDarkTheme(),
-            
+
             themeMode: ThemeMode.system,
-            
+
             // Apply text scale factor for accessibility
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaleFactor: settings.textScaleFactor,
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaleFactor: settings.textScaleFactor),
                 child: child!,
               );
             },
-            
+
             home: const HomeScreen(),
-            
+
             // Accessibility shortcuts
             shortcuts: const {
               // Tab navigation
               SingleActivator(LogicalKeyboardKey.tab): NextFocusIntent(),
-              SingleActivator(LogicalKeyboardKey.tab, shift: true): PreviousFocusIntent(),
-              
+              SingleActivator(LogicalKeyboardKey.tab, shift: true):
+                  PreviousFocusIntent(),
+
               // Enter to activate
               SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
               SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),

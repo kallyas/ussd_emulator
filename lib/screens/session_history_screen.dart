@@ -24,7 +24,9 @@ class SessionHistoryScreen extends StatelessWidget {
                 onPressed: () => _showBulkExportDialog(context, provider),
                 tooltip: 'Export All Sessions',
                 style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   foregroundColor: Theme.of(
                     context,
                   ).colorScheme.onPrimaryContainer,

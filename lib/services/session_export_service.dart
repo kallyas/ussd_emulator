@@ -9,12 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import '../models/ussd_session.dart';
 import '../models/endpoint_config.dart';
 
-enum ExportFormat {
-  json,
-  pdf,
-  csv,
-  text,
-}
+enum ExportFormat { json, pdf, csv, text }
 
 class SessionExportService {
   static const String _appName = 'USSD Emulator';
@@ -28,7 +23,8 @@ class SessionExportService {
   }) async {
     final directory = await getApplicationDocumentsDirectory();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final fileName = customFileName ??
+    final fileName =
+        customFileName ??
         'ussd_session_${session.serviceCode.replaceAll('*', '').replaceAll('#', '')}_$timestamp';
 
     switch (format) {
@@ -69,7 +65,11 @@ class SessionExportService {
     ExportFormat format, {
     EndpointConfig? endpointConfig,
   }) async {
-    final file = await exportSession(session, format, endpointConfig: endpointConfig);
+    final file = await exportSession(
+      session,
+      format,
+      endpointConfig: endpointConfig,
+    );
 
     await Share.shareXFiles(
       [XFile(file.path)],
@@ -95,7 +95,9 @@ class SessionExportService {
   }
 
   String _getFileName(UssdSession session, ExportFormat format) {
-    final serviceCode = session.serviceCode.replaceAll('*', '').replaceAll('#', '');
+    final serviceCode = session.serviceCode
+        .replaceAll('*', '')
+        .replaceAll('#', '');
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final extension = _getFileExtension(format);
     return 'ussd_session_${serviceCode}_$timestamp.$extension';
@@ -134,7 +136,9 @@ class SessionExportService {
       'statistics': {
         'totalRequests': session.requests.length,
         'totalResponses': session.responses.length,
-        'sessionDuration': session.endedAt?.difference(session.createdAt).inSeconds,
+        'sessionDuration': session.endedAt
+            ?.difference(session.createdAt)
+            .inSeconds,
         'ussdPath': session.pathAsText,
       },
     };
@@ -165,7 +169,10 @@ class SessionExportService {
       'statistics': {
         'totalSessions': sessions.length,
         'totalRequests': sessions.fold(0, (sum, s) => sum + s.requests.length),
-        'totalResponses': sessions.fold(0, (sum, s) => sum + s.responses.length),
+        'totalResponses': sessions.fold(
+          0,
+          (sum, s) => sum + s.responses.length,
+        ),
         'serviceCodes': sessions.map((s) => s.serviceCode).toSet().toList(),
       },
     };
@@ -195,7 +202,10 @@ class SessionExportService {
               level: 0,
               child: pw.Text(
                 'USSD Session Report',
-                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ),
 
@@ -211,8 +221,13 @@ class SessionExportService {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text('Session Information',
-                      style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                  pw.Text(
+                    'Session Information',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
                   pw.SizedBox(height: 10),
                   pw.Text('Service Code: ${session.serviceCode}'),
                   pw.Text('Phone Number: ${session.phoneNumber}'),
@@ -222,7 +237,9 @@ class SessionExportService {
                     pw.Text('Ended: ${_formatDateTime(session.endedAt!)}'),
                   pw.Text('USSD Path: ${session.pathAsText}'),
                   if (endpointConfig != null)
-                    pw.Text('Endpoint: ${endpointConfig.name} (${endpointConfig.url})'),
+                    pw.Text(
+                      'Endpoint: ${endpointConfig.name} (${endpointConfig.url})',
+                    ),
                 ],
               ),
             ),
@@ -230,8 +247,10 @@ class SessionExportService {
             pw.SizedBox(height: 20),
 
             // Conversation History
-            pw.Text('Conversation History',
-                style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'Conversation History',
+              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+            ),
 
             pw.SizedBox(height: 10),
 
@@ -247,7 +266,9 @@ class SessionExportService {
                 padding: const pw.EdgeInsets.all(8),
                 decoration: pw.BoxDecoration(
                   color: PdfColors.grey50,
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(5)),
+                  borderRadius: const pw.BorderRadius.all(
+                    pw.Radius.circular(5),
+                  ),
                 ),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -257,8 +278,12 @@ class SessionExportService {
                         children: [
                           pw.Container(
                             width: 50,
-                            child: pw.Text('USER:',
-                                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                            child: pw.Text(
+                              'USER:',
+                              style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold,
+                              ),
+                            ),
                           ),
                           pw.Expanded(child: pw.Text(request.text)),
                         ],
@@ -269,8 +294,10 @@ class SessionExportService {
                       children: [
                         pw.Container(
                           width: 50,
-                          child: pw.Text('USSD:',
-                              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                          child: pw.Text(
+                            'USSD:',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
                         ),
                         pw.Expanded(child: pw.Text(response.text)),
                       ],
@@ -405,8 +432,8 @@ class SessionExportService {
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:'
-           '${dateTime.minute.toString().padLeft(2, '0')}:'
-           '${dateTime.second.toString().padLeft(2, '0')}';
+        '${dateTime.hour.toString().padLeft(2, '0')}:'
+        '${dateTime.minute.toString().padLeft(2, '0')}:'
+        '${dateTime.second.toString().padLeft(2, '0')}';
   }
 }

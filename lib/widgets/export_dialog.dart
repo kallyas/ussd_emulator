@@ -58,7 +58,11 @@ class _ExportDialogState extends State<ExportDialog> {
         children: [
           Icon(Icons.file_download, color: Theme.of(context).primaryColor),
           const SizedBox(width: 8),
-          Text(widget.multipleSessions != null ? 'Export Sessions' : 'Export Session'),
+          Text(
+            widget.multipleSessions != null
+                ? 'Export Sessions'
+                : 'Export Session',
+          ),
         ],
       ),
       content: SizedBox(
@@ -78,9 +82,9 @@ class _ExportDialogState extends State<ExportDialog> {
             ] else ...[
               Text(
                 'Session: ${widget.session.serviceCode}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 16),
             ],
@@ -99,11 +103,13 @@ class _ExportDialogState extends State<ExportDialog> {
                 return RadioListTile<ExportFormat>(
                   value: format,
                   groupValue: _selectedFormat,
-                  onChanged: isSupported ? (value) {
-                    setState(() {
-                      _selectedFormat = value!;
-                    });
-                  } : null,
+                  onChanged: isSupported
+                      ? (value) {
+                          setState(() {
+                            _selectedFormat = value!;
+                          });
+                        }
+                      : null,
                   title: Row(
                     children: [
                       Icon(

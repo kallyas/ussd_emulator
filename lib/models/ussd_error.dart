@@ -13,12 +13,7 @@ enum ErrorType {
   unknown,
 }
 
-enum ErrorSeverity {
-  low,
-  medium,
-  high,
-  critical,
-}
+enum ErrorSeverity { low, medium, high, critical }
 
 @JsonSerializable()
 class UssdError {
@@ -59,7 +54,9 @@ class UssdError {
     return UssdError(
       code: 'NETWORK_ERROR',
       message: message,
-      userMessage: userMessage ?? 'Network connection failed. Please check your internet connection and try again.',
+      userMessage:
+          userMessage ??
+          'Network connection failed. Please check your internet connection and try again.',
       type: ErrorType.network,
       severity: ErrorSeverity.high,
       isRetryable: true,
@@ -108,7 +105,9 @@ class UssdError {
       userMessage: userMessage ?? _getServerErrorMessage(statusCode),
       type: ErrorType.server,
       severity: statusCode >= 500 ? ErrorSeverity.high : ErrorSeverity.medium,
-      isRetryable: statusCode >= 500 || statusCode == 429, // Retry for 5xx and rate limiting
+      isRetryable:
+          statusCode >= 500 ||
+          statusCode == 429, // Retry for 5xx and rate limiting
       context: errorContext,
       timestamp: DateTime.now(),
       stackTrace: stackTrace,
@@ -124,7 +123,8 @@ class UssdError {
     return UssdError(
       code: 'VALIDATION_ERROR',
       message: message,
-      userMessage: userMessage ?? 'Invalid input. Please check your data and try again.',
+      userMessage:
+          userMessage ?? 'Invalid input. Please check your data and try again.',
       type: ErrorType.validation,
       severity: ErrorSeverity.low,
       isRetryable: false,
@@ -143,7 +143,8 @@ class UssdError {
     return UssdError(
       code: 'SESSION_ERROR',
       message: message,
-      userMessage: userMessage ?? 'Session error occurred. Please restart your session.',
+      userMessage:
+          userMessage ?? 'Session error occurred. Please restart your session.',
       type: ErrorType.session,
       severity: ErrorSeverity.medium,
       isRetryable: false,
@@ -162,7 +163,9 @@ class UssdError {
     return UssdError(
       code: 'CONFIGURATION_ERROR',
       message: message,
-      userMessage: userMessage ?? 'Configuration error. Please check your endpoint settings.',
+      userMessage:
+          userMessage ??
+          'Configuration error. Please check your endpoint settings.',
       type: ErrorType.configuration,
       severity: ErrorSeverity.medium,
       isRetryable: false,
@@ -181,7 +184,8 @@ class UssdError {
     return UssdError(
       code: 'UNKNOWN_ERROR',
       message: message,
-      userMessage: userMessage ?? 'An unexpected error occurred. Please try again.',
+      userMessage:
+          userMessage ?? 'An unexpected error occurred. Please try again.',
       type: ErrorType.unknown,
       severity: ErrorSeverity.medium,
       isRetryable: true,

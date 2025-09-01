@@ -67,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               icon: const Icon(Icons.accessibility),
               onPressed: () {
-                final accessibilityProvider = context.read<AccessibilityProvider>();
+                final accessibilityProvider = context
+                    .read<AccessibilityProvider>();
                 accessibilityProvider.hapticFeedback();
                 Navigator.push(
                   context,
@@ -95,8 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
             });
 
             // Announce navigation change for screen readers
-            String screenName = ['USSD Session', 'Configuration', 'Session History'][index];
-            accessibilityProvider.announceForScreenReader('Navigated to $screenName screen');
+            String screenName = [
+              'USSD Session',
+              'Configuration',
+              'Session History',
+            ][index];
+            accessibilityProvider.announceForScreenReader(
+              'Navigated to $screenName screen',
+            );
           },
           items: const [
             BottomNavigationBarItem(

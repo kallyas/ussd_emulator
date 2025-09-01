@@ -23,9 +23,7 @@ class _AccessibilitySettingsScreenState
       body: Consumer<AccessibilityProvider>(
         builder: (context, accessibilityProvider, child) {
           if (!accessibilityProvider.isInitialized) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           final settings = accessibilityProvider.settings;
@@ -168,10 +166,9 @@ class _AccessibilitySettingsScreenState
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer
-                      .withOpacity(0.3),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -186,9 +183,10 @@ class _AccessibilitySettingsScreenState
                         const SizedBox(width: 8),
                         Text(
                           'Accessibility Information',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ],
                     ),
@@ -226,9 +224,7 @@ class _AccessibilitySettingsScreenState
   Widget _buildAccessibleCard(List<Widget> children) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 
@@ -289,8 +285,9 @@ class _AccessibilitySettingsScreenState
   }
 
   Future<void> _testTextToSpeech(AccessibilityProvider provider) async {
-    const testText = "This is a test of the text-to-speech feature. "
-                    "USSD responses will be read aloud like this.";
+    const testText =
+        "This is a test of the text-to-speech feature. "
+        "USSD responses will be read aloud like this.";
 
     provider.hapticFeedback();
     await provider.speak(testText);

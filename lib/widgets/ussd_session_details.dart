@@ -14,15 +14,17 @@ class UssdSessionDetails extends StatelessWidget {
     this.endpointConfig,
   });
 
-  static void show(BuildContext context, UssdSession session, {EndpointConfig? endpointConfig}) {
+  static void show(
+    BuildContext context,
+    UssdSession session, {
+    EndpointConfig? endpointConfig,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => UssdSessionDetails(
-        session: session,
-        endpointConfig: endpointConfig,
-      ),
+      builder: (context) =>
+          UssdSessionDetails(session: session, endpointConfig: endpointConfig),
     );
   }
 
@@ -222,10 +224,8 @@ class UssdSessionDetails extends StatelessWidget {
   void _showExportDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => ExportDialog(
-        session: session,
-        endpointConfig: endpointConfig,
-      ),
+      builder: (context) =>
+          ExportDialog(session: session, endpointConfig: endpointConfig),
     );
   }
 }

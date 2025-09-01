@@ -175,7 +175,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                                     vertical: 12,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16),
@@ -231,7 +233,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Semantics(
-                                        label: response.continueSession ? 'Continue session' : 'End session',
+                                        label: response.continueSession
+                                            ? 'Continue session'
+                                            : 'End session',
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 8,
@@ -241,10 +245,14 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                                             color: response.continueSession
                                                 ? Colors.green
                                                 : Colors.red,
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: Text(
-                                            response.continueSession ? 'CON' : 'END',
+                                            response.continueSession
+                                                ? 'CON'
+                                                : 'END',
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
@@ -327,13 +335,20 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                             suffixIcon: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (accessibilityProvider.settings.enableVoiceInput)
+                                if (accessibilityProvider
+                                    .settings
+                                    .enableVoiceInput)
                                   Semantics(
                                     label: 'Voice input button',
-                                    hint: 'Tap to use voice input for USSD command',
+                                    hint:
+                                        'Tap to use voice input for USSD command',
                                     child: IconButton(
                                       icon: const Icon(Icons.mic),
-                                      onPressed: provider.isLoading ? null : () => _startVoiceInput(accessibilityProvider),
+                                      onPressed: provider.isLoading
+                                          ? null
+                                          : () => _startVoiceInput(
+                                              accessibilityProvider,
+                                            ),
                                       tooltip: 'Voice Input',
                                     ),
                                   ),
@@ -364,7 +379,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                   const SizedBox(width: 12),
                   Semantics(
                     label: 'Send USSD input',
-                    hint: provider.isLoading ? 'Sending...' : 'Tap to send input',
+                    hint: provider.isLoading
+                        ? 'Sending...'
+                        : 'Tap to send input',
                     child: Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
@@ -518,11 +535,15 @@ class _UssdConversationViewState extends State<UssdConversationView> {
     });
   }
 
-  Future<void> _startVoiceInput(AccessibilityProvider accessibilityProvider) async {
+  Future<void> _startVoiceInput(
+    AccessibilityProvider accessibilityProvider,
+  ) async {
     accessibilityProvider.hapticFeedback();
 
     // Announce that voice input is starting
-    accessibilityProvider.announceForScreenReader('Starting voice input. Please speak now.');
+    accessibilityProvider.announceForScreenReader(
+      'Starting voice input. Please speak now.',
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -544,7 +565,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
         _inputController.text = result;
 
         // Announce successful recognition
-        accessibilityProvider.announceForScreenReader('Voice input recognized: $result');
+        accessibilityProvider.announceForScreenReader(
+          'Voice input recognized: $result',
+        );
 
         // Provide success feedback
         accessibilityProvider.hapticFeedback();
@@ -560,7 +583,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
         }
       } else {
         // Announce failure
-        accessibilityProvider.announceForScreenReader('Voice input failed. No speech detected.');
+        accessibilityProvider.announceForScreenReader(
+          'Voice input failed. No speech detected.',
+        );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -574,7 +599,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
     } catch (e) {
       debugPrint('Voice input error: $e');
 
-      accessibilityProvider.announceForScreenReader('Voice input error occurred.');
+      accessibilityProvider.announceForScreenReader(
+        'Voice input error occurred.',
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

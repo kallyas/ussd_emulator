@@ -71,10 +71,16 @@ void main() {
         final renderBox = tester.renderObject<RenderBox>(buttons.at(i));
 
         // Check minimum size requirements (44pt = ~44 logical pixels)
-        expect(renderBox.size.width >= 44, true,
-            reason: 'Button width should be at least 44pt for accessibility');
-        expect(renderBox.size.height >= 44, true,
-            reason: 'Button height should be at least 44pt for accessibility');
+        expect(
+          renderBox.size.width >= 44,
+          true,
+          reason: 'Button width should be at least 44pt for accessibility',
+        );
+        expect(
+          renderBox.size.height >= 44,
+          true,
+          reason: 'Button height should be at least 44pt for accessibility',
+        );
       }
     });
 
@@ -89,12 +95,16 @@ void main() {
       for (final widget in semanticsWidgets.evaluate()) {
         final semanticsWidget = widget.widget as Semantics;
         // Semantic widgets should have either label, hint, or onTap properties
-        final hasAccessibilityInfo = semanticsWidget.properties.label != null ||
+        final hasAccessibilityInfo =
+            semanticsWidget.properties.label != null ||
             semanticsWidget.properties.hint != null ||
             semanticsWidget.properties.onTap != null;
 
-        expect(hasAccessibilityInfo, true,
-            reason: 'Semantics widget should have accessibility information');
+        expect(
+          hasAccessibilityInfo,
+          true,
+          reason: 'Semantics widget should have accessibility information',
+        );
       }
     });
   });

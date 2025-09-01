@@ -267,14 +267,8 @@ class AccessibilityThemes {
         brightness: Brightness.light,
       ),
       useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 0,
-        margin: EdgeInsets.zero,
-      ),
+      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         border: OutlineInputBorder(
@@ -326,14 +320,8 @@ class AccessibilityThemes {
         brightness: Brightness.dark,
       ),
       useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 0,
-        margin: EdgeInsets.zero,
-      ),
+      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         border: OutlineInputBorder(

@@ -185,7 +185,10 @@ void main() {
 
       final content = await file.readAsString();
       final lines = content.split('\n');
-      expect(lines.length, greaterThanOrEqualTo(3)); // Header + 2 data rows + possible empty line
+      expect(
+        lines.length,
+        greaterThanOrEqualTo(3),
+      ); // Header + 2 data rows + possible empty line
       expect(lines[0], contains('Session ID')); // Header
       expect(lines[1], contains('test-session-123')); // First session
       expect(lines[2], contains('session-2')); // Second session
@@ -194,10 +197,7 @@ void main() {
     });
 
     test('should handle sessions without end date', () async {
-      final activeSession = testSession.copyWith(
-        endedAt: null,
-        isActive: true,
-      );
+      final activeSession = testSession.copyWith(endedAt: null, isActive: true);
 
       final file = await exportService.exportSession(
         activeSession,
@@ -270,27 +270,44 @@ void main() {
       await file.delete();
     });
 
-    test('should throw UnsupportedError for unsupported bulk export formats', () async {
-      final sessions = [testSession];
+    test(
+      'should throw UnsupportedError for unsupported bulk export formats',
+      () async {
+        final sessions = [testSession];
 
-      expect(
-        () => exportService.exportMultipleSessions(sessions, ExportFormat.pdf),
-        throwsA(isA<UnsupportedError>()),
-      );
+        expect(
+          () =>
+              exportService.exportMultipleSessions(sessions, ExportFormat.pdf),
+          throwsA(isA<UnsupportedError>()),
+        );
 
-      expect(
-        () => exportService.exportMultipleSessions(sessions, ExportFormat.text),
-        throwsA(isA<UnsupportedError>()),
-      );
-    });
+        expect(
+          () =>
+              exportService.exportMultipleSessions(sessions, ExportFormat.text),
+          throwsA(isA<UnsupportedError>()),
+        );
+      },
+    );
   });
 
   group('File Extension Utils', () {
     test('should return correct file extensions', () async {
-      final jsonFile = await exportService.exportSession(testSession, ExportFormat.json);
-      final pdfFile = await exportService.exportSession(testSession, ExportFormat.pdf);
-      final csvFile = await exportService.exportSession(testSession, ExportFormat.csv);
-      final textFile = await exportService.exportSession(testSession, ExportFormat.text);
+      final jsonFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.json,
+      );
+      final pdfFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.pdf,
+      );
+      final csvFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.csv,
+      );
+      final textFile = await exportService.exportSession(
+        testSession,
+        ExportFormat.text,
+      );
 
       expect(jsonFile.path.endsWith('.json'), isTrue);
       expect(pdfFile.path.endsWith('.pdf'), isTrue);

@@ -17,10 +17,9 @@ class EnhancedUssdApiService {
   final Dio _dio;
   final ConnectivityService _connectivityService;
 
-  EnhancedUssdApiService({
-    ConnectivityService? connectivityService,
-  }) : _connectivityService = connectivityService ?? ConnectivityService(),
-        _dio = Dio() {
+  EnhancedUssdApiService({ConnectivityService? connectivityService})
+    : _connectivityService = connectivityService ?? ConnectivityService(),
+      _dio = Dio() {
     _configureDio();
   }
 
@@ -37,40 +36,47 @@ class EnhancedUssdApiService {
 
     // Add interceptors for logging and error handling
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-        logPrint: (obj) => debugPrint(obj.toString()),
-      ));
+      _dio.interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          error: true,
+          logPrint: (obj) => debugPrint(obj.toString()),
+        ),
+      );
     }
 
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // Add request timestamp
-        options.extra['requestStartTime'] = DateTime.now().millisecondsSinceEpoch;
-        handler.next(options);
-      },
-      onResponse: (response, handler) {
-        // Calculate response time
-        final startTime = response.requestOptions.extra['requestStartTime'] as int?;
-        if (startTime != null) {
-          final responseTime = DateTime.now().millisecondsSinceEpoch - startTime;
-          response.extra['responseTime'] = responseTime;
-          debugPrint('Response time: ${responseTime}ms');
-        }
-        handler.next(response);
-      },
-      onError: (error, handler) {
-        // Enhanced error logging
-        debugPrint('API Error: ${error.message}');
-        if (error.response != null) {
-          debugPrint('Status: ${error.response?.statusCode}');
-          debugPrint('Response: ${error.response?.data}');
-        }
-        handler.next(error);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // Add request timestamp
+          options.extra['requestStartTime'] =
+              DateTime.now().millisecondsSinceEpoch;
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          // Calculate response time
+          final startTime =
+              response.requestOptions.extra['requestStartTime'] as int?;
+          if (startTime != null) {
+            final responseTime =
+                DateTime.now().millisecondsSinceEpoch - startTime;
+            response.extra['responseTime'] = responseTime;
+            debugPrint('Response time: ${responseTime}ms');
+          }
+          handler.next(response);
+        },
+        onError: (error, handler) {
+          // Enhanced error logging
+          debugPrint('API Error: ${error.message}');
+          if (error.response != null) {
+            debugPrint('Status: ${error.response?.statusCode}');
+            debugPrint('Response: ${error.response?.data}');
+          }
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   Future<UssdResponse> sendUssdRequest(
@@ -88,17 +94,16 @@ class EnhancedUssdApiService {
   ) async {
     // Check connectivity first
     if (_connectivityService.isOffline) {
-      throw UssdException(UssdError.network(
-        message: 'No internet connection',
-        context: {'connectivity': _connectivityService.connectionTypeString},
-      ));
+      throw UssdException(
+        UssdError.network(
+          message: 'No internet connection',
+          context: {'connectivity': _connectivityService.connectionTypeString},
+        ),
+      );
     }
 
     try {
-      final headers = {
-        'Content-Type': 'application/json',
-        ...config.headers,
-      };
+      final headers = {'Content-Type': 'application/json', ...config.headers};
 
       final requestData = request.toJson();
       final requestId = _generateRequestId();
@@ -108,21 +113,20 @@ class EnhancedUssdApiService {
       final response = await _dio.post(
         config.url,
         data: requestData,
-        options: Options(
-          headers: headers,
-          extra: {'requestId': requestId},
-        ),
+        options: Options(headers: headers, extra: {'requestId': requestId}),
       );
 
       return _parseResponse(response);
     } on DioException catch (e) {
       throw _handleDioException(e, config);
     } catch (e, stackTrace) {
-      throw UssdException(UssdError.unknown(
-        message: 'Unexpected error: ${e.toString()}',
-        context: {'endpoint': config.url},
-        stackTrace: stackTrace.toString(),
-      ));
+      throw UssdException(
+        UssdError.unknown(
+          message: 'Unexpected error: ${e.toString()}',
+          context: {'endpoint': config.url},
+          stackTrace: stackTrace.toString(),
+        ),
+      );
     }
   }
 
@@ -144,18 +148,22 @@ class EnhancedUssdApiService {
       } else if (responseBody is Map<String, dynamic>) {
         return UssdResponse.fromJson(responseBody);
       } else {
-        throw UssdException(UssdError.server(
-          message: 'Invalid response format',
-          statusCode: response.statusCode ?? 200,
-          userMessage: 'Server returned an invalid response format',
-        ));
+        throw UssdException(
+          UssdError.server(
+            message: 'Invalid response format',
+            statusCode: response.statusCode ?? 200,
+            userMessage: 'Server returned an invalid response format',
+          ),
+        );
       }
     } else {
-      throw UssdException(UssdError.server(
-        message: 'HTTP ${response.statusCode}: ${response.statusMessage}',
-        statusCode: response.statusCode ?? 500,
-        responseBody: response.data?.toString(),
-      ));
+      throw UssdException(
+        UssdError.server(
+          message: 'HTTP ${response.statusCode}: ${response.statusMessage}',
+          statusCode: response.statusCode ?? 500,
+          responseBody: response.data?.toString(),
+        ),
+      );
     }
   }
 
@@ -164,54 +172,68 @@ class EnhancedUssdApiService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return UssdException(UssdError.timeout(
-          message: 'Request timeout: ${e.message}',
-          context: {
-            'endpoint': config.url,
-            'timeoutType': e.type.toString(),
-            'connectionQuality': _connectivityService.connectionQuality.displayName,
-          },
-        ));
+        return UssdException(
+          UssdError.timeout(
+            message: 'Request timeout: ${e.message}',
+            context: {
+              'endpoint': config.url,
+              'timeoutType': e.type.toString(),
+              'connectionQuality':
+                  _connectivityService.connectionQuality.displayName,
+            },
+          ),
+        );
 
       case DioExceptionType.connectionError:
-        return UssdException(UssdError.network(
-          message: 'Connection error: ${e.message}',
-          context: {
-            'endpoint': config.url,
-            'connectivity': _connectivityService.connectionTypeString,
-            'isOnline': _connectivityService.isOnline,
-          },
-        ));
+        return UssdException(
+          UssdError.network(
+            message: 'Connection error: ${e.message}',
+            context: {
+              'endpoint': config.url,
+              'connectivity': _connectivityService.connectionTypeString,
+              'isOnline': _connectivityService.isOnline,
+            },
+          ),
+        );
 
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode ?? 500;
-        return UssdException(UssdError.server(
-          message: 'Server error: ${e.message}',
-          statusCode: statusCode,
-          responseBody: e.response?.data?.toString(),
-          context: {'endpoint': config.url},
-        ));
+        return UssdException(
+          UssdError.server(
+            message: 'Server error: ${e.message}',
+            statusCode: statusCode,
+            responseBody: e.response?.data?.toString(),
+            context: {'endpoint': config.url},
+          ),
+        );
 
       case DioExceptionType.cancel:
-        return UssdException(UssdError.unknown(
-          message: 'Request was cancelled',
-          userMessage: 'Request was cancelled. Please try again.',
-          context: {'endpoint': config.url},
-        ));
+        return UssdException(
+          UssdError.unknown(
+            message: 'Request was cancelled',
+            userMessage: 'Request was cancelled. Please try again.',
+            context: {'endpoint': config.url},
+          ),
+        );
 
       case DioExceptionType.badCertificate:
-        return UssdException(UssdError.network(
-          message: 'SSL certificate error: ${e.message}',
-          userMessage: 'SSL certificate verification failed. Please check the server configuration.',
-          context: {'endpoint': config.url},
-        ));
+        return UssdException(
+          UssdError.network(
+            message: 'SSL certificate error: ${e.message}',
+            userMessage:
+                'SSL certificate verification failed. Please check the server configuration.',
+            context: {'endpoint': config.url},
+          ),
+        );
 
       case DioExceptionType.unknown:
       default:
-        return UssdException(UssdError.unknown(
-          message: 'Unknown error: ${e.message}',
-          context: {'endpoint': config.url},
-        ));
+        return UssdException(
+          UssdError.unknown(
+            message: 'Unknown error: ${e.message}',
+            context: {'endpoint': config.url},
+          ),
+        );
     }
   }
 
@@ -233,7 +255,9 @@ class EnhancedUssdApiService {
 
         // Calculate delay with exponential backoff and jitter
         final delay = _calculateRetryDelay(attempt);
-        debugPrint('Request failed (attempt $attempt/$_maxRetries), retrying in ${delay.inMilliseconds}ms');
+        debugPrint(
+          'Request failed (attempt $attempt/$_maxRetries), retrying in ${delay.inMilliseconds}ms',
+        );
         debugPrint('Error: ${e.error.message}');
 
         await Future.delayed(delay);
@@ -274,7 +298,9 @@ class EnhancedUssdApiService {
   }
 
   /// Test endpoint connectivity without sending a full USSD request
-  Future<EndpointTestResult> testEndpointConnectivity(EndpointConfig config) async {
+  Future<EndpointTestResult> testEndpointConnectivity(
+    EndpointConfig config,
+  ) async {
     final startTime = DateTime.now();
 
     try {
@@ -328,7 +354,8 @@ class EndpointTestResult {
     this.error,
   });
 
-  bool get isHealthy => isReachable && (statusCode == null || statusCode! < 400);
+  bool get isHealthy =>
+      isReachable && (statusCode == null || statusCode! < 400);
 
   String get statusDescription {
     if (error != null) {
