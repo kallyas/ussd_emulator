@@ -89,11 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: (index) {
             final accessibilityProvider = context.read<AccessibilityProvider>();
             accessibilityProvider.hapticFeedback();
-            
+
             setState(() {
               _selectedIndex = index;
             });
-            
+
             // Announce navigation change for screen readers
             String screenName = ['USSD Session', 'Configuration', 'Session History'][index];
             accessibilityProvider.announceForScreenReader('Navigated to $screenName screen');

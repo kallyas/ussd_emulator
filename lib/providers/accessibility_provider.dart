@@ -7,7 +7,7 @@ import '../services/accessibility_service.dart';
 
 class AccessibilityProvider extends ChangeNotifier {
   static const String _settingsKey = 'accessibility_settings';
-  
+
   AccessibilitySettings _settings = const AccessibilitySettings();
   AccessibilityService? _accessibilityService;
   bool _isInitialized = false;
@@ -36,7 +36,7 @@ class AccessibilityProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsJson = prefs.getString(_settingsKey);
-      
+
       if (settingsJson != null) {
         final data = json.decode(settingsJson) as Map<String, dynamic>;
         // Convert duration from milliseconds back to Duration
@@ -68,12 +68,12 @@ class AccessibilityProvider extends ChangeNotifier {
   Future<void> updateSettings(AccessibilitySettings newSettings) async {
     _settings = newSettings;
     await _saveSettings();
-    
+
     // Update accessibility service configuration
     if (_accessibilityService != null) {
       await _accessibilityService!.updateSettings(_settings);
     }
-    
+
     notifyListeners();
   }
 
@@ -120,7 +120,9 @@ class AccessibilityProvider extends ChangeNotifier {
   }
 
   /// Provide haptic feedback if enabled
-  void hapticFeedback([HapticFeedback feedback = HapticFeedback.selectionClick]) {
+  void hapticFeedback([
+    HapticFeedback feedback = HapticFeedback.selectionClick,
+  ]) {
     if (_settings.enableHapticFeedback) {
       switch (feedback) {
         case HapticFeedback.lightImpact:

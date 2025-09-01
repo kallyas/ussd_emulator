@@ -232,10 +232,10 @@ class SessionHistoryScreen extends StatelessWidget {
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
-  
+
   void _showBulkExportDialog(BuildContext context, UssdProvider provider) {
     if (provider.sessionHistory.isEmpty) return;
-    
+
     showDialog(
       context: context,
       builder: (context) => ExportDialog(

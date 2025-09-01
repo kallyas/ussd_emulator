@@ -102,7 +102,7 @@ class EnhancedUssdApiService {
 
       final requestData = request.toJson();
       final requestId = _generateRequestId();
-      
+
       debugPrint('Sending USSD request: $requestId');
 
       final response = await _dio.post(
@@ -129,10 +129,10 @@ class EnhancedUssdApiService {
   UssdResponse _parseResponse(Response response) {
     if (response.statusCode == 200) {
       final responseBody = response.data;
-      
+
       if (responseBody is String) {
         final trimmedBody = responseBody.trim();
-        
+
         // Try to parse as JSON first
         try {
           final jsonData = jsonDecode(trimmedBody);
@@ -225,7 +225,7 @@ class EnhancedUssdApiService {
       } on UssdException catch (e) {
         lastException = e;
         attempt++;
-        
+
         // Don't retry for non-retryable errors
         if (!e.error.isRetryable || attempt >= _maxRetries) {
           rethrow;
@@ -235,7 +235,7 @@ class EnhancedUssdApiService {
         final delay = _calculateRetryDelay(attempt);
         debugPrint('Request failed (attempt $attempt/$_maxRetries), retrying in ${delay.inMilliseconds}ms');
         debugPrint('Error: ${e.error.message}');
-        
+
         await Future.delayed(delay);
       }
     }
@@ -246,13 +246,13 @@ class EnhancedUssdApiService {
   Duration _calculateRetryDelay(int attempt) {
     // Exponential backoff: baseDelay * (2 ^ attempt)
     final exponentialDelay = _baseDelayMs * pow(2, attempt - 1);
-    
+
     // Add jitter to prevent thundering herd
     final jitter = Random().nextInt(_baseDelayMs ~/ 2);
-    
+
     // Cap at maximum delay
     final totalDelayMs = min(exponentialDelay + jitter, _maxDelayMs);
-    
+
     return Duration(milliseconds: totalDelayMs.toInt());
   }
 
@@ -276,7 +276,7 @@ class EnhancedUssdApiService {
   /// Test endpoint connectivity without sending a full USSD request
   Future<EndpointTestResult> testEndpointConnectivity(EndpointConfig config) async {
     final startTime = DateTime.now();
-    
+
     try {
       final response = await _dio.get(
         config.url,
@@ -285,9 +285,9 @@ class EnhancedUssdApiService {
           validateStatus: (status) => true, // Don't throw for any status
         ),
       );
-      
+
       final responseTime = DateTime.now().difference(startTime);
-      
+
       return EndpointTestResult(
         isReachable: true,
         responseTime: responseTime,
@@ -296,7 +296,7 @@ class EnhancedUssdApiService {
       );
     } on DioException catch (e) {
       final responseTime = DateTime.now().difference(startTime);
-      
+
       return EndpointTestResult(
         isReachable: false,
         responseTime: responseTime,
@@ -329,12 +329,12 @@ class EndpointTestResult {
   });
 
   bool get isHealthy => isReachable && (statusCode == null || statusCode! < 400);
-  
+
   String get statusDescription {
     if (error != null) {
       return error!.userMessage;
     }
-    
+
     if (statusCode != null) {
       if (statusCode! >= 200 && statusCode! < 300) {
         return 'Healthy';
@@ -344,7 +344,7 @@ class EndpointTestResult {
         return 'Server Error';
       }
     }
-    
+
     return isReachable ? 'Reachable' : 'Unreachable';
   }
 }

@@ -42,7 +42,7 @@ class AccessibilityService {
   Future<void> _initTextToSpeech() async {
     try {
       _flutterTts = FlutterTts();
-      
+
       // Configure TTS settings
       await _flutterTts.setLanguage("en-US");
       await _flutterTts.setSpeechRate(0.5);
@@ -85,7 +85,7 @@ class AccessibilityService {
 
       // Use a completer to wait for speech recognition result
       String? result;
-      
+
       await _speechToText.listen(
         onResult: (result) {
           _lastWords = result.recognizedWords;
@@ -106,7 +106,7 @@ class AccessibilityService {
 
       _isListening = false;
       result = _lastWords;
-      
+
       if (result.isNotEmpty) {
         // Provide haptic feedback for successful recognition
         HapticFeedback.lightImpact();
@@ -135,10 +135,10 @@ class AccessibilityService {
     try {
       // Stop any ongoing speech
       await _flutterTts.stop();
-      
+
       // Clean up text for better TTS pronunciation
       String cleanText = _cleanTextForTTS(text);
-      
+
       // Speak the text
       await _flutterTts.speak(cleanText);
     } catch (e) {
@@ -156,10 +156,10 @@ class AccessibilityService {
   /// Announce text for screen readers and accessibility services
   void announce(String text) {
     if (text.trim().isEmpty) return;
-    
+
     // Use Flutter's accessibility framework to announce
     SystemSound.play(SystemSoundType.click);
-    
+
     // Also speak if TTS is enabled
     speak(text);
   }

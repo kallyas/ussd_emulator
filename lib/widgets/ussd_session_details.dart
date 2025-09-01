@@ -9,7 +9,7 @@ class UssdSessionDetails extends StatelessWidget {
   final EndpointConfig? endpointConfig;
 
   const UssdSessionDetails({
-    super.key, 
+    super.key,
     required this.session,
     this.endpointConfig,
   });
@@ -218,7 +218,7 @@ class UssdSessionDetails extends StatelessWidget {
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
-  
+
   void _showExportDialog(BuildContext context) {
     showDialog(
       context: context,

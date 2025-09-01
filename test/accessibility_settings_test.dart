@@ -5,7 +5,7 @@ void main() {
   group('AccessibilitySettings', () {
     test('should create with default values', () {
       const settings = AccessibilitySettings();
-      
+
       expect(settings.useHighContrast, false);
       expect(settings.enableVoiceInput, false);
       expect(settings.enableTextToSpeech, false);
@@ -27,7 +27,7 @@ void main() {
         enableKeyboardNavigation: false,
         enableLiveRegions: false,
       );
-      
+
       expect(settings.useHighContrast, true);
       expect(settings.enableVoiceInput, true);
       expect(settings.enableTextToSpeech, true);
@@ -44,7 +44,7 @@ void main() {
         useHighContrast: true,
         textScaleFactor: 1.2,
       );
-      
+
       expect(updated.useHighContrast, true);
       expect(updated.textScaleFactor, 1.2);
       expect(updated.enableVoiceInput, false); // Unchanged
@@ -60,17 +60,18 @@ void main() {
         inputTimeout: Duration(seconds: 45),
         enableHapticFeedback: false,
       );
-      
+
       final json = original.toJson();
       final restored = AccessibilitySettings.fromJson(json);
-      
+
       expect(restored.useHighContrast, original.useHighContrast);
       expect(restored.enableVoiceInput, original.enableVoiceInput);
       expect(restored.enableTextToSpeech, original.enableTextToSpeech);
       expect(restored.textScaleFactor, original.textScaleFactor);
       expect(restored.inputTimeout, original.inputTimeout);
       expect(restored.enableHapticFeedback, original.enableHapticFeedback);
-      expect(restored.enableKeyboardNavigation, original.enableKeyboardNavigation);
+      expect(
+          restored.enableKeyboardNavigation, original.enableKeyboardNavigation);
       expect(restored.enableLiveRegions, original.enableLiveRegions);
     });
 
@@ -79,9 +80,9 @@ void main() {
         'useHighContrast': true,
         'textScaleFactor': 1.2,
       };
-      
+
       final settings = AccessibilitySettings.fromJson(json);
-      
+
       expect(settings.useHighContrast, true);
       expect(settings.textScaleFactor, 1.2);
       expect(settings.enableVoiceInput, false); // Default
@@ -92,7 +93,7 @@ void main() {
     test('should validate text scale factor bounds', () {
       const settings1 = AccessibilitySettings(textScaleFactor: 0.8);
       const settings2 = AccessibilitySettings(textScaleFactor: 2.0);
-      
+
       expect(settings1.textScaleFactor, 0.8);
       expect(settings2.textScaleFactor, 2.0);
     });

@@ -37,18 +37,18 @@ class _UssdConversationViewState extends State<UssdConversationView> {
     final provider = context.read<UssdProvider>();
     final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
-    
+
     if (session != null && session.responses.length > _lastResponseCount) {
       _lastResponseCount = session.responses.length;
-      
+
       // Speak the latest response if TTS is enabled
       if (session.responses.isNotEmpty) {
         final latestResponse = session.responses.last;
         accessibilityProvider.speak(latestResponse.text);
-        
+
         // Also announce the session status
-        String statusMessage = latestResponse.continueSession 
-            ? 'Session continues, input required' 
+        String statusMessage = latestResponse.continueSession
+            ? 'Session continues, input required'
             : 'Session ended';
         accessibilityProvider.announceForScreenReader(statusMessage);
       }
@@ -204,8 +204,8 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                         Flexible(
                           child: Semantics(
                             label: 'USSD response: ${response.text}',
-                            hint: response.continueSession 
-                                ? 'Session continues, input required' 
+                            hint: response.continueSession
+                                ? 'Session continues, input required'
                                 : 'Session ended, no input required',
                             onTap: () {
                               // Speak the response when tapped (if TTS is enabled)
@@ -520,10 +520,10 @@ class _UssdConversationViewState extends State<UssdConversationView> {
 
   Future<void> _startVoiceInput(AccessibilityProvider accessibilityProvider) async {
     accessibilityProvider.hapticFeedback();
-    
+
     // Announce that voice input is starting
     accessibilityProvider.announceForScreenReader('Starting voice input. Please speak now.');
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Row(
@@ -539,16 +539,16 @@ class _UssdConversationViewState extends State<UssdConversationView> {
 
     try {
       final result = await accessibilityProvider.startVoiceInput();
-      
+
       if (result != null && result.isNotEmpty) {
         _inputController.text = result;
-        
+
         // Announce successful recognition
         accessibilityProvider.announceForScreenReader('Voice input recognized: $result');
-        
+
         // Provide success feedback
         accessibilityProvider.hapticFeedback();
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -561,7 +561,7 @@ class _UssdConversationViewState extends State<UssdConversationView> {
       } else {
         // Announce failure
         accessibilityProvider.announceForScreenReader('Voice input failed. No speech detected.');
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -573,9 +573,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
       }
     } catch (e) {
       debugPrint('Voice input error: $e');
-      
+
       accessibilityProvider.announceForScreenReader('Voice input error occurred.');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

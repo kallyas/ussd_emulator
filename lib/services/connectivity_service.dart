@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class ConnectivityService extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<List<ConnectivityResult>> _subscription;
-  
+
   List<ConnectivityResult> _connectionStatus = [ConnectivityResult.none];
   bool _isOnline = false;
   DateTime? _lastConnectionTime;
@@ -33,8 +33,8 @@ class ConnectivityService extends ChangeNotifier {
   }
 
   bool get hasStableConnection {
-    return _isOnline && 
-           _lastConnectionTime != null && 
+    return _isOnline &&
+           _lastConnectionTime != null &&
            DateTime.now().difference(_lastConnectionTime!).inSeconds > 5;
   }
 
@@ -42,7 +42,7 @@ class ConnectivityService extends ChangeNotifier {
     try {
       _connectionStatus = await _connectivity.checkConnectivity();
       _updateOnlineStatus();
-      
+
       _subscription = _connectivity.onConnectivityChanged.listen(
         _updateConnectivity,
         onError: (error) {
@@ -60,18 +60,18 @@ class ConnectivityService extends ChangeNotifier {
     final wasOnline = _isOnline;
     _connectionStatus = result;
     _updateOnlineStatus();
-    
+
     if (!wasOnline && _isOnline) {
       _onConnectionRestored();
     } else if (wasOnline && !_isOnline) {
       _onConnectionLost();
     }
-    
+
     notifyListeners();
   }
 
   void _updateOnlineStatus() {
-    _isOnline = _connectionStatus.any((result) => 
+    _isOnline = _connectionStatus.any((result) =>
         result != ConnectivityResult.none);
   }
 
@@ -89,7 +89,7 @@ class ConnectivityService extends ChangeNotifier {
   void _startUptimeTimer() {
     _stopUptimeTimer();
     final startTime = DateTime.now();
-    
+
     _uptimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_isOnline) {
         _connectionUptime = DateTime.now().difference(startTime);
@@ -109,17 +109,17 @@ class ConnectivityService extends ChangeNotifier {
   /// Test actual internet connectivity by attempting to reach a reliable endpoint
   Future<bool> testInternetConnectivity() async {
     if (!_isOnline) return false;
-    
+
     try {
       // Simple HTTP request to test actual internet connectivity
       // Using a lightweight, reliable service
       final client = HttpClient();
       final request = await client.getUrl(Uri.parse('https://www.google.com'));
       request.headers.add('User-Agent', 'USSD-Emulator-Connectivity-Test');
-      
+
       final response = await request.close().timeout(Duration(seconds: 10));
       client.close();
-      
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -129,16 +129,16 @@ class ConnectivityService extends ChangeNotifier {
   /// Get connection quality based on type and stability
   ConnectionQuality get connectionQuality {
     if (!_isOnline) return ConnectionQuality.none;
-    
+
     if (_connectionStatus.contains(ConnectivityResult.ethernet)) {
       return ConnectionQuality.excellent;
     } else if (_connectionStatus.contains(ConnectivityResult.wifi)) {
-      return hasStableConnection 
-          ? ConnectionQuality.good 
+      return hasStableConnection
+          ? ConnectionQuality.good
           : ConnectionQuality.fair;
     } else if (_connectionStatus.contains(ConnectivityResult.mobile)) {
-      return hasStableConnection 
-          ? ConnectionQuality.fair 
+      return hasStableConnection
+          ? ConnectionQuality.fair
           : ConnectionQuality.poor;
     } else {
       return ConnectionQuality.poor;

@@ -18,7 +18,7 @@ enum ExportFormat {
 
 class SessionExportService {
   static const String _appName = 'USSD Emulator';
-  
+
   /// Export a single session to the specified format
   Future<File> exportSession(
     UssdSession session,
@@ -28,9 +28,9 @@ class SessionExportService {
   }) async {
     final directory = await getApplicationDocumentsDirectory();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final fileName = customFileName ?? 
+    final fileName = customFileName ??
         'ussd_session_${session.serviceCode.replaceAll('*', '').replaceAll('#', '')}_$timestamp';
-    
+
     switch (format) {
       case ExportFormat.json:
         return _exportToJson(session, directory, fileName, endpointConfig);
@@ -42,7 +42,7 @@ class SessionExportService {
         return _exportToText(session, directory, fileName, endpointConfig);
     }
   }
-  
+
   /// Export multiple sessions to CSV format
   Future<File> exportMultipleSessions(
     List<UssdSession> sessions,
@@ -52,7 +52,7 @@ class SessionExportService {
     final directory = await getApplicationDocumentsDirectory();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final fileName = customFileName ?? 'ussd_sessions_bulk_$timestamp';
-    
+
     switch (format) {
       case ExportFormat.csv:
         return _exportToCsv(sessions, directory, fileName);
@@ -62,7 +62,7 @@ class SessionExportService {
         throw UnsupportedError('Bulk export not supported for ${format.name}');
     }
   }
-  
+
   /// Share a session using the native sharing interface
   Future<void> shareSession(
     UssdSession session,
@@ -70,14 +70,14 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   }) async {
     final file = await exportSession(session, format, endpointConfig: endpointConfig);
-    
+
     await Share.shareXFiles(
       [XFile(file.path)],
       text: 'USSD Session Export - ${session.serviceCode}',
       subject: 'USSD Session from $_appName',
     );
   }
-  
+
   /// Let user choose where to save the exported file
   Future<String?> saveSessionWithDialog(
     UssdSession session,
@@ -85,22 +85,22 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   }) async {
     await exportSession(session, format, endpointConfig: endpointConfig);
-    
+
     final result = await FilePicker.platform.saveFile(
       dialogTitle: 'Save USSD Session Export',
       fileName: _getFileName(session, format),
     );
-    
+
     return result;
   }
-  
+
   String _getFileName(UssdSession session, ExportFormat format) {
     final serviceCode = session.serviceCode.replaceAll('*', '').replaceAll('#', '');
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final extension = _getFileExtension(format);
     return 'ussd_session_${serviceCode}_$timestamp.$extension';
   }
-  
+
   String _getFileExtension(ExportFormat format) {
     switch (format) {
       case ExportFormat.json:
@@ -113,7 +113,7 @@ class SessionExportService {
         return 'txt';
     }
   }
-  
+
   Future<File> _exportToJson(
     UssdSession session,
     Directory directory,
@@ -121,7 +121,7 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   ) async {
     final file = File('${directory.path}/$fileName.json');
-    
+
     final exportData = {
       'metadata': {
         'exportedAt': DateTime.now().toIso8601String(),
@@ -138,21 +138,21 @@ class SessionExportService {
         'ussdPath': session.pathAsText,
       },
     };
-    
+
     await file.writeAsString(
       const JsonEncoder.withIndent('  ').convert(exportData),
     );
-    
+
     return file;
   }
-  
+
   Future<File> _exportMultipleToJson(
     List<UssdSession> sessions,
     Directory directory,
     String fileName,
   ) async {
     final file = File('${directory.path}/$fileName.json');
-    
+
     final exportData = {
       'metadata': {
         'exportedAt': DateTime.now().toIso8601String(),
@@ -169,14 +169,14 @@ class SessionExportService {
         'serviceCodes': sessions.map((s) => s.serviceCode).toSet().toList(),
       },
     };
-    
+
     await file.writeAsString(
       const JsonEncoder.withIndent('  ').convert(exportData),
     );
-    
+
     return file;
   }
-  
+
   Future<File> _exportToPdf(
     UssdSession session,
     Directory directory,
@@ -184,7 +184,7 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   ) async {
     final pdf = pw.Document();
-    
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -198,9 +198,9 @@ class SessionExportService {
                 style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
               ),
             ),
-            
+
             pw.SizedBox(height: 20),
-            
+
             // Session Info
             pw.Container(
               padding: const pw.EdgeInsets.all(10),
@@ -211,7 +211,7 @@ class SessionExportService {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text('Session Information', 
+                  pw.Text('Session Information',
                       style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
                   pw.SizedBox(height: 10),
                   pw.Text('Service Code: ${session.serviceCode}'),
@@ -226,22 +226,22 @@ class SessionExportService {
                 ],
               ),
             ),
-            
+
             pw.SizedBox(height: 20),
-            
+
             // Conversation History
-            pw.Text('Conversation History', 
+            pw.Text('Conversation History',
                 style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
-            
+
             pw.SizedBox(height: 10),
-            
+
             ...session.responses.asMap().entries.map<pw.Widget>((entry) {
               final index = entry.key;
               final response = entry.value;
-              final request = index < session.requests.length 
-                  ? session.requests[index] 
+              final request = index < session.requests.length
+                  ? session.requests[index]
                   : null;
-              
+
               return pw.Container(
                 margin: const pw.EdgeInsets.only(bottom: 15),
                 padding: const pw.EdgeInsets.all(8),
@@ -257,7 +257,7 @@ class SessionExportService {
                         children: [
                           pw.Container(
                             width: 50,
-                            child: pw.Text('USER:', 
+                            child: pw.Text('USER:',
                                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                           ),
                           pw.Expanded(child: pw.Text(request.text)),
@@ -269,7 +269,7 @@ class SessionExportService {
                       children: [
                         pw.Container(
                           width: 50,
-                          child: pw.Text('USSD:', 
+                          child: pw.Text('USSD:',
                               style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Expanded(child: pw.Text(response.text)),
@@ -283,13 +283,13 @@ class SessionExportService {
         },
       ),
     );
-    
+
     final file = File('${directory.path}/$fileName.pdf');
     await file.writeAsBytes(await pdf.save());
-    
+
     return file;
   }
-  
+
   Future<File> _exportToCsv(
     List<UssdSession> sessions,
     Directory directory,
@@ -297,7 +297,7 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   ]) async {
     final file = File('${directory.path}/$fileName.csv');
-    
+
     final List<List<dynamic>> csvData = [
       // Header row
       [
@@ -316,7 +316,7 @@ class SessionExportService {
         'Endpoint URL',
       ],
     ];
-    
+
     // Data rows
     for (final session in sessions) {
       csvData.add([
@@ -327,7 +327,7 @@ class SessionExportService {
         session.pathAsText,
         session.createdAt.toIso8601String(),
         session.endedAt?.toIso8601String() ?? '',
-        session.endedAt != null 
+        session.endedAt != null
             ? session.endedAt!.difference(session.createdAt).inSeconds
             : '',
         session.requests.length,
@@ -337,13 +337,13 @@ class SessionExportService {
         endpointConfig?.url ?? '',
       ]);
     }
-    
+
     final csvContent = const ListToCsvConverter().convert(csvData);
     await file.writeAsString(csvContent);
-    
+
     return file;
   }
-  
+
   Future<File> _exportToText(
     UssdSession session,
     Directory directory,
@@ -351,14 +351,14 @@ class SessionExportService {
     EndpointConfig? endpointConfig,
   ) async {
     final file = File('${directory.path}/$fileName.txt');
-    
+
     final buffer = StringBuffer();
-    
+
     // Header
     buffer.writeln('USSD SESSION EXPORT');
     buffer.writeln('=' * 50);
     buffer.writeln();
-    
+
     // Session details
     buffer.writeln('SESSION INFORMATION:');
     buffer.writeln('Service Code: ${session.serviceCode}');
@@ -376,33 +376,33 @@ class SessionExportService {
       buffer.writeln('URL: ${endpointConfig.url}');
     }
     buffer.writeln();
-    
+
     // Conversation
     buffer.writeln('CONVERSATION HISTORY:');
     buffer.writeln('-' * 30);
-    
+
     for (int i = 0; i < session.responses.length; i++) {
       final response = session.responses[i];
       final request = i < session.requests.length ? session.requests[i] : null;
-      
+
       if (request != null) {
         buffer.writeln('USER: ${request.text}');
       }
       buffer.writeln('USSD: ${response.text}');
       buffer.writeln();
     }
-    
+
     // Footer
     buffer.writeln();
     buffer.writeln('=' * 50);
     buffer.writeln('Exported by $_appName');
     buffer.writeln('Export Date: ${DateTime.now()}');
-    
+
     await file.writeAsString(buffer.toString());
-    
+
     return file;
   }
-  
+
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} '
            '${dateTime.hour.toString().padLeft(2, '0')}:'
