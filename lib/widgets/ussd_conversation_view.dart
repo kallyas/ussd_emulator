@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
+import '../providers/accessibility_provider.dart';
 import '../utils/ussd_utils.dart';
 import 'ussd_keypad.dart';
 import 'ussd_debug_panel.dart';
@@ -16,6 +18,7 @@ class UssdConversationView extends StatefulWidget {
 class _UssdConversationViewState extends State<UssdConversationView> {
   final _inputController = TextEditingController();
   final _scrollController = ScrollController();
+  int _lastResponseCount = 0;
 
   @override
   void dispose() {
@@ -25,8 +28,37 @@ class _UssdConversationViewState extends State<UssdConversationView> {
   }
 
   @override
+  void didUpdateWidget(UssdConversationView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _checkForNewResponse();
+  }
+
+  void _checkForNewResponse() {
+    final provider = context.read<UssdProvider>();
+    final accessibilityProvider = context.read<AccessibilityProvider>();
+    final session = provider.currentSession;
+    
+    if (session != null && session.responses.length > _lastResponseCount) {
+      _lastResponseCount = session.responses.length;
+      
+      // Speak the latest response if TTS is enabled
+      if (session.responses.isNotEmpty) {
+        final latestResponse = session.responses.last;
+        accessibilityProvider.speak(latestResponse.text);
+        
+        // Also announce the session status
+        String statusMessage = latestResponse.continueSession 
+            ? 'Session continues, input required' 
+            : 'Session ended';
+        accessibilityProvider.announceForScreenReader(statusMessage);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
+    final accessibilityProvider = context.watch<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) {
@@ -111,120 +143,141 @@ class _UssdConversationViewState extends State<UssdConversationView> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16),
-            itemCount: session.responses.length,
-            itemBuilder: (context, index) {
-              final response = session.responses[index];
-              final request = index < session.requests.length
-                  ? session.requests[index]
-                  : null;
+          child: Semantics(
+            label: 'USSD conversation history',
+            hint: 'Scroll to view all messages',
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              itemCount: session.responses.length,
+              itemBuilder: (context, index) {
+                final response = session.responses[index];
+                final request = index < session.requests.length
+                    ? session.requests[index]
+                    : null;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (request != null && request.text.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Flexible(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (request != null && request.text.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: Semantics(
+                                label: 'Your input: ${request.text}',
+                                hint: 'Message sent to USSD service',
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
+                                      bottomLeft: Radius.circular(16),
+                                      bottomRight: Radius.circular(4),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    request.text,
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Semantics(
+                            label: 'USSD response: ${response.text}',
+                            hint: response.continueSession 
+                                ? 'Session continues, input required' 
+                                : 'Session ended, no input required',
+                            onTap: () {
+                              // Speak the response when tapped (if TTS is enabled)
+                              accessibilityProvider.speak(response.text);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(16),
                                   topRight: Radius.circular(16),
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(4),
+                                  bottomLeft: Radius.circular(4),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
-                              child: Text(
-                                request.text,
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              topRight: Radius.circular(16),
-                              bottomLeft: Radius.circular(4),
-                              bottomRight: Radius.circular(16),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: response.continueSession
-                                          ? Colors.green
-                                          : Colors.red,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      response.continueSession ? 'CON' : 'END',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Semantics(
+                                        label: response.continueSession ? 'Continue session' : 'End session',
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: response.continueSession
+                                                ? Colors.green
+                                                : Colors.red,
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            response.continueSession ? 'CON' : 'END',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    response.text,
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
+                                      fontSize: 16,
+                                      height: 1.4,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
-                              Text(
-                                response.text,
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
-                                  fontSize: 16,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              );
-            },
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
+            ),
           ),
         ),
         if (session.isActive) ...[
@@ -240,69 +293,106 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                 ),
               ),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: TextField(
-                      controller: _inputController,
-                      decoration: InputDecoration(
-                        hintText: session.requests.isEmpty
-                            ? 'Enter USSD code (e.g., *123#)'
-                            : 'Enter your menu selection...',
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.dialpad),
-                          onPressed: () {
-                            UssdKeypadBottomSheet.show(
-                              context,
-                              textController: _inputController,
-                              enabled: !provider.isLoading,
-                            );
-                          },
-                          tooltip: 'Show Keypad',
+            child: Semantics(
+              label: 'USSD input area',
+              hint: 'Enter your response or use voice input',
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Semantics(
+                        label: session.requests.isEmpty
+                            ? 'Enter USSD code input field'
+                            : 'Enter menu selection input field',
+                        hint: session.requests.isEmpty
+                            ? 'Type USSD code like *123#'
+                            : 'Enter your menu choice',
+                        child: TextField(
+                          controller: _inputController,
+                          decoration: InputDecoration(
+                            hintText: session.requests.isEmpty
+                                ? 'Enter USSD code (e.g., *123#)'
+                                : 'Enter your menu selection...',
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (accessibilityProvider.settings.enableVoiceInput)
+                                  Semantics(
+                                    label: 'Voice input button',
+                                    hint: 'Tap to use voice input for USSD command',
+                                    child: IconButton(
+                                      icon: const Icon(Icons.mic),
+                                      onPressed: provider.isLoading ? null : () => _startVoiceInput(accessibilityProvider),
+                                      tooltip: 'Voice Input',
+                                    ),
+                                  ),
+                                Semantics(
+                                  label: 'Keypad button',
+                                  hint: 'Open on-screen keypad',
+                                  child: IconButton(
+                                    icon: const Icon(Icons.dialpad),
+                                    onPressed: () {
+                                      accessibilityProvider.hapticFeedback();
+                                      UssdKeypadBottomSheet.show(
+                                        context,
+                                        textController: _inputController,
+                                        enabled: !provider.isLoading,
+                                      );
+                                    },
+                                    tooltip: 'Show Keypad',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onSubmitted: (_) => _sendInput(),
                         ),
                       ),
-                      onSubmitted: (_) => _sendInput(),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: IconButton(
-                    onPressed: provider.isLoading ? null : _sendInput,
-                    icon: provider.isLoading
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.onPrimary,
+                  const SizedBox(width: 12),
+                  Semantics(
+                    label: 'Send USSD input',
+                    hint: provider.isLoading ? 'Sending...' : 'Tap to send input',
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: IconButton(
+                        onPressed: provider.isLoading ? null : _sendInput,
+                        icon: provider.isLoading
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                Icons.send,
+                                color: Theme.of(context).colorScheme.onPrimary,
                               ),
-                            ),
-                          )
-                        : Icon(
-                            Icons.send,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                        tooltip: 'Send Input',
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ] else
@@ -375,9 +465,13 @@ class _UssdConversationViewState extends State<UssdConversationView> {
     if (input.isEmpty) return;
 
     final provider = context.read<UssdProvider>();
+    final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) return;
+
+    // Provide haptic feedback
+    accessibilityProvider.hapticFeedback();
 
     // Validate input based on session state
     if (session.isInitialRequest) {
@@ -409,6 +503,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
       }
     }
 
+    // Announce the input for screen readers
+    accessibilityProvider.announceForScreenReader('Sending input: $input');
+
     provider.sendUssdInput(input);
     _inputController.clear();
 
@@ -419,5 +516,74 @@ class _UssdConversationViewState extends State<UssdConversationView> {
         curve: Curves.easeOut,
       );
     });
+  }
+
+  Future<void> _startVoiceInput(AccessibilityProvider accessibilityProvider) async {
+    accessibilityProvider.hapticFeedback();
+    
+    // Announce that voice input is starting
+    accessibilityProvider.announceForScreenReader('Starting voice input. Please speak now.');
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.mic, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Listening... Speak your USSD command'),
+          ],
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+
+    try {
+      final result = await accessibilityProvider.startVoiceInput();
+      
+      if (result != null && result.isNotEmpty) {
+        _inputController.text = result;
+        
+        // Announce successful recognition
+        accessibilityProvider.announceForScreenReader('Voice input recognized: $result');
+        
+        // Provide success feedback
+        accessibilityProvider.hapticFeedback();
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Voice input: "$result"'),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        // Announce failure
+        accessibilityProvider.announceForScreenReader('Voice input failed. No speech detected.');
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No speech detected. Please try again.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Voice input error: $e');
+      
+      accessibilityProvider.announceForScreenReader('Voice input error occurred.');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Voice input failed. Please try again.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 }
