@@ -46,6 +46,12 @@ dependencies:
   
   # Local storage
   shared_preferences: ^2.2.2
+  
+  # Network connectivity
+  connectivity_plus: ^5.0.1
+  
+  # Advanced HTTP client for retry mechanisms
+  dio: ^5.3.2
 
 dev_dependencies:
   flutter_test:
