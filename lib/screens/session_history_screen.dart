@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
 import '../widgets/ussd_session_details.dart';
+import '../widgets/export_dialog.dart';
 
 class SessionHistoryScreen extends StatelessWidget {
   const SessionHistoryScreen({super.key});
@@ -15,7 +16,21 @@ class SessionHistoryScreen extends StatelessWidget {
         title: const Text('Session History'),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         actions: [
-          if (provider.sessionHistory.isNotEmpty)
+          if (provider.sessionHistory.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              child: IconButton.filled(
+                icon: const Icon(Icons.file_download),
+                onPressed: () => _showBulkExportDialog(context, provider),
+                tooltip: 'Export All Sessions',
+                style: IconButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ),
             Container(
               margin: const EdgeInsets.only(right: 8),
               child: IconButton.filled(
@@ -30,6 +45,7 @@ class SessionHistoryScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ],
         ],
       ),
       body: provider.sessionHistory.isEmpty
@@ -215,5 +231,17 @@ class SessionHistoryScreen extends StatelessWidget {
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+  
+  void _showBulkExportDialog(BuildContext context, UssdProvider provider) {
+    if (provider.sessionHistory.isEmpty) return;
+    
+    showDialog(
+      context: context,
+      builder: (context) => ExportDialog(
+        session: provider.sessionHistory.first, // First session for metadata
+        multipleSessions: provider.sessionHistory,
+      ),
+    );
   }
 }
