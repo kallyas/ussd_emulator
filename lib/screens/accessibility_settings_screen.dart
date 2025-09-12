@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/accessibility_provider.dart';
-import '../models/accessibility_settings.dart';
 
 class AccessibilitySettingsScreen extends StatefulWidget {
   const AccessibilitySettingsScreen({super.key});
@@ -19,112 +18,107 @@ class _AccessibilitySettingsScreenState
       appBar: AppBar(
         title: const Text('Accessibility Settings'),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        elevation: 0,
       ),
       body: Consumer<AccessibilityProvider>(
         builder: (context, accessibilityProvider, child) {
           if (!accessibilityProvider.isInitialized) {
             return const Center(child: CircularProgressIndicator());
           }
-
           final settings = accessibilityProvider.settings;
-
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             children: [
-              // Visual Accessibility Section
-              _buildSectionHeader('Visual Accessibility'),
+              _buildSectionHeader('General'),
               _buildAccessibleCard([
                 _buildSwitchTile(
-                  title: 'High Contrast Theme',
-                  subtitle: 'Use high contrast colors for better visibility',
+                  title: 'Enable Accessibility',
+                  subtitle: 'Master switch for all accessibility features',
+                  icon: Icons.accessibility_new,
+                  value: settings.accessibilityEnabled,
+                  onChanged: (value) => accessibilityProvider.toggleAccessibilityEnabled(),
+                ),
+              ]),
+              const SizedBox(height: 28),
+              _buildSectionHeader('Visual'),
+              _buildAccessibleCard([
+                _buildSwitchTile(
+                  title: 'High Contrast',
+                  subtitle: 'Increase color contrast for better visibility',
                   icon: Icons.contrast,
                   value: settings.useHighContrast,
-                  onChanged: (value) =>
-                      accessibilityProvider.toggleHighContrast(),
+                  onChanged: (value) => accessibilityProvider.toggleHighContrast(),
                 ),
                 const Divider(height: 1),
                 _buildSliderTile(
                   title: 'Text Size',
-                  subtitle: 'Adjust text size throughout the app',
+                  subtitle: 'Adjust app-wide text size',
                   icon: Icons.text_fields,
                   value: settings.textScaleFactor,
                   min: 0.8,
                   max: 2.0,
                   divisions: 12,
-                  onChanged: (value) =>
-                      accessibilityProvider.setTextScaleFactor(value),
+                  onChanged: (value) => accessibilityProvider.setTextScaleFactor(value),
                   valueLabel: '${(settings.textScaleFactor * 100).round()}%',
                 ),
               ]),
-
-              const SizedBox(height: 24),
-
-              // Audio Accessibility Section
-              _buildSectionHeader('Audio Accessibility'),
+              const SizedBox(height: 28),
+              _buildSectionHeader('Audio'),
               _buildAccessibleCard([
                 _buildSwitchTile(
                   title: 'Text-to-Speech',
                   subtitle: 'Read USSD responses aloud',
                   icon: Icons.record_voice_over,
                   value: settings.enableTextToSpeech,
-                  onChanged: (value) =>
-                      accessibilityProvider.toggleTextToSpeech(),
+                  onChanged: (value) => accessibilityProvider.toggleTextToSpeech(),
                 ),
                 const Divider(height: 1),
                 _buildSwitchTile(
                   title: 'Voice Input',
-                  subtitle: 'Use voice to enter USSD commands',
+                  subtitle: 'Use your voice to enter USSD commands',
                   icon: Icons.mic,
                   value: settings.enableVoiceInput,
-                  onChanged: (value) =>
-                      accessibilityProvider.toggleVoiceInput(),
+                  onChanged: (value) => accessibilityProvider.toggleVoiceInput(),
                 ),
               ]),
-
-              const SizedBox(height: 24),
-
-              // Motor Accessibility Section
-              _buildSectionHeader('Motor Accessibility'),
+              const SizedBox(height: 28),
+              _buildSectionHeader('Motor'),
               _buildAccessibleCard([
                 _buildSwitchTile(
                   title: 'Haptic Feedback',
-                  subtitle: 'Vibration feedback for interactions',
+                  subtitle: 'Vibration feedback for actions',
                   icon: Icons.vibration,
                   value: settings.enableHapticFeedback,
-                  onChanged: (value) =>
-                      accessibilityProvider.toggleHapticFeedback(),
+                  onChanged: (value) => accessibilityProvider.toggleHapticFeedback(),
                 ),
                 const Divider(height: 1),
                 _buildSliderTile(
                   title: 'Input Timeout',
-                  subtitle: 'Time before input times out',
+                  subtitle: 'How long before input times out',
                   icon: Icons.timer,
                   value: settings.inputTimeout.inSeconds.toDouble(),
                   min: 10,
                   max: 120,
                   divisions: 11,
-                  onChanged: (value) => accessibilityProvider.setInputTimeout(
-                    Duration(seconds: value.round()),
-                  ),
+                  onChanged: (value) => accessibilityProvider.setInputTimeout(Duration(seconds: value.round())),
                   valueLabel: '${settings.inputTimeout.inSeconds}s',
                 ),
               ]),
-
-              const SizedBox(height: 24),
-
-              // Navigation Section
-              _buildSectionHeader('Navigation'),
+              const SizedBox(height: 28),
+              _buildSectionHeader('Navigation & Screen Reader'),
               _buildAccessibleCard([
                 ListTile(
                   leading: const Icon(Icons.keyboard),
                   title: const Text('Keyboard Navigation'),
-                  subtitle: const Text('Use Tab, Enter, and arrow keys'),
+                  subtitle: const Text('Tab, Enter, and arrow keys supported'),
                   trailing: Icon(
                     Icons.check_circle,
                     color: settings.enableKeyboardNavigation
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.outline,
                   ),
+                  minVerticalPadding: 18,
+                  visualDensity: VisualDensity.compact,
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -137,12 +131,11 @@ class _AccessibilitySettingsScreenState
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.outline,
                   ),
+                  minVerticalPadding: 18,
+                  visualDensity: VisualDensity.compact,
                 ),
               ]),
-
-              const SizedBox(height: 24),
-
-              // Test Section
+              const SizedBox(height: 28),
               _buildSectionHeader('Test Accessibility'),
               _buildAccessibleCard([
                 ListTile(
@@ -150,6 +143,8 @@ class _AccessibilitySettingsScreenState
                   title: const Text('Test Text-to-Speech'),
                   subtitle: const Text('Hear how responses will sound'),
                   onTap: () => _testTextToSpeech(accessibilityProvider),
+                  minVerticalPadding: 18,
+                  visualDensity: VisualDensity.compact,
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -157,46 +152,39 @@ class _AccessibilitySettingsScreenState
                   title: const Text('Test Voice Input'),
                   subtitle: const Text('Try voice recognition'),
                   onTap: () => _testVoiceInput(accessibilityProvider),
+                  minVerticalPadding: 18,
+                  visualDensity: VisualDensity.compact,
                 ),
               ]),
-
-              const SizedBox(height: 32),
-
-              // Info Section
+              const SizedBox(height: 36),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
+                  color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.25),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(width: 8),
+                        Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 10),
                         Text(
                           'Accessibility Information',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w600,
                               ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     Text(
-                      'This app supports WCAG 2.1 AA accessibility guidelines. '
-                      'All interactive elements have minimum 44pt touch targets and proper semantic labels.',
+                      'This app supports WCAG 2.1 AA accessibility guidelines. All interactive elements have minimum 44pt touch targets and proper semantic labels.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                     ),
                   ],
                 ),
