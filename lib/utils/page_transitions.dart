@@ -193,19 +193,19 @@ class FadePageTransition extends PageRouteBuilder {
 
 /// Custom transition helper methods
 class PageTransitions {
-  static Route<T> slideFromRight<T>(Widget page) {
+  static ModernPageTransition slideFromRight<T>(Widget page) {
     return ModernPageTransition(child: page);
   }
   
-  static Route<T> slideFromBottom<T>(Widget page, {bool isFullScreen = false}) {
+  static SlideUpTransition slideFromBottom<T>(Widget page, {bool isFullScreen = false}) {
     return SlideUpTransition(child: page, isFullScreen: isFullScreen);
   }
   
-  static Route<T> scaleUp<T>(Widget page) {
+  static ScaleTransition scaleUp<T>(Widget page) {
     return ScaleTransition(child: page);
   }
   
-  static Route<T> fadeIn<T>(Widget page) {
+  static FadePageTransition fadeIn<T>(Widget page) {
     return FadePageTransition(child: page);
   }
 }
