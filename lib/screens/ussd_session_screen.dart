@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
 import '../widgets/ussd_session_form.dart';
-import '../widgets/ussd_conversation_view.dart';
+import '../widgets/modern_conversation_view.dart';
+import '../utils/design_system.dart';
 
 class UssdSessionScreen extends StatelessWidget {
   const UssdSessionScreen({super.key});
@@ -98,7 +99,7 @@ class UssdSessionScreen extends StatelessWidget {
           if (provider.currentSession == null)
             const Expanded(child: UssdSessionForm())
           else
-            const Expanded(child: UssdConversationView()),
+            const Expanded(child: ModernUssdConversationView()),
         ],
       ),
     );

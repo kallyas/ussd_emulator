@@ -5,6 +5,7 @@ import 'providers/ussd_provider.dart';
 import 'providers/accessibility_provider.dart';
 import 'screens/home_screen.dart';
 import 'utils/accessibility_themes.dart';
+import 'utils/design_system.dart';
 
 void main() {
   runApp(const UssdEmulatorApp());
@@ -31,11 +32,11 @@ class UssdEmulatorApp extends StatelessWidget {
             // Dynamic theme based on accessibility settings
             theme: settings.useHighContrast
                 ? AccessibilityThemes.getHighContrastLightTheme()
-                : AccessibilityThemes.getAccessibleLightTheme(),
+                : UssdDesignSystem.getLightTheme(),
 
             darkTheme: settings.useHighContrast
                 ? AccessibilityThemes.getHighContrastDarkTheme()
-                : AccessibilityThemes.getAccessibleDarkTheme(),
+                : UssdDesignSystem.getDarkTheme(),
 
             themeMode: ThemeMode.system,
 
