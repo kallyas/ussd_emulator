@@ -6,7 +6,7 @@ import '../utils/design_system.dart';
 class AnimationUtils {
   /// Check if reduced motion is preferred for accessibility
   static bool get reduceMotion => 
-      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotions;
+      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
 
   /// Get adjusted animation duration based on accessibility settings
   static Duration getAnimationDuration(Duration baseDuration) {
@@ -195,7 +195,7 @@ class AnimationUtils {
         return TweenAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: 1.0),
           duration: itemDuration,
-          curve: UssdDesignSystem.curveDefault,
+          curve: Curves.easeOutCubic,
           builder: (context, value, child) {
             return Transform.translate(
               offset: Offset(0, 30 * (1 - value)),
