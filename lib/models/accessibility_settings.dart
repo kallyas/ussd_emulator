@@ -24,7 +24,7 @@ class AccessibilitySettings {
     this.inputTimeout = const Duration(seconds: 30),
     this.enableHapticFeedback = true,
     this.enableKeyboardNavigation = true,
-  this.enableLiveRegions = false,
+    this.enableLiveRegions = true,
   });
 
   AccessibilitySettings copyWith({

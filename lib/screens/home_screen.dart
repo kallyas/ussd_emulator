@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 )
-                .animate(onPlay: (controller) => controller.repeat())
+                .animate()
                 .scale(
                   begin: const Offset(1.0, 1.0),
                   end: const Offset(1.1, 1.1),

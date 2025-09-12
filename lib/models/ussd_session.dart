@@ -44,7 +44,7 @@ class UssdSession {
     List<UssdResponse>? responses,
     List<String>? ussdPath,
     DateTime? createdAt,
-    DateTime? endedAt,
+    Object? endedAt = const Object(),
     bool? isActive,
   }) {
     return UssdSession(
@@ -56,7 +56,7 @@ class UssdSession {
       responses: responses ?? this.responses,
       ussdPath: ussdPath ?? this.ussdPath,
       createdAt: createdAt ?? this.createdAt,
-      endedAt: endedAt ?? this.endedAt,
+      endedAt: endedAt == const Object() ? this.endedAt : endedAt as DateTime?,
       isActive: isActive ?? this.isActive,
     );
   }
