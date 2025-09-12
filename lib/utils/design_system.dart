@@ -3,33 +3,100 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Enhanced Material 3 design system with modern styling and typography
 class UssdDesignSystem {
-  // Modern Color Schemes
-  static ColorScheme lightColorScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF2563EB), // Modern blue
+  static ThemeData getLightTheme() {
+    return ThemeData(
+      colorScheme: lightColorScheme,
+      textTheme: getTextTheme(lightColorScheme),
+      useMaterial3: true,
+    );
+  }
+
+  static ThemeData getDarkTheme() {
+    return ThemeData(
+      colorScheme: darkColorScheme,
+      textTheme: getTextTheme(darkColorScheme),
+      useMaterial3: true,
+    );
+  }
+  // Spacing tokens
+  static const double spacingXS = 4.0;
+  static const double spacingS = 8.0;
+  static const double spacingM = 16.0;
+  static const double spacingL = 24.0;
+  static const double spacingXL = 32.0;
+  static const double spacingXXL = 48.0;
+
+  // Border radius tokens
+  static const BorderRadius borderRadiusSmall = BorderRadius.all(Radius.circular(8));
+  static const BorderRadius borderRadiusMedium = BorderRadius.all(Radius.circular(12));
+  static const BorderRadius borderRadiusLarge = BorderRadius.all(Radius.circular(16));
+  static const BorderRadius borderRadiusXLarge = BorderRadius.all(Radius.circular(24));
+
+  // Elevation tokens
+  static const double elevationLevel1 = 1.0;
+  static const double elevationLevel2 = 3.0;
+  static const double elevationLevel3 = 6.0;
+  static const double elevationLevel4 = 8.0;
+  static const double elevationLevel5 = 12.0;
+
+  // Animation durations
+  static const Duration animationFast = Duration(milliseconds: 150);
+  static const Duration animationSlow = Duration(milliseconds: 500);
+
+  // Animation curves
+  static const Curve curveEmphasized = Curves.easeInOutCubic;
+  static const Curve curveDecelerate = Curves.decelerate;
+  static const Curve curveDefault = Curves.ease;
+  static const Duration animationMedium = Duration(milliseconds: 300);
+  // Modern, visually appealing color scheme
+  static ColorScheme lightColorScheme = ColorScheme(
     brightness: Brightness.light,
-  ).copyWith(
-    primary: const Color(0xFF2563EB),
-    secondary: const Color(0xFF10B981), // Success green
-    tertiary: const Color(0xFFF59E0B),  // Warning amber
-    error: const Color(0xFFEF4444),     // Error red
-    surface: const Color(0xFFFAFAFA),
-    surfaceVariant: const Color(0xFFF5F5F5),
-    surfaceContainer: const Color(0xFFE8E8E8),
-    surfaceContainerHighest: const Color(0xFFE0E0E0),
+    primary: const Color(0xFF0057B8), // Deep blue
+    onPrimary: Colors.white,
+    secondary: const Color(0xFF00B894), // Teal
+    onSecondary: Colors.white,
+    error: const Color(0xFFD7263D), // Vivid red
+    onError: Colors.white,
+    background: const Color(0xFFF6F8FA),
+    onBackground: const Color(0xFF22223B),
+    surface: const Color(0xFFFFFFFF),
+    onSurface: const Color(0xFF22223B),
+    surfaceVariant: const Color(0xFFE0E7EF),
+    onSurfaceVariant: const Color(0xFF4A4E69),
+    outline: const Color(0xFFBFC9D1),
+    primaryContainer: const Color(0xFFB3D0FF),
+    onPrimaryContainer: const Color(0xFF003366),
+    secondaryContainer: const Color(0xFFB2F7EF),
+    onSecondaryContainer: const Color(0xFF00332E),
+    errorContainer: const Color(0xFFFFD6D6),
+    onErrorContainer: const Color(0xFF7A0019),
+    surfaceContainer: const Color(0xFFF0F4F8),
+    surfaceContainerHighest: const Color(0xFFE0E7EF),
   );
-  
-  static ColorScheme darkColorScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF3B82F6),
+
+  static ColorScheme darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-  ).copyWith(
-    primary: const Color(0xFF60A5FA),
-    secondary: const Color(0xFF34D399),
-    tertiary: const Color(0xFFFBBF24),
-    error: const Color(0xFFF87171),
-    surface: const Color(0xFF111827),
-    surfaceVariant: const Color(0xFF1F2937),
-    surfaceContainer: const Color(0xFF374151),
-    surfaceContainerHighest: const Color(0xFF4B5563),
+    primary: const Color(0xFF64A8FF), // Lighter blue
+    onPrimary: const Color(0xFF001F3F),
+    secondary: const Color(0xFF00E6C3),
+    onSecondary: const Color(0xFF00332E),
+    error: const Color(0xFFFF5C77),
+    onError: const Color(0xFF7A0019),
+    background: const Color(0xFF181A1B),
+    onBackground: const Color(0xFFF6F8FA),
+    surface: const Color(0xFF23272E),
+    onSurface: const Color(0xFFF6F8FA),
+    surfaceVariant: const Color(0xFF2C3140),
+    onSurfaceVariant: const Color(0xFFBFC9D1),
+    outline: const Color(0xFF4A4E69),
+    primaryContainer: const Color(0xFF003366),
+    onPrimaryContainer: const Color(0xFFB3D0FF),
+    secondaryContainer: const Color(0xFF00332E),
+    onSecondaryContainer: const Color(0xFFB2F7EF),
+    errorContainer: const Color(0xFF7A0019),
+    onErrorContainer: const Color(0xFFFFD6D6),
+    surfaceContainer: const Color(0xFF23272E),
+    surfaceContainerHighest: const Color(0xFF2C3140),
   );
 
   // Typography Scale using Inter font
@@ -57,7 +124,7 @@ class UssdDesignSystem {
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: colorScheme.onSurface,
-        height: 1.3,
+        height: 1.25,
       ),
       headlineSmall: GoogleFonts.inter(
         fontSize: 20,
@@ -118,242 +185,6 @@ class UssdDesignSystem {
         fontWeight: FontWeight.w500,
         color: colorScheme.onSurface,
         height: 1.4,
-      ),
-    );
-  }
-
-  // Design Tokens
-  static const BorderRadius borderRadiusSmall = BorderRadius.all(Radius.circular(8));
-  static const BorderRadius borderRadiusMedium = BorderRadius.all(Radius.circular(12));
-  static const BorderRadius borderRadiusLarge = BorderRadius.all(Radius.circular(16));
-  static const BorderRadius borderRadiusXLarge = BorderRadius.all(Radius.circular(24));
-
-  // Spacing tokens
-  static const double spacingXS = 4.0;
-  static const double spacingS = 8.0;
-  static const double spacingM = 16.0;
-  static const double spacingL = 24.0;
-  static const double spacingXL = 32.0;
-  static const double spacingXXL = 48.0;
-
-  // Animation durations
-  static const Duration animationFast = Duration(milliseconds: 150);
-  static const Duration animationMedium = Duration(milliseconds: 300);
-  static const Duration animationSlow = Duration(milliseconds: 500);
-
-  // Animation curves
-  static const Curve curveDefault = Curves.easeOutCubic;
-  static const Curve curveEmphasized = Curves.easeInOutCubic;
-  static const Curve curveDecelerate = Curves.decelerate;
-
-  // Elevation levels
-  static const double elevationLevel1 = 1.0;
-  static const double elevationLevel2 = 3.0;
-  static const double elevationLevel3 = 6.0;
-  static const double elevationLevel4 = 8.0;
-  static const double elevationLevel5 = 12.0;
-
-  // Enhanced theme data
-  static ThemeData getLightTheme() {
-    return ThemeData(
-      colorScheme: lightColorScheme,
-      textTheme: getTextTheme(lightColorScheme),
-      useMaterial3: true,
-      
-      // AppBar Theme
-      appBarTheme: AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: lightColorScheme.surface,
-        foregroundColor: lightColorScheme.onSurface,
-        surfaceTintColor: Colors.transparent,
-        titleTextStyle: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: lightColorScheme.onSurface,
-        ),
-      ),
-
-      // Card Theme
-      cardTheme: CardTheme(
-        elevation: elevationLevel2,
-        margin: EdgeInsets.zero,
-        color: lightColorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-      ),
-
-      // Input Decoration Theme
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: lightColorScheme.surfaceContainer,
-        border: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: lightColorScheme.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: lightColorScheme.error, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: lightColorScheme.error, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      ),
-
-      // Button Themes
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: elevationLevel2,
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          side: BorderSide(color: lightColorScheme.outline),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      // Bottom Navigation Bar Theme
-      bottomNavigationBarTheme: BottomNavigationBarTheme(
-        backgroundColor: lightColorScheme.surface,
-        selectedItemColor: lightColorScheme.primary,
-        unselectedItemColor: lightColorScheme.onSurfaceVariant,
-        type: BottomNavigationBarType.fixed,
-        elevation: elevationLevel3,
-      ),
-    );
-  }
-
-  static ThemeData getDarkTheme() {
-    return ThemeData(
-      colorScheme: darkColorScheme,
-      textTheme: getTextTheme(darkColorScheme),
-      useMaterial3: true,
-      
-      // AppBar Theme
-      appBarTheme: AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: darkColorScheme.surface,
-        foregroundColor: darkColorScheme.onSurface,
-        surfaceTintColor: Colors.transparent,
-        titleTextStyle: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: darkColorScheme.onSurface,
-        ),
-      ),
-
-      // Card Theme
-      cardTheme: CardTheme(
-        elevation: elevationLevel2,
-        margin: EdgeInsets.zero,
-        color: darkColorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-      ),
-
-      // Input Decoration Theme
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: darkColorScheme.surfaceContainer,
-        border: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: darkColorScheme.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: darkColorScheme.error, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: borderRadiusMedium,
-          borderSide: BorderSide(color: darkColorScheme.error, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      ),
-
-      // Button Themes
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: elevationLevel2,
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          side: BorderSide(color: darkColorScheme.outline),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: borderRadiusMedium),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      // Bottom Navigation Bar Theme
-      bottomNavigationBarTheme: BottomNavigationBarTheme(
-        backgroundColor: darkColorScheme.surface,
-        selectedItemColor: darkColorScheme.primary,
-        unselectedItemColor: darkColorScheme.onSurfaceVariant,
-        type: BottomNavigationBarType.fixed,
-        elevation: elevationLevel3,
       ),
     );
   }
