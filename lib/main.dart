@@ -30,13 +30,18 @@ class UssdEmulatorApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
 
             // Dynamic theme based on accessibility settings
-            theme: settings.useHighContrast
-                ? AccessibilityThemes.getHighContrastLightTheme()
-                : UssdDesignSystem.getLightTheme(),
 
-            darkTheme: settings.useHighContrast
-                ? AccessibilityThemes.getHighContrastDarkTheme()
-                : UssdDesignSystem.getDarkTheme(),
+      theme: (!settings.accessibilityEnabled)
+        ? UssdDesignSystem.getLightTheme()
+        : settings.useHighContrast
+          ? AccessibilityThemes.getHighContrastLightTheme()
+          : UssdDesignSystem.getLightTheme(),
+
+      darkTheme: (!settings.accessibilityEnabled)
+        ? UssdDesignSystem.getDarkTheme()
+        : settings.useHighContrast
+          ? AccessibilityThemes.getHighContrastDarkTheme()
+          : UssdDesignSystem.getDarkTheme(),
 
             themeMode: ThemeMode.system,
 
