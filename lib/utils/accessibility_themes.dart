@@ -12,8 +12,6 @@ class AccessibilityThemes {
         onSecondary: Colors.white,
         surface: Colors.white,
         onSurface: Colors.black,
-        background: Colors.white,
-        onBackground: Colors.black,
         error: Colors.red,
         onError: Colors.white,
         outline: Colors.black,
@@ -23,7 +21,6 @@ class AccessibilityThemes {
         onSecondaryContainer: Colors.black,
         errorContainer: Color(0xFFFFEBEE),
         onErrorContainer: Colors.red,
-        surfaceVariant: Color(0xFFFAFAFA),
         onSurfaceVariant: Colors.black,
         surfaceContainerHighest: Color(0xFFE0E0E0),
         surfaceContainer: Color(0xFFE8E8E8),
@@ -102,14 +99,14 @@ class AccessibilityThemes {
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.white;
           }
           return Colors.black;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.black;
           }
           return Colors.grey;
@@ -120,10 +117,12 @@ class AccessibilityThemes {
         inactiveTrackColor: Colors.grey,
         thumbColor: Colors.black,
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarTheme(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
@@ -141,8 +140,6 @@ class AccessibilityThemes {
         onSecondary: Colors.black,
         surface: Colors.black,
         onSurface: Colors.white,
-        background: Colors.black,
-        onBackground: Colors.white,
         error: Color(0xFFFF5555),
         onError: Colors.black,
         outline: Colors.white,
@@ -152,7 +149,6 @@ class AccessibilityThemes {
         onSecondaryContainer: Colors.white,
         errorContainer: Color(0xFF3D1A1A),
         onErrorContainer: Color(0xFFFF5555),
-        surfaceVariant: Color(0xFF0F0F0F),
         onSurfaceVariant: Colors.white,
         surfaceContainerHighest: Color(0xFF333333),
         surfaceContainer: Color(0xFF1F1F1F),
@@ -231,14 +227,14 @@ class AccessibilityThemes {
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.black;
           }
           return Colors.white;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.white;
           }
           return Colors.grey;
@@ -249,10 +245,12 @@ class AccessibilityThemes {
         inactiveTrackColor: Colors.grey,
         thumbColor: Colors.white,
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarTheme(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.black,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
