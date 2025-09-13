@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ussd_emulator/main.dart';
 
@@ -6,7 +7,9 @@ void main() {
   group('USSD Emulator App Accessibility Integration', () {
     testWidgets('should launch with accessibility support', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      // Use pump() with duration instead of pumpAndSettle() to avoid infinite animation issues
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Should find the main screen
       expect(find.text('USSD Emulator'), findsOneWidget);
@@ -15,7 +18,7 @@ void main() {
       expect(find.byType(BottomNavigationBar), findsOneWidget);
 
       // Should have accessibility button in app bar
-      expect(find.byIcon(Icons.accessibility), findsOneWidget);
+      expect(find.byIcon(Icons.accessibility_rounded), findsOneWidget);
 
       // Should not have any accessibility errors
       expect(tester.takeException(), isNull);
@@ -23,12 +26,14 @@ void main() {
 
     testWidgets('should navigate to accessibility settings', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Tap accessibility settings button
-      final accessibilityButton = find.byIcon(Icons.accessibility);
+      final accessibilityButton = find.byIcon(Icons.accessibility_rounded);
       await tester.tap(accessibilityButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Should navigate to accessibility settings
       expect(find.text('Accessibility Settings'), findsOneWidget);
@@ -38,7 +43,8 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Test tab navigation
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -50,7 +56,8 @@ void main() {
 
     testWidgets('should have semantic structure', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Should have proper semantic widgets
       expect(find.byType(Semantics), findsWidgets);
@@ -67,7 +74,8 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Navigate to different tabs
       final bottomNav = find.byType(BottomNavigationBar);
@@ -76,7 +84,8 @@ void main() {
       await tester.tap(
         find.descendant(of: bottomNav, matching: find.text('Config')),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Should still have semantic structure
       expect(find.byType(Semantics), findsWidgets);
@@ -86,7 +95,8 @@ void main() {
       await tester.tap(
         find.descendant(of: bottomNav, matching: find.text('History')),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Should maintain accessibility
       expect(find.byType(Semantics), findsWidgets);
@@ -95,11 +105,13 @@ void main() {
 
     testWidgets('should support high contrast theme', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Navigate to accessibility settings
-      await tester.tap(find.byIcon(Icons.accessibility));
-      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.accessibility_rounded));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Look for high contrast toggle (it might be in a loading state initially)
       // Just verify the screen loads without errors
@@ -109,7 +121,8 @@ void main() {
 
     testWidgets('should handle text scaling', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // App should render with default text scale
       expect(find.text('USSD Emulator'), findsOneWidget);
@@ -120,7 +133,8 @@ void main() {
 
     testWidgets('should have proper focus management', (tester) async {
       await tester.pumpWidget(const UssdEmulatorApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
 
       // Test focus traversal
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);

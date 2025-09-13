@@ -3,7 +3,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'accessibility_settings.g.dart';
 
 @JsonSerializable()
+
 class AccessibilitySettings {
+  final bool accessibilityEnabled;
   final bool useHighContrast;
   final bool enableVoiceInput;
   final bool enableTextToSpeech;
@@ -14,6 +16,7 @@ class AccessibilitySettings {
   final bool enableLiveRegions;
 
   const AccessibilitySettings({
+    this.accessibilityEnabled = true,
     this.useHighContrast = false,
     this.enableVoiceInput = false,
     this.enableTextToSpeech = false,
@@ -25,6 +28,7 @@ class AccessibilitySettings {
   });
 
   AccessibilitySettings copyWith({
+    bool? accessibilityEnabled,
     bool? useHighContrast,
     bool? enableVoiceInput,
     bool? enableTextToSpeech,
@@ -35,6 +39,7 @@ class AccessibilitySettings {
     bool? enableLiveRegions,
   }) {
     return AccessibilitySettings(
+      accessibilityEnabled: accessibilityEnabled ?? this.accessibilityEnabled,
       useHighContrast: useHighContrast ?? this.useHighContrast,
       enableVoiceInput: enableVoiceInput ?? this.enableVoiceInput,
       enableTextToSpeech: enableTextToSpeech ?? this.enableTextToSpeech,

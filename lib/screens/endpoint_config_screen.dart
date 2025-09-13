@@ -10,84 +10,117 @@ class EndpointConfigScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Endpoint Configuration'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: provider.endpointConfigs.length,
-        itemBuilder: (context, index) {
-          final config = provider.endpointConfigs[index];
-          final isActive = provider.activeEndpointConfig?.name == config.name;
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: ListTile(
-              leading: Icon(
-                isActive
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-                color: isActive ? Colors.green : null,
-              ),
-              title: Text(
-                config.name,
-                style: TextStyle(
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+    return SafeArea(
+      child: Stack(
+        children: [
+          ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            itemCount: provider.endpointConfigs.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final config = provider.endpointConfigs[index];
+              final isActive = provider.activeEndpointConfig?.name == config.name;
+              return Card(
+                elevation: isActive ? 4 : 1,
+                color: isActive
+                    ? Theme.of(context).colorScheme.primaryContainer
+                    : Theme.of(context).colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: isActive
+                      ? BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
+                      : BorderSide.none,
                 ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(config.url),
-                  if (config.headers.isNotEmpty)
-                    Text(
-                      'Headers: ${config.headers.length}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                ],
-              ),
-              trailing: PopupMenuButton<String>(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'activate':
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  leading: Icon(
+                    isActive ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+                    color: isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
+                    size: 32,
+                  ),
+                  title: Text(
+                    config.name,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                          color: isActive
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 4),
+                      Text(
+                        config.url,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                      ),
+                      if (config.headers.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            'Headers: ${config.headers.length}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                    ],
+                  ),
+                  trailing: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert_rounded),
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'activate':
+                          provider.setActiveEndpointConfig(config);
+                          break;
+                        case 'test':
+                          _testEndpoint(context, provider, config);
+                          break;
+                        case 'edit':
+                          _editEndpoint(context, provider, config, index);
+                          break;
+                        case 'delete':
+                          _deleteEndpoint(context, provider, index);
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      if (!isActive)
+                        const PopupMenuItem(
+                          value: 'activate',
+                          child: Text('Activate'),
+                        ),
+                      const PopupMenuItem(value: 'test', child: Text('Test')),
+                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                      const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                    ],
+                  ),
+                  onTap: () {
+                    if (!isActive) {
                       provider.setActiveEndpointConfig(config);
-                      break;
-                    case 'test':
-                      _testEndpoint(context, provider, config);
-                      break;
-                    case 'edit':
-                      _editEndpoint(context, provider, config, index);
-                      break;
-                    case 'delete':
-                      _deleteEndpoint(context, provider, index);
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  if (!isActive)
-                    const PopupMenuItem(
-                      value: 'activate',
-                      child: Text('Activate'),
-                    ),
-                  const PopupMenuItem(value: 'test', child: Text('Test')),
-                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
-                ],
-              ),
-              onTap: () {
-                if (!isActive) {
-                  provider.setActiveEndpointConfig(config);
-                }
-              },
+                    }
+                  },
+                ),
+              );
+            },
+          ),
+          Positioned(
+            bottom: 24,
+            right: 24,
+            child: FloatingActionButton.extended(
+              onPressed: () => _addEndpoint(context, provider),
+              icon: const Icon(Icons.add),
+              label: const Text('Add Endpoint'),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addEndpoint(context, provider),
-        child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

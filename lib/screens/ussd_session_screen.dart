@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
 import '../widgets/ussd_session_form.dart';
-import '../widgets/ussd_conversation_view.dart';
+import '../widgets/modern_conversation_view.dart';
+import '../utils/design_system.dart';
 
 class UssdSessionScreen extends StatelessWidget {
   const UssdSessionScreen({super.key});
@@ -11,95 +13,82 @@ class UssdSessionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('USSD Emulator'),
-        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-        actions: [
-          if (provider.currentSession != null)
-            Container(
-              margin: const EdgeInsets.only(right: 8),
-              child: IconButton.filled(
-                icon: const Icon(Icons.call_end),
-                onPressed: () {
-                  provider.endSession();
-                },
-                tooltip: 'End Session',
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          if (provider.error != null)
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (provider.error != null)
+              Card(
                 color: Theme.of(context).colorScheme.errorContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    color: Theme.of(context).colorScheme.onErrorContainer,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      provider.error!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
+                elevation: 2,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: ListTile(
+                  leading: Icon(Icons.error_rounded, color: Theme.of(context).colorScheme.error, size: 28),
+                  title: Text('Error', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer, fontWeight: FontWeight.bold)),
+                  subtitle: Text(provider.error!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer)),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.close_rounded),
                     onPressed: provider.clearError,
                     color: Theme.of(context).colorScheme.onErrorContainer,
+                    tooltip: 'Dismiss error',
                   ),
-                ],
+                ),
               ),
-            ),
-          if (provider.activeEndpointConfig != null)
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.cloud_done,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Connected to: ${provider.activeEndpointConfig!.name}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.w500,
+            if (provider.activeEndpointConfig != null)
+              Card(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                elevation: 1,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: ListTile(
+                  leading: Icon(Icons.cloud_done_rounded, color: Theme.of(context).colorScheme.secondary, size: 28),
+                  title: Text('Connected', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold)),
+                  subtitle: Text(provider.activeEndpointConfig!.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer)),
+                  trailing: AnimatedContainer(
+                    duration: const Duration(milliseconds: 1000),
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                      shape: BoxShape.circle,
                     ),
                   ),
-                ],
+                ),
+              ),
+            if (provider.currentSession != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.stop_circle_outlined),
+                    label: const Text('End Session'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                      foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () async {
+                      await provider.endSession();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('USSD session ended.')),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: UssdDesignSystem.animationMedium,
+                child: provider.currentSession == null
+                    ? const UssdSessionForm()
+                    : const ModernUssdConversationView(),
               ),
             ),
-          if (provider.currentSession == null)
-            const Expanded(child: UssdSessionForm())
-          else
-            const Expanded(child: UssdConversationView()),
-        ],
+          ],
+        ),
       ),
     );
   }

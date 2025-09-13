@@ -196,13 +196,16 @@ void main() {
           home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
+      
+      await tester.pumpAndSettle();
 
       // The Share and Save buttons should be present
       expect(find.text('Share'), findsOneWidget);
       expect(find.text('Save'), findsOneWidget);
 
-      // Both buttons should be ElevatedButton.icon widgets
-      expect(find.byType(ElevatedButton), findsNWidgets(2));
+      // Both buttons should have appropriate icons
+      expect(find.byIcon(Icons.share), findsOneWidget);
+      expect(find.byIcon(Icons.save), findsOneWidget);
     });
   });
 

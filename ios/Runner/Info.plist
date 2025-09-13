@@ -45,11 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Required to discover and connect to the Flutter debug service on the local network.</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_dartobservatory._tcp</string>
-	</array>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to allow you to interact with USSD sessions using your voice.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone to enable voice input for USSD sessions and accessibility features.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app may use the camera for accessibility features such as scanning QR codes or visual assistance.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app may access your photo library for accessibility features, such as attaching images to USSD sessions.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app may use Face ID for secure authentication and accessibility purposes.</string>
 </dict>
 </plist>

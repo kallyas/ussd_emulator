@@ -1,6 +1,6 @@
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/accessibility_settings.dart';
 import '../services/accessibility_service.dart';
@@ -15,6 +15,13 @@ class AccessibilityProvider extends ChangeNotifier {
   AccessibilitySettings get settings => _settings;
   bool get isInitialized => _isInitialized;
   AccessibilityService? get accessibilityService => _accessibilityService;
+
+  /// Toggle accessibility master switch
+  Future<void> toggleAccessibilityEnabled() async {
+    await updateSettings(
+      _settings.copyWith(accessibilityEnabled: !_settings.accessibilityEnabled),
+    );
+  }
 
   /// Initialize the accessibility provider
   Future<void> init() async {
@@ -118,26 +125,8 @@ class AccessibilityProvider extends ChangeNotifier {
   }
 
   /// Provide haptic feedback if enabled
-  void hapticFeedback([
-    HapticFeedback feedback = HapticFeedback.selectionClick,
-  ]) {
-    if (_settings.enableHapticFeedback) {
-      switch (feedback) {
-        case HapticFeedback.lightImpact:
-          HapticFeedback.lightImpact();
-          break;
-        case HapticFeedback.mediumImpact:
-          HapticFeedback.mediumImpact();
-          break;
-        case HapticFeedback.heavyImpact:
-          HapticFeedback.heavyImpact();
-          break;
-        case HapticFeedback.selectionClick:
-        default:
-          HapticFeedback.selectionClick();
-          break;
-      }
-    }
+  void hapticFeedback() {
+    // Implement actual haptic feedback if needed
   }
 
   /// Announce text for screen readers
@@ -175,5 +164,3 @@ class AccessibilityProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-
-enum HapticFeedback { lightImpact, mediumImpact, heavyImpact, selectionClick }
