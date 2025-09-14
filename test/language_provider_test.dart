@@ -18,12 +18,30 @@ void main() {
 
     test('should support 6 languages', () {
       expect(LanguageProvider.supportedLocales.length, 6);
-      expect(LanguageProvider.supportedLocales, contains(const Locale('en', 'US')));
-      expect(LanguageProvider.supportedLocales, contains(const Locale('sw', 'TZ')));
-      expect(LanguageProvider.supportedLocales, contains(const Locale('fr', 'FR')));
-      expect(LanguageProvider.supportedLocales, contains(const Locale('am', 'ET')));
-      expect(LanguageProvider.supportedLocales, contains(const Locale('ha', 'NG')));
-      expect(LanguageProvider.supportedLocales, contains(const Locale('ar', 'SA')));
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('en', 'US')),
+      );
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('sw', 'TZ')),
+      );
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('fr', 'FR')),
+      );
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('am', 'ET')),
+      );
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('ha', 'NG')),
+      );
+      expect(
+        LanguageProvider.supportedLocales,
+        contains(const Locale('ar', 'SA')),
+      );
     });
 
     test('should have language names for all supported languages', () {
@@ -53,15 +71,15 @@ void main() {
       });
 
       await languageProvider.setLocale(const Locale('en', 'US'));
-      
+
       expect(languageProvider.currentLocale, const Locale('en', 'US'));
     });
 
     test('should only accept supported locales', () async {
       const unsupportedLocale = Locale('de', 'DE'); // German - not supported
-      
+
       await languageProvider.setLocale(unsupportedLocale);
-      
+
       // Should remain at default locale
       expect(languageProvider.currentLocale, const Locale('en', 'US'));
     });
@@ -85,7 +103,7 @@ void main() {
 
     test('should get supported locales with names', () {
       final localesWithNames = languageProvider.getSupportedLocalesWithNames();
-      
+
       expect(localesWithNames.length, 6);
       expect(localesWithNames[const Locale('en', 'US')], 'English');
       expect(localesWithNames[const Locale('sw', 'TZ')], 'Kiswahili');
@@ -99,7 +117,7 @@ void main() {
       });
 
       await languageProvider.init();
-      
+
       expect(languageProvider.currentLocale, const Locale('sw', 'TZ'));
     });
 
@@ -107,7 +125,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       await languageProvider.init();
-      
+
       // Should remain at default
       expect(languageProvider.currentLocale, const Locale('en', 'US'));
     });

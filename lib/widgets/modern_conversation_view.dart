@@ -19,7 +19,8 @@ class ModernUssdConversationView extends StatefulWidget {
   const ModernUssdConversationView({super.key});
 
   @override
-  State<ModernUssdConversationView> createState() => _ModernUssdConversationViewState();
+  State<ModernUssdConversationView> createState() =>
+      _ModernUssdConversationViewState();
 }
 
 class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
@@ -104,12 +105,10 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
       children: [
         // Animated conversation header
         _buildAnimatedHeader(session),
-        
+
         // Enhanced conversation area with staggered animations
-        Expanded(
-          child: _buildConversationArea(session, accessibilityProvider),
-        ),
-        
+        Expanded(child: _buildConversationArea(session, accessibilityProvider)),
+
         // Modern input area or session ended state
         if (session.isActive)
           _buildModernInputArea(provider, accessibilityProvider, session)
@@ -125,34 +124,34 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
   Widget _buildEmptyState() {
     final l10n = AppLocalizations.of(context);
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.phone_callback_rounded,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.phone_callback_rounded,
+                size: 64,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: UssdDesignSystem.spacingM),
+              Text(
+                l10n.noActiveSession,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: UssdDesignSystem.spacingS),
+              Text(
+                l10n.startNewSessionPrompt,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: UssdDesignSystem.spacingM),
-          Text(
-            l10n.noActiveSession,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: UssdDesignSystem.spacingS),
-          Text(
-            l10n.startNewSessionPrompt,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    )
-    .animate()
-    .fadeIn(duration: UssdDesignSystem.animationMedium)
-    .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.0, 1.0));
+        )
+        .animate()
+        .fadeIn(duration: UssdDesignSystem.animationMedium)
+        .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.0, 1.0));
   }
 
   Widget _buildAnimatedHeader(session) {
@@ -177,7 +176,9 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(24),
           ),
-          boxShadow: UssdDesignSystem.getShadow(UssdDesignSystem.elevationLevel2),
+          boxShadow: UssdDesignSystem.getShadow(
+            UssdDesignSystem.elevationLevel2,
+          ),
         ),
         child: Row(
           children: [
@@ -192,9 +193,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                 size: 24,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-            )
-            .animate()
-            .scale(
+            ).animate().scale(
               begin: const Offset(0.8, 0.8),
               end: const Offset(1.0, 1.0),
               delay: const Duration(milliseconds: 200),
@@ -214,7 +213,9 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                   Text(
                     session.phoneNumber,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onPrimaryContainer.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -228,7 +229,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: session.isActive 
+                    color: session.isActive
                         ? Theme.of(context).colorScheme.secondary
                         : Theme.of(context).colorScheme.error,
                     borderRadius: UssdDesignSystem.borderRadiusMedium,
@@ -239,15 +240,13 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                   child: Text(
                     session.isActive ? 'ACTIVE' : 'ENDED',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: session.isActive 
+                      color: session.isActive
                           ? Theme.of(context).colorScheme.onSecondary
                           : Theme.of(context).colorScheme.onError,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                )
-                .animate()
-                .scale(
+                ).animate().scale(
                   begin: const Offset(0.0, 0.0),
                   end: const Offset(1.0, 1.0),
                   delay: const Duration(milliseconds: 300),
@@ -277,7 +276,10 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
     );
   }
 
-  Widget _buildConversationArea(session, AccessibilityProvider accessibilityProvider) {
+  Widget _buildConversationArea(
+    session,
+    AccessibilityProvider accessibilityProvider,
+  ) {
     return Semantics(
       label: 'USSD conversation history',
       hint: 'Scroll to view all messages',
@@ -354,46 +356,46 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
 
   Widget _buildSessionEndedState() {
     return Container(
-      padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.errorContainer,
-              borderRadius: UssdDesignSystem.borderRadiusLarge,
-            ),
-            child: Icon(
-              Icons.call_end_rounded,
-              size: 48,
-              color: Theme.of(context).colorScheme.onErrorContainer,
-            ),
+          padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  borderRadius: UssdDesignSystem.borderRadiusLarge,
+                ),
+                child: Icon(
+                  Icons.call_end_rounded,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+              ),
+              const SizedBox(height: UssdDesignSystem.spacingM),
+              Text(
+                'Session Ended',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: UssdDesignSystem.spacingS),
+              Text(
+                'The USSD session has completed',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: UssdDesignSystem.spacingM),
-          Text(
-            'Session Ended',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: UssdDesignSystem.spacingS),
-          Text(
-            'The USSD session has completed',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    )
-    .animate()
-    .fadeIn(duration: UssdDesignSystem.animationMedium)
-    .slideY(
-      begin: 0.3,
-      end: 0.0,
-      duration: UssdDesignSystem.animationMedium,
-    );
+        )
+        .animate()
+        .fadeIn(duration: UssdDesignSystem.animationMedium)
+        .slideY(
+          begin: 0.3,
+          end: 0.0,
+          duration: UssdDesignSystem.animationMedium,
+        );
   }
 
   Widget _buildDebugPanel(session) {

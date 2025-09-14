@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for French (`fr`).
 class AppLocalizationsFr extends AppLocalizations {
@@ -29,16 +33,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sessionHistory => 'Historique des Sessions';
 
   @override
-  String get openAccessibilitySettings => 'Ouvrir les paramètres d\'accessibilité';
+  String get openAccessibilitySettings =>
+      'Ouvrir les paramètres d\'accessibilité';
 
   @override
-  String get configureAccessibilityOptions => 'Configurer les options d\'accessibilité';
+  String get configureAccessibilityOptions =>
+      'Configurer les options d\'accessibilité';
+
+  @override
+  String get accessibilitySettings => 'Paramètres d\'accessibilité';
 
   @override
   String get ussdSessionScreenTooltip => 'Écran de Session USSD';
 
   @override
-  String get endpointConfigurationTooltip => 'Configuration du Point de Terminaison';
+  String get endpointConfigurationTooltip =>
+      'Configuration du Point de Terminaison';
 
   @override
   String get sessionHistoryTooltip => 'Historique des Sessions';
@@ -82,7 +92,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sessionEnded => 'Session terminée';
 
   @override
-  String get networkError => 'Échec de la connexion réseau. Veuillez vérifier votre connexion internet.';
+  String get networkError =>
+      'Échec de la connexion réseau. Veuillez vérifier votre connexion internet.';
 
   @override
   String get invalidPhoneNumber => 'Format de numéro de téléphone invalide';
@@ -91,7 +102,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sessionTimeout => 'Session expirée';
 
   @override
-  String get phoneNumberHint => 'Entrez un numéro de téléphone comme +1234567890';
+  String get phoneNumberHint =>
+      'Entrez un numéro de téléphone comme +1234567890';
 
   @override
   String get serviceCodeHint => 'Entrez un code de service comme *123#';
@@ -135,5 +147,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noActiveSession => 'Aucune session active';
 
   @override
-  String get startNewSessionPrompt => 'Démarrez une nouvelle session USSD pour voir la conversation';
+  String get startNewSessionPrompt =>
+      'Démarrez une nouvelle session USSD pour voir la conversation';
 }

@@ -196,7 +196,7 @@ void main() {
           home: Scaffold(body: ExportDialog(session: testSession)),
         ),
       );
-      
+
       await tester.pumpAndSettle();
 
       // The Share and Save buttons should be present

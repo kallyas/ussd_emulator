@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Arabic (`ar`).
 class AppLocalizationsAr extends AppLocalizations {
@@ -33,6 +37,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get configureAccessibilityOptions => 'تكوين خيارات إمكانية الوصول';
+
+  @override
+  String get accessibilitySettings => 'إعدادات إمكانية الوصول';
 
   @override
   String get ussdSessionScreenTooltip => 'شاشة جلسة USSD';
@@ -82,7 +89,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sessionEnded => 'انتهت الجلسة';
 
   @override
-  String get networkError => 'فشل الاتصال بالشبكة. يرجى التحقق من اتصال الإنترنت.';
+  String get networkError =>
+      'فشل الاتصال بالشبكة. يرجى التحقق من اتصال الإنترنت.';
 
   @override
   String get invalidPhoneNumber => 'تنسيق رقم الهاتف غير صالح';

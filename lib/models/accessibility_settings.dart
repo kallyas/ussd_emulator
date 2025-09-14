@@ -3,7 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 part 'accessibility_settings.g.dart';
 
 @JsonSerializable()
-
 class AccessibilitySettings {
   final bool accessibilityEnabled;
   final bool useHighContrast;

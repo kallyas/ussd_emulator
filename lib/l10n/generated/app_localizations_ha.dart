@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Hausa (`ha`).
 class AppLocalizationsHa extends AppLocalizations {
@@ -33,6 +37,9 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get configureAccessibilityOptions => 'Saita zaɓuɓɓukan samun dama';
+
+  @override
+  String get accessibilitySettings => 'Saitunan Samun Dama';
 
   @override
   String get ussdSessionScreenTooltip => 'Fuskar Zama USSD';
@@ -82,7 +89,8 @@ class AppLocalizationsHa extends AppLocalizations {
   String get sessionEnded => 'Zama ya ƙare';
 
   @override
-  String get networkError => 'Haɗin cibiyar sadarwa ya kasa. Da fatan za a duba haɗin intanet ɗinku.';
+  String get networkError =>
+      'Haɗin cibiyar sadarwa ya kasa. Da fatan za a duba haɗin intanet ɗinku.';
 
   @override
   String get invalidPhoneNumber => 'Tsarin lambar waya mara inganci';
@@ -135,5 +143,6 @@ class AppLocalizationsHa extends AppLocalizations {
   String get noActiveSession => 'Babu zama mai aiki';
 
   @override
-  String get startNewSessionPrompt => 'Fara sabon zama USSD don ganin tattaunawa';
+  String get startNewSessionPrompt =>
+      'Fara sabon zama USSD don ganin tattaunawa';
 }

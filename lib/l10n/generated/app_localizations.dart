@@ -12,11 +12,13 @@ import 'app_localizations_fr.dart';
 import 'app_localizations_ha.dart';
 import 'app_localizations_sw.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of AppLocalizations
 /// returned by `AppLocalizations.of(context)`.
 ///
 /// Applications need to include `AppLocalizations.delegate()` in their app's
-/// `localizationsDelegates` list, and the locales they support in the app's
+/// `localizationDelegates` list, and the locales they support in the app's
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
@@ -31,7 +33,7 @@ import 'app_localizations_sw.dart';
 ///
 /// ## Update pubspec.yaml
 ///
-/// Please make sure to update your pubspec.yaml file to include the following
+/// Please make sure to update your pubspec.yaml to include the following
 /// packages:
 ///
 /// ```yaml
@@ -48,22 +50,24 @@ import 'app_localizations_sw.dart';
 ///
 /// iOS applications define key application metadata, including supported
 /// locales, in an Info.plist file that is built into the application bundle.
-/// To configure the locales supported by your app, you'll need to edit this
+/// To configure the locales supported by your app, you’ll need to edit this
 /// file.
 ///
-/// First, open your project's ios/Runner.xcworkspace Xcode workspace file.
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
 /// Then, in the Project Navigator, open the Info.plist file under the Runner
-/// project's Runner folder.
+/// project’s Runner folder.
 ///
 /// Next, select the Information Property List item, select Add Item from the
 /// Editor menu, then select Localizations from the pop-up menu.
 ///
-/// Select and expand the newly-added Localizations item then, for each locale
-/// your application supports, add a new item and select the locale you wish to
-/// add from the pop-up menu in the Value field. This list should be consistent
-/// with the languages listed in the AppLocalizations.supportedLocales property.
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +75,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,12 +88,13 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -97,7 +103,7 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('fr'),
     Locale('ha'),
-    Locale('sw')
+    Locale('sw'),
   ];
 
   /// The title of the application
@@ -159,6 +165,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Configure accessibility options'**
   String get configureAccessibilityOptions;
+
+  /// Accessibility settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility Settings'**
+  String get accessibilitySettings;
 
   /// Tooltip for USSD session navigation
   ///
@@ -359,7 +371,8 @@ abstract class AppLocalizations {
   String get startNewSessionPrompt;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -368,29 +381,40 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['am', 'ar', 'en', 'fr', 'ha', 'sw'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'am',
+    'ar',
+    'en',
+    'fr',
+    'ha',
+    'sw',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'am': return AppLocalizationsAm();
-    case 'ar': return AppLocalizationsAr();
-    case 'en': return AppLocalizationsEn();
-    case 'fr': return AppLocalizationsFr();
-    case 'ha': return AppLocalizationsHa();
-    case 'sw': return AppLocalizationsSw();
+    case 'am':
+      return AppLocalizationsAm();
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'ha':
+      return AppLocalizationsHa();
+    case 'sw':
+      return AppLocalizationsSw();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

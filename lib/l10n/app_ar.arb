@@ -12,6 +12,7 @@
   "sessionHistory": "تاريخ الجلسات",
   "openAccessibilitySettings": "فتح إعدادات إمكانية الوصول",
   "configureAccessibilityOptions": "تكوين خيارات إمكانية الوصول",
+  "accessibilitySettings": "إعدادات إمكانية الوصول",
   "ussdSessionScreenTooltip": "شاشة جلسة USSD",
   "endpointConfigurationTooltip": "تكوين نقطة النهاية",
   "sessionHistoryTooltip": "تاريخ الجلسات",

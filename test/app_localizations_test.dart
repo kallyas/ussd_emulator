@@ -12,7 +12,7 @@ void main() {
   group('AppLocalizations', () {
     test('English localization should have all strings', () {
       final l10n = AppLocalizationsEn();
-      
+
       expect(l10n.appTitle, 'USSD Emulator');
       expect(l10n.startSession, 'Start Session');
       expect(l10n.endSession, 'End Session');
@@ -28,7 +28,7 @@ void main() {
 
     test('Swahili localization should have translated strings', () {
       final l10n = AppLocalizationsSw();
-      
+
       expect(l10n.appTitle, 'Kijazo cha USSD');
       expect(l10n.startSession, 'Anza Kipindi');
       expect(l10n.endSession, 'Maliza Kipindi');
@@ -42,7 +42,7 @@ void main() {
 
     test('Arabic localization should have translated strings', () {
       final l10n = AppLocalizationsAr();
-      
+
       expect(l10n.appTitle, 'محاكي USSD');
       expect(l10n.startSession, 'بدء الجلسة');
       expect(l10n.endSession, 'إنهاء الجلسة');
@@ -56,7 +56,7 @@ void main() {
 
     test('French localization should have translated strings', () {
       final l10n = AppLocalizationsFr();
-      
+
       expect(l10n.appTitle, 'Émulateur USSD');
       expect(l10n.startSession, 'Démarrer la Session');
       expect(l10n.endSession, 'Terminer la Session');
@@ -70,7 +70,7 @@ void main() {
 
     test('Amharic localization should have translated strings', () {
       final l10n = AppLocalizationsAm();
-      
+
       expect(l10n.appTitle, 'የUSSD አስመሳይ');
       expect(l10n.startSession, 'ክፍለ ጊዜ ጀምር');
       expect(l10n.endSession, 'ክፍለ ጊዜን አቁም');
@@ -84,7 +84,7 @@ void main() {
 
     test('Hausa localization should have translated strings', () {
       final l10n = AppLocalizationsHa();
-      
+
       expect(l10n.appTitle, 'Mai kwaikwayi USSD');
       expect(l10n.startSession, 'Fara Zama');
       expect(l10n.endSession, 'Kammala Zama');
@@ -97,18 +97,39 @@ void main() {
     });
 
     test('lookupAppLocalizations should return correct localizations', () {
-      expect(lookupAppLocalizations(const Locale('en')), isA<AppLocalizationsEn>());
-      expect(lookupAppLocalizations(const Locale('sw')), isA<AppLocalizationsSw>());
-      expect(lookupAppLocalizations(const Locale('ar')), isA<AppLocalizationsAr>());
-      expect(lookupAppLocalizations(const Locale('fr')), isA<AppLocalizationsFr>());
-      expect(lookupAppLocalizations(const Locale('am')), isA<AppLocalizationsAm>());
-      expect(lookupAppLocalizations(const Locale('ha')), isA<AppLocalizationsHa>());
+      expect(
+        lookupAppLocalizations(const Locale('en')),
+        isA<AppLocalizationsEn>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('sw')),
+        isA<AppLocalizationsSw>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ar')),
+        isA<AppLocalizationsAr>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('fr')),
+        isA<AppLocalizationsFr>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('am')),
+        isA<AppLocalizationsAm>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ha')),
+        isA<AppLocalizationsHa>(),
+      );
     });
 
     test('Parameterized messages should work correctly', () {
       final l10n = AppLocalizationsEn();
-      
-      expect(l10n.navigatedToScreen('Test Screen'), 'Navigated to Test Screen screen');
+
+      expect(
+        l10n.navigatedToScreen('Test Screen'),
+        'Navigated to Test Screen screen',
+      );
       expect(l10n.languageChangedTo('English'), 'Language changed to English');
     });
 

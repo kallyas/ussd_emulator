@@ -19,7 +19,8 @@ class EndpointConfigScreen extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final config = provider.endpointConfigs[index];
-              final isActive = provider.activeEndpointConfig?.name == config.name;
+              final isActive =
+                  provider.activeEndpointConfig?.name == config.name;
               return Card(
                 elevation: isActive ? 4 : 1,
                 color: isActive
@@ -28,13 +29,21 @@ class EndpointConfigScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: isActive
-                      ? BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
+                      ? BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        )
                       : BorderSide.none,
                 ),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
                   leading: Icon(
-                    isActive ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+                    isActive
+                        ? Icons.check_circle_rounded
+                        : Icons.radio_button_unchecked,
                     color: isActive
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.outline,
@@ -43,11 +52,13 @@ class EndpointConfigScreen extends StatelessWidget {
                   title: Text(
                     config.name,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                          color: isActive
-                              ? Theme.of(context).colorScheme.onPrimaryContainer
-                              : Theme.of(context).colorScheme.onSurface,
-                        ),
+                      fontWeight: isActive
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: isActive
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,8 +67,8 @@ class EndpointConfigScreen extends StatelessWidget {
                       Text(
                         config.url,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       if (config.headers.isNotEmpty)
                         Padding(
@@ -95,7 +106,10 @@ class EndpointConfigScreen extends StatelessWidget {
                         ),
                       const PopupMenuItem(value: 'test', child: Text('Test')),
                       const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                      const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Delete'),
+                      ),
                     ],
                   ),
                   onTap: () {
@@ -117,7 +131,9 @@ class EndpointConfigScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           ),
         ],

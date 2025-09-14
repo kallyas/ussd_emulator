@@ -18,6 +18,7 @@ class UssdDesignSystem {
       useMaterial3: true,
     );
   }
+
   // Spacing tokens
   static const double spacingXS = 4.0;
   static const double spacingS = 8.0;
@@ -27,10 +28,18 @@ class UssdDesignSystem {
   static const double spacingXXL = 48.0;
 
   // Border radius tokens
-  static const BorderRadius borderRadiusSmall = BorderRadius.all(Radius.circular(8));
-  static const BorderRadius borderRadiusMedium = BorderRadius.all(Radius.circular(12));
-  static const BorderRadius borderRadiusLarge = BorderRadius.all(Radius.circular(16));
-  static const BorderRadius borderRadiusXLarge = BorderRadius.all(Radius.circular(24));
+  static const BorderRadius borderRadiusSmall = BorderRadius.all(
+    Radius.circular(8),
+  );
+  static const BorderRadius borderRadiusMedium = BorderRadius.all(
+    Radius.circular(12),
+  );
+  static const BorderRadius borderRadiusLarge = BorderRadius.all(
+    Radius.circular(16),
+  );
+  static const BorderRadius borderRadiusXLarge = BorderRadius.all(
+    Radius.circular(24),
+  );
 
   // Elevation tokens
   static const double elevationLevel1 = 1.0;
@@ -207,10 +216,7 @@ class UssdDesignSystem {
 
   static LinearGradient getPrimaryGradient(ColorScheme colorScheme) {
     return LinearGradient(
-      colors: [
-        colorScheme.primary,
-        colorScheme.primary.withOpacity(0.8),
-      ],
+      colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );

@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Swahili (`sw`).
 class AppLocalizationsSw extends AppLocalizations {
@@ -33,6 +37,9 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get configureAccessibilityOptions => 'Sanidi chaguo za ufikishaji';
+
+  @override
+  String get accessibilitySettings => 'Mipangilio ya Ufikishaji';
 
   @override
   String get ussdSessionScreenTooltip => 'Skrini ya Kipindi cha USSD';
@@ -82,7 +89,8 @@ class AppLocalizationsSw extends AppLocalizations {
   String get sessionEnded => 'Kipindi kimemalizika';
 
   @override
-  String get networkError => 'Muunganisho wa mtandao umeshindwa. Tafadhali kagua muunganisho wako wa intaneti.';
+  String get networkError =>
+      'Muunganisho wa mtandao umeshindwa. Tafadhali kagua muunganisho wako wa intaneti.';
 
   @override
   String get invalidPhoneNumber => 'Muundo mbaya wa nambari ya simu';
@@ -135,5 +143,6 @@ class AppLocalizationsSw extends AppLocalizations {
   String get noActiveSession => 'Hakuna kipindi kilichoanza';
 
   @override
-  String get startNewSessionPrompt => 'Anza kipindi kipya cha USSD kuona mazungumzo';
+  String get startNewSessionPrompt =>
+      'Anza kipindi kipya cha USSD kuona mazungumzo';
 }

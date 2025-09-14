@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
@@ -33,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get configureAccessibilityOptions => 'Configure accessibility options';
+
+  @override
+  String get accessibilitySettings => 'Accessibility Settings';
 
   @override
   String get ussdSessionScreenTooltip => 'USSD Session Screen';
@@ -82,7 +89,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionEnded => 'Session ended';
 
   @override
-  String get networkError => 'Network connection failed. Please check your internet connection.';
+  String get networkError =>
+      'Network connection failed. Please check your internet connection.';
 
   @override
   String get invalidPhoneNumber => 'Invalid phone number format';
@@ -135,5 +143,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noActiveSession => 'No active session';
 
   @override
-  String get startNewSessionPrompt => 'Start a new USSD session to see conversation';
+  String get startNewSessionPrompt =>
+      'Start a new USSD session to see conversation';
 }

@@ -4,21 +4,40 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:ussd_emulator/screens/accessibility_settings_screen.dart';
 import 'package:ussd_emulator/providers/accessibility_provider.dart';
+import 'package:ussd_emulator/providers/language_provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ussd_emulator/l10n/generated/app_localizations.dart';
 
 void main() {
   group('AccessibilitySettingsScreen', () {
-    late AccessibilityProvider mockProvider;
+    late AccessibilityProvider mockAccessibilityProvider;
+    late LanguageProvider mockLanguageProvider;
 
-    setUp(() {
-      mockProvider = AccessibilityProvider();
-      // Simulate initialization
-      mockProvider.isInitialized;
+    setUp(() async {
+      mockAccessibilityProvider = AccessibilityProvider();
+      mockLanguageProvider = LanguageProvider();
+      // Initialize the provider for testing
+      await mockAccessibilityProvider.init();
     });
 
     Widget createTestWidget() {
       return MaterialApp(
-        home: ChangeNotifierProvider<AccessibilityProvider>.value(
-          value: mockProvider,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<AccessibilityProvider>.value(
+              value: mockAccessibilityProvider,
+            ),
+            ChangeNotifierProvider<LanguageProvider>.value(
+              value: mockLanguageProvider,
+            ),
+          ],
           child: const AccessibilitySettingsScreen(),
         ),
       );
@@ -27,11 +46,14 @@ void main() {
     testWidgets('should display all accessibility options', (tester) async {
       await tester.pumpWidget(createTestWidget());
 
-      // Wait for the screen to load (mock provider is not actually initialized)
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      // Wait for widget to settle
+      await tester.pump();
 
-      // Test that the screen is rendered
+      // Test that the screen is rendered with content (provider is now initialized)
       expect(find.text('Accessibility Settings'), findsOneWidget);
+
+      // Should not be in loading state since provider is initialized
+      expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
     testWidgets('should have proper semantic structure', (tester) async {

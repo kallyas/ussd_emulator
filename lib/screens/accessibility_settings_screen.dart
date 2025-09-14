@@ -19,7 +19,7 @@ class _AccessibilitySettingsScreenState
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.openAccessibilitySettings),
+        title: Text(l10n.accessibilitySettings),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         elevation: 0,
       ),
@@ -39,7 +39,8 @@ class _AccessibilitySettingsScreenState
                   subtitle: 'Master switch for all accessibility features',
                   icon: Icons.accessibility_new,
                   value: settings.accessibilityEnabled,
-                  onChanged: (value) => accessibilityProvider.toggleAccessibilityEnabled(),
+                  onChanged: (value) =>
+                      accessibilityProvider.toggleAccessibilityEnabled(),
                 ),
               ]),
               const SizedBox(height: 28),
@@ -55,7 +56,8 @@ class _AccessibilitySettingsScreenState
                   subtitle: 'Increase color contrast for better visibility',
                   icon: Icons.contrast,
                   value: settings.useHighContrast,
-                  onChanged: (value) => accessibilityProvider.toggleHighContrast(),
+                  onChanged: (value) =>
+                      accessibilityProvider.toggleHighContrast(),
                 ),
                 const Divider(height: 1),
                 _buildSliderTile(
@@ -66,7 +68,8 @@ class _AccessibilitySettingsScreenState
                   min: 0.8,
                   max: 2.0,
                   divisions: 12,
-                  onChanged: (value) => accessibilityProvider.setTextScaleFactor(value),
+                  onChanged: (value) =>
+                      accessibilityProvider.setTextScaleFactor(value),
                   valueLabel: '${(settings.textScaleFactor * 100).round()}%',
                 ),
               ]),
@@ -78,7 +81,8 @@ class _AccessibilitySettingsScreenState
                   subtitle: 'Read USSD responses aloud',
                   icon: Icons.record_voice_over,
                   value: settings.enableTextToSpeech,
-                  onChanged: (value) => accessibilityProvider.toggleTextToSpeech(),
+                  onChanged: (value) =>
+                      accessibilityProvider.toggleTextToSpeech(),
                 ),
                 const Divider(height: 1),
                 _buildSwitchTile(
@@ -86,7 +90,8 @@ class _AccessibilitySettingsScreenState
                   subtitle: 'Use your voice to enter USSD commands',
                   icon: Icons.mic,
                   value: settings.enableVoiceInput,
-                  onChanged: (value) => accessibilityProvider.toggleVoiceInput(),
+                  onChanged: (value) =>
+                      accessibilityProvider.toggleVoiceInput(),
                 ),
               ]),
               const SizedBox(height: 28),
@@ -97,7 +102,8 @@ class _AccessibilitySettingsScreenState
                   subtitle: 'Vibration feedback for actions',
                   icon: Icons.vibration,
                   value: settings.enableHapticFeedback,
-                  onChanged: (value) => accessibilityProvider.toggleHapticFeedback(),
+                  onChanged: (value) =>
+                      accessibilityProvider.toggleHapticFeedback(),
                 ),
                 const Divider(height: 1),
                 _buildSliderTile(
@@ -108,7 +114,9 @@ class _AccessibilitySettingsScreenState
                   min: 10,
                   max: 120,
                   divisions: 11,
-                  onChanged: (value) => accessibilityProvider.setInputTimeout(Duration(seconds: value.round())),
+                  onChanged: (value) => accessibilityProvider.setInputTimeout(
+                    Duration(seconds: value.round()),
+                  ),
                   valueLabel: '${settings.inputTimeout.inSeconds}s',
                 ),
               ]),
@@ -168,7 +176,9 @@ class _AccessibilitySettingsScreenState
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.25),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer.withOpacity(0.25),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -176,11 +186,15 @@ class _AccessibilitySettingsScreenState
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
+                        Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         const SizedBox(width: 10),
                         Text(
                           'Accessibility Information',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -191,8 +205,8 @@ class _AccessibilitySettingsScreenState
                     Text(
                       'This app supports WCAG 2.1 AA accessibility guidelines. All interactive elements have minimum 44pt touch targets and proper semantic labels.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -339,11 +353,19 @@ class _AccessibilitySettingsScreenState
     }
   }
 
-  Widget _buildLanguageSelector(BuildContext context, LanguageProvider languageProvider, AppLocalizations l10n) {
+  Widget _buildLanguageSelector(
+    BuildContext context,
+    LanguageProvider languageProvider,
+    AppLocalizations l10n,
+  ) {
     return ListTile(
       leading: Icon(Icons.language),
       title: Text(l10n.language),
-      subtitle: Text(languageProvider.getLanguageName(languageProvider.currentLocale.languageCode)),
+      subtitle: Text(
+        languageProvider.getLanguageName(
+          languageProvider.currentLocale.languageCode,
+        ),
+      ),
       trailing: Icon(Icons.arrow_forward_ios, size: 16),
       onTap: () => _showLanguageDialog(context, languageProvider, l10n),
       minVerticalPadding: 18,
@@ -351,9 +373,13 @@ class _AccessibilitySettingsScreenState
     );
   }
 
-  Future<void> _showLanguageDialog(BuildContext context, LanguageProvider languageProvider, AppLocalizations l10n) async {
+  Future<void> _showLanguageDialog(
+    BuildContext context,
+    LanguageProvider languageProvider,
+    AppLocalizations l10n,
+  ) async {
     final localesWithNames = languageProvider.getSupportedLocalesWithNames();
-    
+
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -364,8 +390,7 @@ class _AccessibilitySettingsScreenState
             children: localesWithNames.entries.map((entry) {
               final locale = entry.key;
               final name = entry.value;
-              final isSelected = locale.languageCode == languageProvider.currentLocale.languageCode;
-              
+
               return ListTile(
                 title: Text(name),
                 leading: Radio<String>(
@@ -374,23 +399,23 @@ class _AccessibilitySettingsScreenState
                   onChanged: (String? value) async {
                     if (value != null) {
                       await languageProvider.setLocale(locale);
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.languageChangedTo(name)),
-                        ),
-                      );
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.languageChangedTo(name))),
+                        );
+                      }
                     }
                   },
                 ),
                 onTap: () async {
                   await languageProvider.setLocale(locale);
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.languageChangedTo(name)),
-                    ),
-                  );
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.languageChangedTo(name))),
+                    );
+                  }
                 },
               );
             }).toList(),

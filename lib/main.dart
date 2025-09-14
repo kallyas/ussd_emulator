@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/ussd_provider.dart';
 import 'providers/accessibility_provider.dart';
@@ -51,18 +50,17 @@ class UssdEmulatorApp extends StatelessWidget {
             },
 
             // Dynamic theme based on accessibility settings
+            theme: (!settings.accessibilityEnabled)
+                ? UssdDesignSystem.getLightTheme()
+                : settings.useHighContrast
+                ? AccessibilityThemes.getHighContrastLightTheme()
+                : UssdDesignSystem.getLightTheme(),
 
-      theme: (!settings.accessibilityEnabled)
-        ? UssdDesignSystem.getLightTheme()
-        : settings.useHighContrast
-          ? AccessibilityThemes.getHighContrastLightTheme()
-          : UssdDesignSystem.getLightTheme(),
-
-      darkTheme: (!settings.accessibilityEnabled)
-        ? UssdDesignSystem.getDarkTheme()
-        : settings.useHighContrast
-          ? AccessibilityThemes.getHighContrastDarkTheme()
-          : UssdDesignSystem.getDarkTheme(),
+            darkTheme: (!settings.accessibilityEnabled)
+                ? UssdDesignSystem.getDarkTheme()
+                : settings.useHighContrast
+                ? AccessibilityThemes.getHighContrastDarkTheme()
+                : UssdDesignSystem.getDarkTheme(),
 
             themeMode: ThemeMode.system,
 
@@ -73,7 +71,9 @@ class UssdEmulatorApp extends StatelessWidget {
                 child: MediaQuery(
                   data: MediaQuery.of(
                     context,
-                  ).copyWith(textScaleFactor: settings.textScaleFactor),
+                  ).copyWith(
+                    textScaler: TextScaler.linear(settings.textScaleFactor),
+                  ),
                   child: child!,
                 ),
               );

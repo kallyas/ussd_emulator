@@ -26,53 +26,58 @@ class AnimatedMessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    
+
     final messageText = isUser ? (request?.text ?? '') : (response?.text ?? '');
-    
+
     if (messageText.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: UssdDesignSystem.spacingXS,
-        horizontal: UssdDesignSystem.spacingM,
-      ),
-      child: Row(
-        mainAxisAlignment: isUser 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
-        children: [
-          Flexible(
-            child: GestureDetector(
-              onTap: onTap,
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.8,
-                ),
-                child: _buildMessageContainer(context, colorScheme, textTheme, messageText),
-              ),
-            ),
+          margin: const EdgeInsets.symmetric(
+            vertical: UssdDesignSystem.spacingXS,
+            horizontal: UssdDesignSystem.spacingM,
           ),
-        ],
-      ),
-    )
-    .animate(delay: Duration(milliseconds: index * 100))
-    .slideX(
-      begin: isUser ? 1.0 : -1.0,
-      end: 0.0,
-      duration: UssdDesignSystem.animationMedium,
-      curve: UssdDesignSystem.curveDefault,
-    )
-    .fadeIn(
-      duration: UssdDesignSystem.animationMedium,
-      curve: UssdDesignSystem.curveDefault,
-    );
+          child: Row(
+            mainAxisAlignment: isUser
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            children: [
+              Flexible(
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
+                    ),
+                    child: _buildMessageContainer(
+                      context,
+                      colorScheme,
+                      textTheme,
+                      messageText,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+        .animate(delay: Duration(milliseconds: index * 100))
+        .slideX(
+          begin: isUser ? 1.0 : -1.0,
+          end: 0.0,
+          duration: UssdDesignSystem.animationMedium,
+          curve: UssdDesignSystem.curveDefault,
+        )
+        .fadeIn(
+          duration: UssdDesignSystem.animationMedium,
+          curve: UssdDesignSystem.curveDefault,
+        );
   }
 
   Widget _buildMessageContainer(
     BuildContext context,
-    ColorScheme colorScheme, 
+    ColorScheme colorScheme,
     TextTheme textTheme,
     String messageText,
   ) {
@@ -85,15 +90,12 @@ class AnimatedMessageBubble extends StatelessWidget {
 
   Widget _buildUserMessage(
     BuildContext context,
-    ColorScheme colorScheme, 
+    ColorScheme colorScheme,
     TextTheme textTheme,
     String messageText,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 16,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         gradient: UssdDesignSystem.getPrimaryGradient(colorScheme),
         borderRadius: const BorderRadius.only(
@@ -119,7 +121,7 @@ class AnimatedMessageBubble extends StatelessWidget {
 
   Widget _buildSystemMessage(
     BuildContext context,
-    ColorScheme colorScheme, 
+    ColorScheme colorScheme,
     TextTheme textTheme,
     String messageText,
   ) {
@@ -133,9 +135,7 @@ class AnimatedMessageBubble extends StatelessWidget {
           bottomLeft: Radius.circular(4),
           bottomRight: Radius.circular(18),
         ),
-        boxShadow: UssdDesignSystem.getShadow(
-          UssdDesignSystem.elevationLevel1,
-        ),
+        boxShadow: UssdDesignSystem.getShadow(UssdDesignSystem.elevationLevel1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,23 +150,21 @@ class AnimatedMessageBubble extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: response!.continueSession 
-                        ? colorScheme.secondary 
+                    color: response!.continueSession
+                        ? colorScheme.secondary
                         : colorScheme.error,
                     borderRadius: UssdDesignSystem.borderRadiusSmall,
                   ),
                   child: Text(
                     response!.continueSession ? 'CON' : 'END',
                     style: textTheme.labelSmall?.copyWith(
-                      color: response!.continueSession 
-                          ? colorScheme.onSecondary 
+                      color: response!.continueSession
+                          ? colorScheme.onSecondary
                           : colorScheme.onError,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                )
-                .animate()
-                .scale(
+                ).animate().scale(
                   begin: const Offset(0.8, 0.8),
                   end: const Offset(1.0, 1.0),
                   duration: UssdDesignSystem.animationFast,
@@ -208,7 +206,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     // Don't repeat in test environment to avoid pumpAndSettle timeouts
     if (kDebugMode) {
       // In debug/test mode, just play once
@@ -230,55 +228,56 @@ class _TypingIndicatorState extends State<TypingIndicator>
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: UssdDesignSystem.spacingXS,
-        horizontal: UssdDesignSystem.spacingM,
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(18),
-                topRight: Radius.circular(18),
-                bottomLeft: Radius.circular(4),
-                bottomRight: Radius.circular(18),
-              ),
-              boxShadow: UssdDesignSystem.getShadow(
-                UssdDesignSystem.elevationLevel1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'USSD service is typing',
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+          margin: const EdgeInsets.symmetric(
+            vertical: UssdDesignSystem.spacingXS,
+            horizontal: UssdDesignSystem.spacingM,
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                    bottomLeft: Radius.circular(4),
+                    bottomRight: Radius.circular(18),
+                  ),
+                  boxShadow: UssdDesignSystem.getShadow(
+                    UssdDesignSystem.elevationLevel1,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Row(
-                  children: List.generate(3, (index) => _buildDot(index, colorScheme)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'USSD service is typing',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Row(
+                      children: List.generate(
+                        3,
+                        (index) => _buildDot(index, colorScheme),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    )
-    .animate()
-    .slideX(
-      begin: -1.0,
-      end: 0.0,
-      duration: UssdDesignSystem.animationMedium,
-      curve: UssdDesignSystem.curveDefault,
-    )
-    .fadeIn(
-      duration: UssdDesignSystem.animationMedium,
-    );
+        )
+        .animate()
+        .slideX(
+          begin: -1.0,
+          end: 0.0,
+          duration: UssdDesignSystem.animationMedium,
+          curve: UssdDesignSystem.curveDefault,
+        )
+        .fadeIn(duration: UssdDesignSystem.animationMedium);
   }
 
   Widget _buildDot(int index, ColorScheme colorScheme) {
@@ -314,23 +313,21 @@ class _TypingIndicatorState extends State<TypingIndicator>
 class SkeletonMessageBubble extends StatelessWidget {
   final bool isUser;
 
-  const SkeletonMessageBubble({
-    Key? key,
-    this.isUser = false,
-  }) : super(key: key);
+  const SkeletonMessageBubble({Key? key, this.isUser = false})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(
         vertical: UssdDesignSystem.spacingXS,
         horizontal: UssdDesignSystem.spacingM,
       ),
       child: Row(
-        mainAxisAlignment: isUser 
-            ? MainAxisAlignment.end 
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         children: [
           Container(
@@ -340,9 +337,7 @@ class SkeletonMessageBubble extends StatelessWidget {
               color: colorScheme.surfaceVariant,
               borderRadius: BorderRadius.circular(18),
             ),
-          )
-          .animate()
-          .shimmer(
+          ).animate().shimmer(
             duration: const Duration(milliseconds: 1200),
             color: colorScheme.surface,
           ),

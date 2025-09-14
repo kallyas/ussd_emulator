@@ -52,6 +52,11 @@
     "description": "Accessibility button hint"
   },
   
+  "accessibilitySettings": "Accessibility Settings",
+  "@accessibilitySettings": {
+    "description": "Accessibility settings screen title"
+  },
+  
   "ussdSessionScreenTooltip": "USSD Session Screen",
   "@ussdSessionScreenTooltip": {
     "description": "Tooltip for USSD session navigation"

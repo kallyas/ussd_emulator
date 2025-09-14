@@ -12,6 +12,7 @@
   "sessionHistory": "Historique des Sessions",
   "openAccessibilitySettings": "Ouvrir les paramètres d'accessibilité",
   "configureAccessibilityOptions": "Configurer les options d'accessibilité",
+  "accessibilitySettings": "Paramètres d'accessibilité",
   "ussdSessionScreenTooltip": "Écran de Session USSD",
   "endpointConfigurationTooltip": "Configuration du Point de Terminaison",
   "sessionHistoryTooltip": "Historique des Sessions",

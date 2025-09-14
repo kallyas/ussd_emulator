@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Amharic (`am`).
 class AppLocalizationsAm extends AppLocalizations {
@@ -33,6 +37,9 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get configureAccessibilityOptions => 'የተደራሽነት አማራጮችን አስተካክል';
+
+  @override
+  String get accessibilitySettings => 'የተደራሽነት ቅንጅቶች';
 
   @override
   String get ussdSessionScreenTooltip => 'የUSSD ክፍለ ጊዜ ማያ ገጽ';
@@ -82,7 +89,8 @@ class AppLocalizationsAm extends AppLocalizations {
   String get sessionEnded => 'ክፍለ ጊዜ ተጠናቋል';
 
   @override
-  String get networkError => 'የአውታረ መረብ ግንኙነት ተሳክቶ አልተሳካም። እባክዎ የኢንተርኔት ግንኙነትዎን ይፈትሹ።';
+  String get networkError =>
+      'የአውታረ መረብ ግንኙነት ተሳክቶ አልተሳካም። እባክዎ የኢንተርኔት ግንኙነትዎን ይፈትሹ።';
 
   @override
   String get invalidPhoneNumber => 'ልክ ያልሆነ የስልክ ቁጥር አቀራረብ';
