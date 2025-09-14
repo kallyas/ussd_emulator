@@ -17,6 +17,11 @@ class TemplateService {
 
   Future<void> init() async {
     await _loadTemplates();
+    
+    // Create demo templates if no templates exist
+    if (_templates.isEmpty) {
+      await _createDemoTemplates();
+    }
   }
 
   /// Create a new template
@@ -278,5 +283,109 @@ class TemplateService {
         _templates = [];
       }
     }
+  }
+
+  /// Create demo templates for first-time users
+  Future<void> _createDemoTemplates() async {
+    // Banking Balance Check Template
+    await createTemplate(
+      name: 'Balance Check',
+      description: 'Check account balance for mobile banking',
+      serviceCode: '*123#',
+      category: 'Banking',
+      steps: [
+        const TemplateStep(
+          input: '1',
+          description: 'Select Balance Inquiry',
+          expectedResponse: 'Enter your PIN',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '\${pin}',
+          description: 'Enter PIN',
+          expectedResponse: 'Select account type',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '1',
+          description: 'Select checking account',
+          waitForResponse: true,
+        ),
+      ],
+      variables: {
+        'pin': '1234',
+      },
+    );
+
+    // Mobile Money Transfer Template
+    await createTemplate(
+      name: 'Money Transfer',
+      description: 'Transfer money using mobile money service',
+      serviceCode: '*456#',
+      category: 'Mobile Money',
+      stepDelayMs: 3000,
+      steps: [
+        const TemplateStep(
+          input: '1',
+          description: 'Select Send Money',
+          expectedResponse: 'Enter recipient',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '\${recipient}',
+          description: 'Enter recipient number',
+          expectedResponse: 'Enter amount',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '\${amount}',
+          description: 'Enter transfer amount',
+          expectedResponse: 'Enter PIN',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '\${pin}',
+          description: 'Enter PIN to confirm',
+          waitForResponse: true,
+          isCritical: true,
+        ),
+      ],
+      variables: {
+        'recipient': '256700000000',
+        'amount': '10000',
+        'pin': '1234',
+      },
+    );
+
+    // Airtime Purchase Template
+    await createTemplate(
+      name: 'Buy Airtime',
+      description: 'Purchase airtime for mobile phone',
+      serviceCode: '*789#',
+      category: 'Airtime',
+      stepDelayMs: 2500,
+      steps: [
+        const TemplateStep(
+          input: '1',
+          description: 'Select Buy Airtime',
+          expectedResponse: 'Enter amount',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '\${amount}',
+          description: 'Enter airtime amount',
+          expectedResponse: 'Confirm purchase',
+          waitForResponse: true,
+        ),
+        const TemplateStep(
+          input: '1',
+          description: 'Confirm purchase',
+          waitForResponse: true,
+        ),
+      ],
+      variables: {
+        'amount': '5000',
+      },
+    );
   }
 }
