@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
 import '../providers/accessibility_provider.dart';
+import '../providers/language_provider.dart';
 import '../utils/design_system.dart';
 import '../utils/page_transitions.dart' hide ScaleTransition;
+import '../l10n/generated/app_localizations.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
@@ -55,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UssdProvider>().init();
       context.read<AccessibilityProvider>().init();
+      context.read<LanguageProvider>().init();
       _navigationController.forward();
       Future.delayed(UssdDesignSystem.animationMedium, () {
         _fabController.forward();
@@ -72,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
+    final l10n = AppLocalizations.of(context);
 
     if (!provider.isInitialized) {
       return Scaffold(
@@ -122,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: UssdDesignSystem.spacingL),
                 Text(
-                  'USSD Emulator',
+                  l10n.appTitle,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
@@ -133,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 .slideY(begin: 0.3, end: 0.0),
                 const SizedBox(height: UssdDesignSystem.spacingM),
                 Text(
-                  'Initializing...',
+                  l10n.initializing,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -195,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        'USSD Emulator',
+                        l10n.appTitle,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.onBackground,
@@ -204,8 +208,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ],
                   ),
                   Semantics(
-                    label: 'Open accessibility settings',
-                    hint: 'Configure accessibility options',
+                    label: l10n.openAccessibilitySettings,
+                    hint: l10n.configureAccessibilityOptions,
                     child: ScaleTransition(
                       scale: _fabAnimation,
                       child: Material(
@@ -277,12 +281,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               });
               // Announce navigation change for screen readers
               String screenName = [
-                'USSD Session',
-                'Configuration',
-                'Session History',
+                l10n.ussdSession,
+                l10n.configuration,
+                l10n.sessionHistory,
               ][index];
               accessibilityProvider.announceForScreenReader(
-                'Navigated to $screenName screen',
+                l10n.navigatedToScreen(screenName),
               );
             },
             type: BottomNavigationBarType.fixed,
@@ -293,18 +297,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             items: [
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.phone_rounded, 0),
-                label: 'USSD',
-                tooltip: 'USSD Session Screen',
+                label: l10n.ussd,
+                tooltip: l10n.ussdSessionScreenTooltip,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.settings_rounded, 1),
-                label: 'Config',
-                tooltip: 'Endpoint Configuration',
+                label: l10n.config,
+                tooltip: l10n.endpointConfigurationTooltip,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.history_rounded, 2),
-                label: 'History',
-                tooltip: 'Session History',
+                label: l10n.history,
+                tooltip: l10n.sessionHistoryTooltip,
               ),
             ],
           ),

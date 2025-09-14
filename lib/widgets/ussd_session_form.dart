@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
 import '../utils/design_system.dart';
 import '../widgets/modern_input_field.dart';
+import '../l10n/generated/app_localizations.dart';
 
 class UssdSessionForm extends StatefulWidget {
   const UssdSessionForm({super.key});
@@ -30,6 +31,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
@@ -80,7 +82,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                   ),
                   const SizedBox(height: UssdDesignSystem.spacingM),
                   Text(
-                    'Start New USSD Session',
+                    l10n.startSession,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -125,8 +127,8 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                 children: [
                   ModernTextField(
                     controller: _phoneController,
-                    label: 'Phone Number',
-                    hint: '+1234567890',
+                    label: l10n.enterPhoneNumber,
+                    hint: l10n.phoneNumberHint,
                     keyboardType: TextInputType.phone,
                     suffixIcon: Icon(
                       Icons.phone_rounded,
@@ -141,8 +143,8 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                   
                   ModernTextField(
                     controller: _serviceCodeController,
-                    label: 'Service Code',
-                    hint: '*123#',
+                    label: l10n.enterServiceCode,
+                    hint: l10n.serviceCodeHint,
                     suffixIcon: Icon(
                       Icons.dialpad_rounded,
                       color: colorScheme.primary,
@@ -156,8 +158,8 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                   
                   ModernTextField(
                     controller: _networkCodeController,
-                    label: 'Network Code (Optional)',
-                    hint: 'MTN, GLO, etc.',
+                    label: l10n.enterNetworkCode,
+                    hint: l10n.networkCodeHint,
                     suffixIcon: Icon(
                       Icons.cell_tower_rounded,
                       color: colorScheme.primary,
@@ -211,7 +213,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                           ),
                           const SizedBox(width: UssdDesignSystem.spacingS),
                           Text(
-                            'Starting Session...',
+                            l10n.startSession,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               color: colorScheme.onSurface.withOpacity(0.6),
                               fontWeight: FontWeight.w600,
@@ -228,7 +230,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
                           ),
                           const SizedBox(width: UssdDesignSystem.spacingS),
                           Text(
-                            'Start USSD Session',
+                            l10n.startSession,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               color: colorScheme.onPrimary,
                               fontWeight: FontWeight.w600,

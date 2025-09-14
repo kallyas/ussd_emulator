@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/accessibility_provider.dart';
+import '../providers/language_provider.dart';
+import '../l10n/generated/app_localizations.dart';
 
 class AccessibilitySettingsScreen extends StatefulWidget {
   const AccessibilitySettingsScreen({super.key});
@@ -14,14 +16,15 @@ class _AccessibilitySettingsScreenState
     extends State<AccessibilitySettingsScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accessibility Settings'),
+        title: Text(l10n.openAccessibilitySettings),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         elevation: 0,
       ),
-      body: Consumer<AccessibilityProvider>(
-        builder: (context, accessibilityProvider, child) {
+      body: Consumer2<AccessibilityProvider, LanguageProvider>(
+        builder: (context, accessibilityProvider, languageProvider, child) {
           if (!accessibilityProvider.isInitialized) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -38,6 +41,11 @@ class _AccessibilitySettingsScreenState
                   value: settings.accessibilityEnabled,
                   onChanged: (value) => accessibilityProvider.toggleAccessibilityEnabled(),
                 ),
+              ]),
+              const SizedBox(height: 28),
+              _buildSectionHeader(l10n.language),
+              _buildAccessibleCard([
+                _buildLanguageSelector(context, languageProvider, l10n),
               ]),
               const SizedBox(height: 28),
               _buildSectionHeader('Visual'),
@@ -329,5 +337,72 @@ class _AccessibilitySettingsScreenState
         );
       }
     }
+  }
+
+  Widget _buildLanguageSelector(BuildContext context, LanguageProvider languageProvider, AppLocalizations l10n) {
+    return ListTile(
+      leading: Icon(Icons.language),
+      title: Text(l10n.language),
+      subtitle: Text(languageProvider.getLanguageName(languageProvider.currentLocale.languageCode)),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16),
+      onTap: () => _showLanguageDialog(context, languageProvider, l10n),
+      minVerticalPadding: 18,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
+  Future<void> _showLanguageDialog(BuildContext context, LanguageProvider languageProvider, AppLocalizations l10n) async {
+    final localesWithNames = languageProvider.getSupportedLocalesWithNames();
+    
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(l10n.selectLanguage),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: localesWithNames.entries.map((entry) {
+              final locale = entry.key;
+              final name = entry.value;
+              final isSelected = locale.languageCode == languageProvider.currentLocale.languageCode;
+              
+              return ListTile(
+                title: Text(name),
+                leading: Radio<String>(
+                  value: locale.languageCode,
+                  groupValue: languageProvider.currentLocale.languageCode,
+                  onChanged: (String? value) async {
+                    if (value != null) {
+                      await languageProvider.setLocale(locale);
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(l10n.languageChangedTo(name)),
+                        ),
+                      );
+                    }
+                  },
+                ),
+                onTap: () async {
+                  await languageProvider.setLocale(locale);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.languageChangedTo(name)),
+                    ),
+                  );
+                },
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

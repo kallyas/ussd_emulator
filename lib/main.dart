@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/ussd_provider.dart';
 import 'providers/accessibility_provider.dart';
+import 'providers/language_provider.dart';
 import 'screens/home_screen.dart';
 import 'utils/accessibility_themes.dart';
 import 'utils/design_system.dart';
+import 'l10n/generated/app_localizations.dart';
 
 void main() {
   runApp(const UssdEmulatorApp());
@@ -20,14 +23,32 @@ class UssdEmulatorApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => UssdProvider()),
         ChangeNotifierProvider(create: (context) => AccessibilityProvider()),
+        ChangeNotifierProvider(create: (context) => LanguageProvider()),
       ],
-      child: Consumer<AccessibilityProvider>(
-        builder: (context, accessibilityProvider, child) {
+      child: Consumer2<AccessibilityProvider, LanguageProvider>(
+        builder: (context, accessibilityProvider, languageProvider, child) {
           final settings = accessibilityProvider.settings;
 
           return MaterialApp(
             title: 'USSD Emulator',
             debugShowCheckedModeBanner: false,
+
+            // Localization support
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: languageProvider.currentLocale,
+            localeResolutionCallback: (locale, supportedLocales) {
+              // Check if the current device locale is supported
+              if (locale != null) {
+                for (var supportedLocale in supportedLocales) {
+                  if (supportedLocale.languageCode == locale.languageCode) {
+                    return supportedLocale;
+                  }
+                }
+              }
+              // If not supported, return English as default
+              return const Locale('en', 'US');
+            },
 
             // Dynamic theme based on accessibility settings
 
@@ -47,11 +68,14 @@ class UssdEmulatorApp extends StatelessWidget {
 
             // Apply text scale factor for accessibility
             builder: (context, child) {
-              return MediaQuery(
-                data: MediaQuery.of(
-                  context,
-                ).copyWith(textScaleFactor: settings.textScaleFactor),
-                child: child!,
+              return Directionality(
+                textDirection: languageProvider.textDirection,
+                child: MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaleFactor: settings.textScaleFactor),
+                  child: child!,
+                ),
               );
             },
 

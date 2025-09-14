@@ -5,6 +5,7 @@ import '../providers/ussd_provider.dart';
 import '../widgets/ussd_session_form.dart';
 import '../widgets/modern_conversation_view.dart';
 import '../utils/design_system.dart';
+import '../l10n/generated/app_localizations.dart';
 
 class UssdSessionScreen extends StatelessWidget {
   const UssdSessionScreen({super.key});
@@ -12,6 +13,7 @@ class UssdSessionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
+    final l10n = AppLocalizations.of(context);
 
     return SafeArea(
       child: Padding(
@@ -26,13 +28,13 @@ class UssdSessionScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 16),
                 child: ListTile(
                   leading: Icon(Icons.error_rounded, color: Theme.of(context).colorScheme.error, size: 28),
-                  title: Text('Error', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer, fontWeight: FontWeight.bold)),
+                  title: Text(l10n.error, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer, fontWeight: FontWeight.bold)),
                   subtitle: Text(provider.error!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer)),
                   trailing: IconButton(
                     icon: const Icon(Icons.close_rounded),
                     onPressed: provider.clearError,
                     color: Theme.of(context).colorScheme.onErrorContainer,
-                    tooltip: 'Dismiss error',
+                    tooltip: l10n.dismissError,
                   ),
                 ),
               ),
@@ -43,7 +45,7 @@ class UssdSessionScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 16),
                 child: ListTile(
                   leading: Icon(Icons.cloud_done_rounded, color: Theme.of(context).colorScheme.secondary, size: 28),
-                  title: Text('Connected', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold)),
+                  title: Text(l10n.connected, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold)),
                   subtitle: Text(provider.activeEndpointConfig!.name, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer)),
                   trailing: AnimatedContainer(
                     duration: const Duration(milliseconds: 1000),
@@ -63,7 +65,7 @@ class UssdSessionScreen extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.stop_circle_outlined),
-                    label: const Text('End Session'),
+                    label: Text(l10n.endSession),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.errorContainer,
                       foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
@@ -73,7 +75,7 @@ class UssdSessionScreen extends StatelessWidget {
                     onPressed: () async {
                       await provider.endSession();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('USSD session ended.')),
+                        SnackBar(content: Text(l10n.ussdSessionEnded)),
                       );
                     },
                   ),
