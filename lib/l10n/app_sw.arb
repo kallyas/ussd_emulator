@@ -42,5 +42,7 @@
   "french": "Kifaransa",
   "amharic": "Kiamhara",
   "hausa": "Kihausa",
-  "arabic": "Kiarabu"
+  "arabic": "Kiarabu",
+  "noActiveSession": "Hakuna kipindi kilichoanza",
+  "startNewSessionPrompt": "Anza kipindi kipya cha USSD kuona mazungumzo"
 }

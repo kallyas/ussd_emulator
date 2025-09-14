@@ -215,5 +215,15 @@
   "arabic": "Arabic",
   "@arabic": {
     "description": "Arabic language name"
+  },
+  
+  "noActiveSession": "No active session",
+  "@noActiveSession": {
+    "description": "Message when no USSD session is active"
+  },
+  
+  "startNewSessionPrompt": "Start a new USSD session to see conversation",
+  "@startNewSessionPrompt": {
+    "description": "Prompt to start a new session"
   }
 }

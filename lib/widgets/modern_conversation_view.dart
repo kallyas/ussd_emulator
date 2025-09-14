@@ -9,6 +9,7 @@ import '../utils/ussd_utils.dart';
 import '../utils/design_system.dart';
 import '../widgets/animated_message_bubble.dart';
 import '../widgets/modern_input_field.dart';
+import '../l10n/generated/app_localizations.dart';
 import 'ussd_keypad.dart';
 import 'ussd_debug_panel.dart';
 import 'ussd_session_details.dart';
@@ -122,6 +123,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
   }
 
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -133,14 +135,14 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
           ),
           const SizedBox(height: UssdDesignSystem.spacingM),
           Text(
-            'No active session',
+            l10n.noActiveSession,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: UssdDesignSystem.spacingS),
           Text(
-            'Start a new USSD session to see conversation',
+            l10n.startNewSessionPrompt,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),

@@ -130,4 +130,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get arabic => 'Arabic';
+
+  @override
+  String get noActiveSession => 'No active session';
+
+  @override
+  String get startNewSessionPrompt => 'Start a new USSD session to see conversation';
 }

@@ -130,4 +130,10 @@ class AppLocalizationsHa extends AppLocalizations {
 
   @override
   String get arabic => 'Larabci';
+
+  @override
+  String get noActiveSession => 'Babu zama mai aiki';
+
+  @override
+  String get startNewSessionPrompt => 'Fara sabon zama USSD don ganin tattaunawa';
 }

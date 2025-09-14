@@ -130,4 +130,10 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get arabic => 'ዓረብኛ';
+
+  @override
+  String get noActiveSession => 'ንቁ ክፍለ ጊዜ የለም';
+
+  @override
+  String get startNewSessionPrompt => 'ውይይቱን ለማየት አዲስ የUSSD ክፍለ ጊዜ ጀምር';
 }

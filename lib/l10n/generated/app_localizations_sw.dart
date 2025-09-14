@@ -130,4 +130,10 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get arabic => 'Kiarabu';
+
+  @override
+  String get noActiveSession => 'Hakuna kipindi kilichoanza';
+
+  @override
+  String get startNewSessionPrompt => 'Anza kipindi kipya cha USSD kuona mazungumzo';
 }

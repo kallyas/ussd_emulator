@@ -42,5 +42,7 @@
   "french": "Français",
   "amharic": "Amharique",
   "hausa": "Haoussa",
-  "arabic": "Arabe"
+  "arabic": "Arabe",
+  "noActiveSession": "Aucune session active",
+  "startNewSessionPrompt": "Démarrez une nouvelle session USSD pour voir la conversation"
 }

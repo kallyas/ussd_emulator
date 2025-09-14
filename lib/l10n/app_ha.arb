@@ -42,5 +42,7 @@
   "french": "Faransanci",
   "amharic": "Harshen Amharic",
   "hausa": "Hausa",
-  "arabic": "Larabci"
+  "arabic": "Larabci",
+  "noActiveSession": "Babu zama mai aiki",
+  "startNewSessionPrompt": "Fara sabon zama USSD don ganin tattaunawa"
 }

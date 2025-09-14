@@ -42,5 +42,7 @@
   "french": "ፈረንሳይኛ",
   "amharic": "አማርኛ",
   "hausa": "ሃውሳ",
-  "arabic": "ዓረብኛ"
+  "arabic": "ዓረብኛ",
+  "noActiveSession": "ንቁ ክፍለ ጊዜ የለም",
+  "startNewSessionPrompt": "ውይይቱን ለማየት አዲስ የUSSD ክፍለ ጊዜ ጀምር"
 }

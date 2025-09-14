@@ -42,5 +42,7 @@
   "french": "الفرنسية",
   "amharic": "الأمهرية",
   "hausa": "الهوسا",
-  "arabic": "العربية"
+  "arabic": "العربية",
+  "noActiveSession": "لا توجد جلسة نشطة",
+  "startNewSessionPrompt": "ابدأ جلسة USSD جديدة لرؤية المحادثة"
 }

@@ -345,6 +345,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arabic'**
   String get arabic;
+
+  /// Message when no USSD session is active
+  ///
+  /// In en, this message translates to:
+  /// **'No active session'**
+  String get noActiveSession;
+
+  /// Prompt to start a new session
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new USSD session to see conversation'**
+  String get startNewSessionPrompt;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
