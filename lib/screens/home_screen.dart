@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
 import '../providers/accessibility_provider.dart';
+import '../providers/language_provider.dart';
 import '../utils/design_system.dart';
 import '../utils/page_transitions.dart' hide ScaleTransition;
+import '../l10n/generated/app_localizations.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
@@ -21,13 +23,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
   late AnimationController _navigationController;
   late AnimationController _fabController;
-  late Animation<double> _navigationAnimation;
   late Animation<double> _fabAnimation;
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animation controllers
     _navigationController = AnimationController(
       duration: UssdDesignSystem.animationMedium,
@@ -37,24 +38,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       duration: UssdDesignSystem.animationMedium,
       vsync: this,
     );
-    
-    _navigationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _navigationController,
-        curve: UssdDesignSystem.curveDefault,
-      ),
-    );
-    
+
     _fabAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fabController,
-        curve: Curves.elasticOut,
-      ),
+      CurvedAnimation(parent: _fabController, curve: Curves.elasticOut),
     );
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UssdProvider>().init();
       context.read<AccessibilityProvider>().init();
+      context.read<LanguageProvider>().init();
       _navigationController.forward();
       Future.delayed(UssdDesignSystem.animationMedium, () {
         _fabController.forward();
@@ -72,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
+    final l10n = AppLocalizations.of(context);
 
     if (!provider.isInitialized) {
       return Scaffold(
@@ -91,69 +84,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                    boxShadow: UssdDesignSystem.getShadow(
-                      UssdDesignSystem.elevationLevel3,
-                      color: Theme.of(context).colorScheme.primary,
+                      padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: UssdDesignSystem.getShadow(
+                          UssdDesignSystem.elevationLevel3,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.phone_in_talk_rounded,
+                        size: 48,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    )
+                    .animate()
+                    .scale(
+                      begin: const Offset(1.0, 1.0),
+                      end: const Offset(1.1, 1.1),
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.easeInOut,
+                    )
+                    .then()
+                    .scale(
+                      begin: const Offset(1.1, 1.1),
+                      end: const Offset(1.0, 1.0),
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.easeInOut,
                     ),
-                  ),
-                  child: Icon(
-                    Icons.phone_in_talk_rounded,
-                    size: 48,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                )
-                .animate()
-                .scale(
-                  begin: const Offset(1.0, 1.0),
-                  end: const Offset(1.1, 1.1),
-                  duration: const Duration(milliseconds: 1000),
-                  curve: Curves.easeInOut,
-                )
-                .then()
-                .scale(
-                  begin: const Offset(1.1, 1.1),
-                  end: const Offset(1.0, 1.0),
-                  duration: const Duration(milliseconds: 1000),
-                  curve: Curves.easeInOut,
-                ),
                 const SizedBox(height: UssdDesignSystem.spacingL),
                 Text(
-                  'USSD Emulator',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: const Duration(milliseconds: 300))
-                .slideY(begin: 0.3, end: 0.0),
+                      l10n.appTitle,
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    )
+                    .animate()
+                    .fadeIn(delay: const Duration(milliseconds: 300))
+                    .slideY(begin: 0.3, end: 0.0),
                 const SizedBox(height: UssdDesignSystem.spacingM),
                 Text(
-                  'Initializing...',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: const Duration(milliseconds: 500))
-                .slideY(begin: 0.3, end: 0.0),
+                      l10n.initializing,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                    .animate()
+                    .fadeIn(delay: const Duration(milliseconds: 500))
+                    .slideY(begin: 0.3, end: 0.0),
                 const SizedBox(height: UssdDesignSystem.spacingXL),
                 SizedBox(
-                  width: 200,
-                  child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: const Duration(milliseconds: 700))
-                .slideY(begin: 0.3, end: 0.0),
+                      width: 200,
+                      child: LinearProgressIndicator(
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    )
+                    .animate()
+                    .fadeIn(delay: const Duration(milliseconds: 700))
+                    .slideY(begin: 0.3, end: 0.0),
               ],
             ),
           ),
@@ -185,7 +181,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: UssdDesignSystem.getShadow(2, color: Theme.of(context).colorScheme.primary),
+                          boxShadow: UssdDesignSystem.getShadow(
+                            2,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                         child: Icon(
                           Icons.phone_in_talk_rounded,
@@ -195,8 +194,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        'USSD Emulator',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        l10n.appTitle,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.onBackground,
                             ),
@@ -204,8 +204,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ],
                   ),
                   Semantics(
-                    label: 'Open accessibility settings',
-                    hint: 'Configure accessibility options',
+                    label: l10n.openAccessibilitySettings,
+                    hint: l10n.configureAccessibilityOptions,
                     child: ScaleTransition(
                       scale: _fabAnimation,
                       child: Material(
@@ -213,23 +213,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            final accessibilityProvider = context.read<AccessibilityProvider>();
+                            final accessibilityProvider = context
+                                .read<AccessibilityProvider>();
                             accessibilityProvider.hapticFeedback();
                             Navigator.push(
                               context,
-                              PageTransitions.slideFromRight(const AccessibilitySettingsScreen()),
+                              PageTransitions.slideFromRight(
+                                const AccessibilitySettingsScreen(),
+                              ),
                             );
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondaryContainer,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondaryContainer,
                               borderRadius: BorderRadius.circular(16),
-                              boxShadow: UssdDesignSystem.getShadow(1, color: Theme.of(context).colorScheme.secondaryContainer),
+                              boxShadow: UssdDesignSystem.getShadow(
+                                1,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.secondaryContainer,
+                              ),
                             ),
                             child: Icon(
                               Icons.accessibility_rounded,
-                              color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondaryContainer,
                               size: 28,
                             ),
                           ),
@@ -251,10 +263,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         end: Offset.zero,
                       ).chain(CurveTween(curve: UssdDesignSystem.curveDefault)),
                     ),
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    ),
+                    child: FadeTransition(opacity: animation, child: child),
                   );
                 },
                 child: screens[_selectedIndex],
@@ -270,19 +279,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: (index) {
-              final accessibilityProvider = context.read<AccessibilityProvider>();
+              final accessibilityProvider = context
+                  .read<AccessibilityProvider>();
               accessibilityProvider.hapticFeedback();
               setState(() {
                 _selectedIndex = index;
               });
               // Announce navigation change for screen readers
               String screenName = [
-                'USSD Session',
-                'Configuration',
-                'Session History',
+                l10n.ussdSession,
+                l10n.configuration,
+                l10n.sessionHistory,
               ][index];
               accessibilityProvider.announceForScreenReader(
-                'Navigated to $screenName screen',
+                l10n.navigatedToScreen(screenName),
               );
             },
             type: BottomNavigationBarType.fixed,
@@ -293,18 +303,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             items: [
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.phone_rounded, 0),
-                label: 'USSD',
-                tooltip: 'USSD Session Screen',
+                label: l10n.ussd,
+                tooltip: l10n.ussdSessionScreenTooltip,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.settings_rounded, 1),
-                label: 'Config',
-                tooltip: 'Endpoint Configuration',
+                label: l10n.config,
+                tooltip: l10n.endpointConfigurationTooltip,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.history_rounded, 2),
-                label: 'History',
-                tooltip: 'Session History',
+                label: l10n.history,
+                tooltip: l10n.sessionHistoryTooltip,
               ),
             ],
           ),
@@ -315,19 +325,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildNavIcon(IconData icon, int index) {
     final isSelected = _selectedIndex == index;
-    
+
     return AnimatedContainer(
       duration: UssdDesignSystem.animationFast,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: isSelected 
+        color: isSelected
             ? Theme.of(context).colorScheme.primaryContainer
             : Colors.transparent,
         borderRadius: UssdDesignSystem.borderRadiusSmall,
       ),
       child: Icon(
         icon,
-        color: isSelected 
+        color: isSelected
             ? Theme.of(context).colorScheme.onPrimaryContainer
             : Theme.of(context).colorScheme.onSurfaceVariant,
       ),

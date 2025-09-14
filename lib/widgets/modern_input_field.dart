@@ -56,7 +56,7 @@ class _ModernTextFieldState extends State<ModernTextField>
       setState(() {
         _isFocused = _focusNode.hasFocus;
       });
-      
+
       if (_isFocused) {
         _animationController.forward();
       } else {
@@ -75,7 +75,7 @@ class _ModernTextFieldState extends State<ModernTextField>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return AnimatedBuilder(
       animation: _focusAnimation,
       builder: (context, child) {
@@ -103,8 +103,8 @@ class _ModernTextFieldState extends State<ModernTextField>
                 labelText: widget.label,
                 hintText: widget.hint,
                 filled: true,
-                fillColor: _isFocused 
-                    ? colorScheme.surface 
+                fillColor: _isFocused
+                    ? colorScheme.surface
                     : colorScheme.surfaceContainer,
                 suffixIcon: widget.isLoading
                     ? Container(
@@ -129,28 +129,22 @@ class _ModernTextFieldState extends State<ModernTextField>
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: UssdDesignSystem.borderRadiusMedium,
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 16,
                   horizontal: 16,
                 ),
                 labelStyle: TextStyle(
-                  color: _isFocused 
-                      ? colorScheme.primary 
+                  color: _isFocused
+                      ? colorScheme.primary
                       : colorScheme.onSurfaceVariant,
                 ),
                 hintStyle: TextStyle(
                   color: colorScheme.onSurfaceVariant.withOpacity(0.6),
                 ),
               ),
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
               onSubmitted: (_) => widget.onSubmitted?.call(),
             ),
           ),
@@ -181,7 +175,7 @@ class _AnimatedSendButtonState extends State<AnimatedSendButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  
+
   @override
   void initState() {
     super.initState();
@@ -190,7 +184,10 @@ class _AnimatedSendButtonState extends State<AnimatedSendButton>
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: UssdDesignSystem.curveDefault),
+      CurvedAnimation(
+        parent: _controller,
+        curve: UssdDesignSystem.curveDefault,
+      ),
     );
   }
 
@@ -203,10 +200,14 @@ class _AnimatedSendButtonState extends State<AnimatedSendButton>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return GestureDetector(
-      onTapDown: widget.enabled && !widget.isLoading ? (_) => _controller.forward() : null,
-      onTapUp: widget.enabled && !widget.isLoading ? (_) => _controller.reverse() : null,
+      onTapDown: widget.enabled && !widget.isLoading
+          ? (_) => _controller.forward()
+          : null,
+      onTapUp: widget.enabled && !widget.isLoading
+          ? (_) => _controller.reverse()
+          : null,
       onTapCancel: () => _controller.reverse(),
       onTap: widget.enabled && !widget.isLoading ? widget.onPressed : null,
       child: AnimatedBuilder(
@@ -244,7 +245,7 @@ class _AnimatedSendButtonState extends State<AnimatedSendButton>
                     )
                   : Icon(
                       Icons.send_rounded,
-                      color: widget.enabled 
+                      color: widget.enabled
                           ? colorScheme.onPrimary
                           : colorScheme.onSurface.withOpacity(0.38),
                       size: 24,
@@ -281,7 +282,7 @@ class ModernInputArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
       decoration: BoxDecoration(
@@ -337,9 +338,7 @@ class ModernInputArea extends StatelessWidget {
           ],
         ),
       ),
-    )
-    .animate()
-    .slideY(
+    ).animate().slideY(
       begin: 1.0,
       end: 0.0,
       duration: UssdDesignSystem.animationMedium,
@@ -369,7 +368,7 @@ class _PulseButtonState extends State<PulseButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  
+
   @override
   void initState() {
     super.initState();
@@ -378,7 +377,10 @@ class _PulseButtonState extends State<PulseButton>
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: UssdDesignSystem.curveDefault),
+      CurvedAnimation(
+        parent: _controller,
+        curve: UssdDesignSystem.curveDefault,
+      ),
     );
   }
 

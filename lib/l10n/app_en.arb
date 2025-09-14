@@ -1,0 +1,234 @@
+{
+  "@@locale": "en",
+  "@@context": "USSD Emulator App",
+  
+  "appTitle": "USSD Emulator",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "initializing": "Initializing...",
+  "@initializing": {
+    "description": "Loading message shown during app initialization"
+  },
+  
+  "ussd": "USSD",
+  "@ussd": {
+    "description": "USSD navigation label"
+  },
+  
+  "config": "Config",
+  "@config": {
+    "description": "Configuration navigation label"
+  },
+  
+  "history": "History",
+  "@history": {
+    "description": "History navigation label"
+  },
+  
+  "ussdSession": "USSD Session",
+  "@ussdSession": {
+    "description": "USSD Session screen name"
+  },
+  
+  "configuration": "Configuration",
+  "@configuration": {
+    "description": "Configuration screen name"
+  },
+  
+  "sessionHistory": "Session History",
+  "@sessionHistory": {
+    "description": "Session History screen name"
+  },
+  
+  "openAccessibilitySettings": "Open accessibility settings",
+  "@openAccessibilitySettings": {
+    "description": "Accessibility button label"
+  },
+  
+  "configureAccessibilityOptions": "Configure accessibility options",
+  "@configureAccessibilityOptions": {
+    "description": "Accessibility button hint"
+  },
+  
+  "accessibilitySettings": "Accessibility Settings",
+  "@accessibilitySettings": {
+    "description": "Accessibility settings screen title"
+  },
+  
+  "ussdSessionScreenTooltip": "USSD Session Screen",
+  "@ussdSessionScreenTooltip": {
+    "description": "Tooltip for USSD session navigation"
+  },
+  
+  "endpointConfigurationTooltip": "Endpoint Configuration",
+  "@endpointConfigurationTooltip": {
+    "description": "Tooltip for configuration navigation"
+  },
+  
+  "sessionHistoryTooltip": "Session History",
+  "@sessionHistoryTooltip": {
+    "description": "Tooltip for history navigation"
+  },
+  
+  "navigatedToScreen": "Navigated to {screenName} screen",
+  "@navigatedToScreen": {
+    "description": "Accessibility announcement for screen navigation",
+    "placeholders": {
+      "screenName": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Error label"
+  },
+  
+  "dismissError": "Dismiss error",
+  "@dismissError": {
+    "description": "Button to dismiss error message"
+  },
+  
+  "connected": "Connected",
+  "@connected": {
+    "description": "Connection status label"
+  },
+  
+  "endSession": "End Session",
+  "@endSession": {
+    "description": "Button to end USSD session"
+  },
+  
+  "ussdSessionEnded": "USSD session ended.",
+  "@ussdSessionEnded": {
+    "description": "Message shown when USSD session ends"
+  },
+  
+  "enterPhoneNumber": "Enter phone number",
+  "@enterPhoneNumber": {
+    "description": "Phone number input label"
+  },
+  
+  "enterServiceCode": "Enter service code like *123#",
+  "@enterServiceCode": {
+    "description": "Service code input label with example"
+  },
+  
+  "enterNetworkCode": "Enter network code",
+  "@enterNetworkCode": {
+    "description": "Network code input label"
+  },
+  
+  "startSession": "Start Session",
+  "@startSession": {
+    "description": "Button to start USSD session"
+  },
+  
+  "sessionStarted": "Session started",
+  "@sessionStarted": {
+    "description": "Message when session starts"
+  },
+  
+  "sessionEnded": "Session ended",
+  "@sessionEnded": {
+    "description": "Message when session ends"
+  },
+  
+  "networkError": "Network connection failed. Please check your internet connection.",
+  "@networkError": {
+    "description": "Network error message"
+  },
+  
+  "invalidPhoneNumber": "Invalid phone number format",
+  "@invalidPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  
+  "sessionTimeout": "Session timed out",
+  "@sessionTimeout": {
+    "description": "Session timeout error message"
+  },
+  
+  "phoneNumberHint": "Enter phone number like +1234567890",
+  "@phoneNumberHint": {
+    "description": "Phone number input hint"
+  },
+  
+  "serviceCodeHint": "Enter service code like *123#",
+  "@serviceCodeHint": {
+    "description": "Service code input hint"
+  },
+  
+  "networkCodeHint": "Enter network code like MTN",
+  "@networkCodeHint": {
+    "description": "Network code input hint"
+  },
+  
+  "sessionDetails": "Session Details",
+  "@sessionDetails": {
+    "description": "Session details section title"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language settings label"
+  },
+  
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Language selection dialog title"
+  },
+  
+  "languageChangedTo": "Language changed to {languageName}",
+  "@languageChangedTo": {
+    "description": "Message shown when language is changed",
+    "placeholders": {
+      "languageName": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  
+  "swahili": "Swahili",
+  "@swahili": {
+    "description": "Swahili language name"
+  },
+  
+  "french": "French",
+  "@french": {
+    "description": "French language name"
+  },
+  
+  "amharic": "Amharic",
+  "@amharic": {
+    "description": "Amharic language name"
+  },
+  
+  "hausa": "Hausa",
+  "@hausa": {
+    "description": "Hausa language name"
+  },
+  
+  "arabic": "Arabic",
+  "@arabic": {
+    "description": "Arabic language name"
+  },
+  
+  "noActiveSession": "No active session",
+  "@noActiveSession": {
+    "description": "Message when no USSD session is active"
+  },
+  
+  "startNewSessionPrompt": "Start a new USSD session to see conversation",
+  "@startNewSessionPrompt": {
+    "description": "Prompt to start a new session"
+  }
+}

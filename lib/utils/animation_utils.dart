@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../utils/design_system.dart';
 
 /// Performance-optimized animation utilities
 class AnimationUtils {
   /// Check if reduced motion is preferred for accessibility
-  static bool get reduceMotion => 
-      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+  static bool get reduceMotion => WidgetsBinding
+      .instance
+      .platformDispatcher
+      .accessibilityFeatures
+      .reduceMotion;
 
   /// Get adjusted animation duration based on accessibility settings
   static Duration getAnimationDuration(Duration baseDuration) {
@@ -35,10 +37,7 @@ class AnimationUtils {
       builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(0, 20 * (1 - value)),
-          child: Opacity(
-            opacity: value,
-            child: child,
-          ),
+          child: Opacity(opacity: value, child: child),
         );
       },
       child: child,
@@ -59,9 +58,7 @@ class AnimationUtils {
 
     return SlideTransition(
       position: animation.drive(
-        Tween(begin: begin, end: end).chain(
-          CurveTween(curve: curve),
-        ),
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve)),
       ),
       child: child,
     );
@@ -81,9 +78,7 @@ class AnimationUtils {
 
     return ScaleTransition(
       scale: animation.drive(
-        Tween(begin: begin, end: end).chain(
-          CurveTween(curve: curve),
-        ),
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve)),
       ),
       child: child,
     );
@@ -103,9 +98,7 @@ class AnimationUtils {
 
     return FadeTransition(
       opacity: animation.drive(
-        Tween(begin: begin, end: end).chain(
-          CurveTween(curve: curve),
-        ),
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve)),
       ),
       child: child,
     );
@@ -119,21 +112,19 @@ class AnimationUtils {
   }) {
     return Hero(
       tag: tag,
-      flightShuttleBuilder: (
-        BuildContext flightContext,
-        Animation<double> animation,
-        HeroFlightDirection flightDirection,
-        BuildContext fromHeroContext,
-        BuildContext toHeroContext,
-      ) {
-        return Material(
-          type: MaterialType.transparency,
-          child: ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
-        );
-      },
+      flightShuttleBuilder:
+          (
+            BuildContext flightContext,
+            Animation<double> animation,
+            HeroFlightDirection flightDirection,
+            BuildContext fromHeroContext,
+            BuildContext toHeroContext,
+          ) {
+            return Material(
+              type: MaterialType.transparency,
+              child: ScaleTransition(scale: animation, child: child),
+            );
+          },
       child: child,
     );
   }
@@ -189,9 +180,8 @@ class AnimationUtils {
 
     return Column(
       children: children.asMap().entries.map((entry) {
-        final index = entry.key;
         final child = entry.value;
-        
+
         return TweenAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: 1.0),
           duration: itemDuration,
@@ -199,10 +189,7 @@ class AnimationUtils {
           builder: (context, value, child) {
             return Transform.translate(
               offset: Offset(0, 30 * (1 - value)),
-              child: Opacity(
-                opacity: value,
-                child: child,
-              ),
+              child: Opacity(opacity: value, child: child),
             );
           },
           child: child,
@@ -226,12 +213,12 @@ class AnimationPerformanceMonitor {
   static void _onFrame(Duration timestamp) {
     _frameCount++;
     final now = DateTime.now();
-    
+
     if (_lastFrameTime != null) {
       final frameDuration = now.difference(_lastFrameTime!);
       _currentFPS = 1000 / frameDuration.inMilliseconds;
     }
-    
+
     _lastFrameTime = now;
   }
 
@@ -244,14 +231,14 @@ class AnimationPerformanceMonitor {
   /// Get performance recommendations
   static List<String> getPerformanceRecommendations() {
     final recommendations = <String>[];
-    
+
     if (_currentFPS < 30) {
       recommendations.add('Consider reducing animation complexity');
       recommendations.add('Enable reduced motion in accessibility settings');
     } else if (_currentFPS < 45) {
       recommendations.add('Consider shorter animation durations');
     }
-    
+
     return recommendations;
   }
 }
