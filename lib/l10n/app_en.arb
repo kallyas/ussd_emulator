@@ -230,5 +230,210 @@
   "startNewSessionPrompt": "Start a new USSD session to see conversation",
   "@startNewSessionPrompt": {
     "description": "Prompt to start a new session"
+  },
+
+  "templates": "Templates",
+  "@templates": {
+    "description": "Templates navigation label"
+  },
+
+  "templateLibrary": "Template Library",
+  "@templateLibrary": {
+    "description": "Template Library screen title"
+  },
+
+  "templateLibraryTooltip": "Manage USSD templates",
+  "@templateLibraryTooltip": {
+    "description": "Tooltip for template library tab"
+  },
+
+  "manageUssdTemplates": "Manage and execute USSD templates",
+  "@manageUssdTemplates": {
+    "description": "Subtitle for template library"
+  },
+
+  "createTemplate": "Create Template",
+  "@createTemplate": {
+    "description": "Button to create new template"
+  },
+
+  "createNewTemplate": "Create a new USSD template",
+  "@createNewTemplate": {
+    "description": "Tooltip for create template button"
+  },
+
+  "totalTemplates": "Total Templates",
+  "@totalTemplates": {
+    "description": "Label for total templates count"
+  },
+
+  "categories": "Categories",
+  "@categories": {
+    "description": "Label for categories count"
+  },
+
+  "searchTemplates": "Search templates...",
+  "@searchTemplates": {
+    "description": "Hint text for template search"
+  },
+
+  "allCategories": "All Categories",
+  "@allCategories": {
+    "description": "Filter option for all categories"
+  },
+
+  "noTemplatesFound": "No templates found",
+  "@noTemplatesFound": {
+    "description": "Message when search returns no results"
+  },
+
+  "noTemplatesYet": "No templates yet",
+  "@noTemplatesYet": {
+    "description": "Message when no templates exist"
+  },
+
+  "tryDifferentSearch": "Try a different search or filter",
+  "@tryDifferentSearch": {
+    "description": "Suggestion when no search results"
+  },
+
+  "createFirstTemplate": "Create your first template to get started",
+  "@createFirstTemplate": {
+    "description": "Prompt to create first template"
+  },
+
+  "stepCount": "{count} steps",
+  "@stepCount": {
+    "description": "Number of steps in template",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "executeTemplate": "Execute Template",
+  "@executeTemplate": {
+    "description": "Button to execute template"
+  },
+
+  "moreActions": "More actions",
+  "@moreActions": {
+    "description": "Tooltip for more actions button"
+  },
+
+  "editTemplate": "Edit Template",
+  "@editTemplate": {
+    "description": "Action to edit template"
+  },
+
+  "duplicateTemplate": "Duplicate Template",
+  "@duplicateTemplate": {
+    "description": "Action to duplicate template"
+  },
+
+  "exportTemplate": "Export Template",
+  "@exportTemplate": {
+    "description": "Action to export template"
+  },
+
+  "deleteTemplate": "Delete Template",
+  "@deleteTemplate": {
+    "description": "Action to delete template"
+  },
+
+  "confirmDeleteTemplate": "Are you sure you want to delete '{name}'?",
+  "@confirmDeleteTemplate": {
+    "description": "Confirmation message for template deletion",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "templateDetails": "Template Details",
+  "@templateDetails": {
+    "description": "Section title for template details"
+  },
+
+  "templateName": "Template Name",
+  "@templateName": {
+    "description": "Label for template name field"
+  },
+
+  "enterTemplateName": "Enter template name",
+  "@enterTemplateName": {
+    "description": "Hint for template name field"
+  },
+
+  "templateNameRequired": "Template name is required",
+  "@templateNameRequired": {
+    "description": "Validation message for template name"
+  },
+
+  "enterTemplateDescription": "Enter template description",
+  "@enterTemplateDescription": {
+    "description": "Hint for template description field"
+  },
+
+  "descriptionRequired": "Description is required",
+  "@descriptionRequired": {
+    "description": "Validation message for description"
+  },
+
+  "serviceCode": "Service Code",
+  "@serviceCode": {
+    "description": "Label for service code field"
+  },
+
+  "serviceCodeRequired": "Service code is required",
+  "@serviceCodeRequired": {
+    "description": "Validation message for service code"
+  },
+
+  "category": "Category",
+  "@category": {
+    "description": "Label for category field"
+  },
+
+  "enterCategory": "Enter category (optional)",
+  "@enterCategory": {
+    "description": "Hint for category field"
+  },
+
+  "templateSteps": "Template Steps",
+  "@templateSteps": {
+    "description": "Section title for template steps"
+  },
+
+  "addStep": "Add Step",
+  "@addStep": {
+    "description": "Button to add new step"
+  },
+
+  "templateBuilderComingSoon": "Template Builder Coming Soon",
+  "@templateBuilderComingSoon": {
+    "description": "Title for coming soon message"
+  },
+
+  "templateBuilderDescription": "The full template builder with step editor, variables, and validation will be available in the next update.",
+  "@templateBuilderDescription": {
+    "description": "Description for template builder feature"
+  },
+
+  "templateExecutionComingSoon": "Template Execution Coming Soon",
+  "@templateExecutionComingSoon": {
+    "description": "Title for execution coming soon message"
+  },
+
+  "templateExecutionDescription": "Real-time template execution with step-by-step feedback and automation will be available in the next update.",
+  "@templateExecutionDescription": {
+    "description": "Description for template execution feature"
+  },
+
+  "featureComingSoon": "This feature is coming soon!",
+  "@featureComingSoon": {
+    "description": "Generic coming soon message"
   }
 }
