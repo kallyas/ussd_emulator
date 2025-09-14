@@ -31,6 +31,12 @@ dependencies:
   shimmer: ^3.0.0
   flutter_animate: ^4.2.0
   flutter_staggered_animations: ^1.1.1
+  # Security Dependencies
+  flutter_secure_storage: ^9.0.0
+  encrypt: ^5.0.1
+  crypto: ^3.0.3
+  dio_certificate_pinning: ^4.1.1
+  dio_smart_retry: ^6.0.0
 
 dev_dependencies:
   flutter_test:
