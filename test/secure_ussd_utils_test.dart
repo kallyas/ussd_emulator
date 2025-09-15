@@ -172,7 +172,7 @@ void main() {
         expect(SecureUssdUtils.containsSuspiciousPatterns('<script>'), true);
         expect(SecureUssdUtils.containsSuspiciousPatterns('SELECT * FROM'), true);
         expect(SecureUssdUtils.containsSuspiciousPatterns('javascript:'), true);
-        expect(SecureUssdUtils.containsSuspiciousPatterns('$(curl'), true);
+        expect(SecureUssdUtils.containsSuspiciousPatterns(r'$(curl'), true);
         expect(SecureUssdUtils.containsSuspiciousPatterns('%3Cscript%3E'), true);
       });
 

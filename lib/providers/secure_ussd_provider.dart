@@ -3,6 +3,7 @@ import '../services/secure_ussd_api_service.dart';
 import '../services/security_monitor.dart';
 import '../models/ussd_request.dart';
 import '../models/ussd_response.dart';
+import '../models/ussd_session.dart';
 import '../models/endpoint_config.dart';
 import '../utils/secure_ussd_utils.dart';
 
