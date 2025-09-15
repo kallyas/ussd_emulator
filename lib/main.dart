@@ -71,9 +71,7 @@ class UssdEmulatorApp extends StatelessWidget {
               return Directionality(
                 textDirection: languageProvider.textDirection,
                 child: MediaQuery(
-                  data: MediaQuery.of(
-                    context,
-                  ).copyWith(
+                  data: MediaQuery.of(context).copyWith(
                     textScaler: TextScaler.linear(settings.textScaleFactor),
                   ),
                   child: child!,

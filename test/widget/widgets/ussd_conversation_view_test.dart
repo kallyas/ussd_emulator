@@ -25,7 +25,7 @@ void main() {
     setUp(() {
       mockUssdProvider = MockUssdProvider();
       mockAccessibilityProvider = MockAccessibilityProvider();
-      
+
       // Create test session with sample data
       testSession = UssdSession(
         id: 'test-session-1',
@@ -43,7 +43,8 @@ void main() {
         responses: [
           UssdResponse(
             sessionId: 'test-session-1',
-            text: 'Welcome to USSD Service\n1. Check Balance\n2. Transfer Money\n3. Buy Airtime',
+            text:
+                'Welcome to USSD Service\n1. Check Balance\n2. Transfer Money\n3. Buy Airtime',
             continueSession: true,
           ),
         ],
@@ -71,15 +72,15 @@ void main() {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider<UssdProvider>.value(value: mockUssdProvider),
-          ChangeNotifierProvider<AccessibilityProvider>.value(value: mockAccessibilityProvider),
+          ChangeNotifierProvider<AccessibilityProvider>.value(
+            value: mockAccessibilityProvider,
+          ),
         ],
         child: MaterialApp(
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: themeMode,
-          home: const Scaffold(
-            body: UssdConversationView(),
-          ),
+          home: const Scaffold(body: UssdConversationView()),
         ),
       );
     }
@@ -89,7 +90,7 @@ void main() {
 
       // Verify service code is displayed
       expect(find.text('*123#'), findsOneWidget);
-      
+
       // Verify response text is displayed
       expect(find.textContaining('Welcome to USSD Service'), findsOneWidget);
       expect(find.textContaining('1. Check Balance'), findsOneWidget);
@@ -100,7 +101,9 @@ void main() {
       expect(find.byType(TextField), findsOneWidget);
     });
 
-    testWidgets('should handle user input and send USSD command', (tester) async {
+    testWidgets('should handle user input and send USSD command', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       // Find the input field and enter text
@@ -114,7 +117,7 @@ void main() {
       // Find and tap the send button
       final sendButton = find.byIcon(Icons.send);
       expect(sendButton, findsOneWidget);
-      
+
       await tester.tap(sendButton);
       await tester.pump();
 
@@ -122,7 +125,9 @@ void main() {
       verify(mockUssdProvider.sendUssdInput('1')).called(1);
     });
 
-    testWidgets('should handle keyboard enter key for sending input', (tester) async {
+    testWidgets('should handle keyboard enter key for sending input', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       // Enter text in the input field
@@ -140,12 +145,12 @@ void main() {
 
     testWidgets('should display loading state correctly', (tester) async {
       when(mockUssdProvider.isLoading).thenReturn(true);
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Should display loading indicator
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Input should be disabled during loading
       final inputField = find.byType(TextField);
       final textField = tester.widget<TextField>(inputField);
@@ -154,7 +159,7 @@ void main() {
 
     testWidgets('should display error state correctly', (tester) async {
       when(mockUssdProvider.error).thenReturn('Network error occurred');
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Should display error message
@@ -169,7 +174,7 @@ void main() {
       final inputField = find.byType(TextField);
       await tester.enterText(inputField, '1');
       await tester.pump();
-      
+
       await tester.tap(find.byIcon(Icons.send));
       await tester.pump();
 
@@ -178,7 +183,9 @@ void main() {
       expect(textField.controller?.text, isEmpty);
     });
 
-    testWidgets('should display multiple conversation exchanges', (tester) async {
+    testWidgets('should display multiple conversation exchanges', (
+      tester,
+    ) async {
       // Create session with multiple exchanges
       final multiExchangeSession = UssdSession(
         id: 'test-session-2',
@@ -217,25 +224,28 @@ void main() {
       );
 
       when(mockUssdProvider.currentSession).thenReturn(multiExchangeSession);
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Should display both responses
       expect(find.textContaining('Welcome'), findsOneWidget);
-      expect(find.textContaining('Your balance is KES 1,000.00'), findsOneWidget);
-      
+      expect(
+        find.textContaining('Your balance is KES 1,000.00'),
+        findsOneWidget,
+      );
+
       // Should show user input history
       expect(find.textContaining('1'), findsWidgets);
     });
 
     testWidgets('should handle empty session state', (tester) async {
       when(mockUssdProvider.currentSession).thenReturn(null);
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Should display appropriate message for no session
       expect(find.textContaining('No active session'), findsOneWidget);
-      
+
       // Input should be disabled when no session
       final inputField = find.byType(TextField);
       final textField = tester.widget<TextField>(inputField);
@@ -244,15 +254,13 @@ void main() {
 
     testWidgets('should validate accessibility semantics', (tester) async {
       final SemanticsHandle handle = tester.ensureSemantics();
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Check semantic labels exist
       expect(
         tester.getSemantics(find.byType(UssdConversationView)),
-        matchesSemantics(
-          hasImplicitScrolling: true,
-        ),
+        matchesSemantics(hasImplicitScrolling: true),
       );
 
       // Input field should have appropriate semantics
@@ -278,21 +286,24 @@ void main() {
       expect(find.text('*123#'), findsOneWidget);
     });
 
-    testWidgets('should handle long response text with scrolling', (tester) async {
+    testWidgets('should handle long response text with scrolling', (
+      tester,
+    ) async {
       // Create session with very long response
       final longResponseSession = testSession.copyWith(
         responses: [
           UssdResponse(
             sessionId: 'test-session-1',
-            text: 'This is a very long USSD response ' * 20 + 
-                  '\n1. Option 1\n2. Option 2\n3. Option 3\n4. Option 4\n5. Option 5',
+            text:
+                'This is a very long USSD response ' * 20 +
+                '\n1. Option 1\n2. Option 2\n3. Option 3\n4. Option 4\n5. Option 5',
             continueSession: true,
           ),
         ],
       );
 
       when(mockUssdProvider.currentSession).thenReturn(longResponseSession);
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Should display the response in a scrollable view
@@ -300,7 +311,9 @@ void main() {
       expect(find.textContaining('This is a very long'), findsOneWidget);
     });
 
-    testWidgets('should prevent input when session is not active', (tester) async {
+    testWidgets('should prevent input when session is not active', (
+      tester,
+    ) async {
       final inactiveSession = testSession.copyWith(
         isActive: false,
         responses: [
@@ -314,14 +327,14 @@ void main() {
       );
 
       when(mockUssdProvider.currentSession).thenReturn(inactiveSession);
-      
+
       await tester.pumpWidget(createTestWidget());
 
       // Input should be disabled for inactive session
       final inputField = find.byType(TextField);
       final textField = tester.widget<TextField>(inputField);
       expect(textField.enabled, isFalse);
-      
+
       // Should show session ended message
       expect(find.textContaining('Session ended'), findsOneWidget);
     });

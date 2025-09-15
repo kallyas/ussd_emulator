@@ -32,16 +32,13 @@ void main() {
         description: 'Test description',
         serviceCode: '*123#',
         steps: [],
-        variables: {
-          'pin': '1234',
-          'account': 'savings',
-        },
+        variables: {'pin': '1234', 'account': 'savings'},
         createdAt: DateTime.now(),
       );
 
       const input = 'Enter PIN: \${pin} for \${account} account';
       final result = template.processVariables(input);
-      
+
       expect(result, 'Enter PIN: 1234 for savings account');
     });
 
@@ -52,9 +49,7 @@ void main() {
         name: 'Test Template',
         description: 'Test description',
         serviceCode: '*123#',
-        steps: [
-          const TemplateStep(input: '1'),
-        ],
+        steps: [const TemplateStep(input: '1')],
         variables: {},
         createdAt: DateTime.now(),
       );
@@ -67,9 +62,7 @@ void main() {
         name: '',
         description: 'Test description',
         serviceCode: '*123#',
-        steps: [
-          const TemplateStep(input: '1'),
-        ],
+        steps: [const TemplateStep(input: '1')],
         variables: {},
         createdAt: DateTime.now(),
       );
@@ -125,7 +118,7 @@ void main() {
       );
 
       final usedVariables = template.usedVariables;
-      
+
       expect(usedVariables, contains('pin'));
       expect(usedVariables, contains('account'));
       expect(usedVariables, isNot(contains('unused')));
@@ -145,9 +138,7 @@ void main() {
             expectedResponse: 'Enter PIN',
           ),
         ],
-        variables: {
-          'pin': '1234',
-        },
+        variables: {'pin': '1234'},
         stepDelayMs: 3000,
         createdAt: DateTime(2024, 1, 1),
         category: 'Banking',
@@ -188,7 +179,10 @@ void main() {
       expect(copiedTemplate.id, originalTemplate.id); // unchanged
       expect(copiedTemplate.name, 'Updated Template'); // changed
       expect(copiedTemplate.stepDelayMs, 5000); // changed
-      expect(copiedTemplate.description, originalTemplate.description); // unchanged
+      expect(
+        copiedTemplate.description,
+        originalTemplate.description,
+      ); // unchanged
     });
 
     test('should convert step delay to Duration', () {

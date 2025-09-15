@@ -37,8 +37,8 @@ class TemplateStep {
       input: input ?? this.input,
       expectedResponse: expectedResponse ?? this.expectedResponse,
       description: description ?? this.description,
-      customDelayMs: customDelayMs == const Object() 
-          ? this.customDelayMs 
+      customDelayMs: customDelayMs == const Object()
+          ? this.customDelayMs
           : customDelayMs as int?,
       waitForResponse: waitForResponse ?? this.waitForResponse,
       isCritical: isCritical ?? this.isCritical,
@@ -46,13 +46,13 @@ class TemplateStep {
   }
 
   /// Get the custom delay as a Duration, or null if not set
-  Duration? get customDelay => customDelayMs != null 
-      ? Duration(milliseconds: customDelayMs!)
-      : null;
+  Duration? get customDelay =>
+      customDelayMs != null ? Duration(milliseconds: customDelayMs!) : null;
 
   /// Check if this step has a custom delay
   bool get hasCustomDelay => customDelayMs != null;
 
   /// Check if this step expects a response
-  bool get hasExpectedResponse => expectedResponse != null && expectedResponse!.isNotEmpty;
+  bool get hasExpectedResponse =>
+      expectedResponse != null && expectedResponse!.isNotEmpty;
 }

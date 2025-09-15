@@ -12,12 +12,12 @@ class SecureUssdProvider {
   final SecureUssdSessionService _sessionService;
   final SecureUssdApiService _apiService;
   final SecurityMonitor _securityMonitor;
-  
+
   SecureUssdProvider()
-      : _sessionService = SecureUssdSessionService(),
-        _apiService = SecureUssdApiService(),
-        _securityMonitor = SecurityMonitor();
-  
+    : _sessionService = SecureUssdSessionService(),
+      _apiService = SecureUssdApiService(),
+      _securityMonitor = SecurityMonitor();
+
   /// Initialize all security services
   Future<void> initialize() async {
     await _sessionService.init();
@@ -25,7 +25,7 @@ class SecureUssdProvider {
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
-  
+
   /// Start a new secure USSD session
   Future<UssdSession> startSecureSession({
     required String phoneNumber,
@@ -38,11 +38,11 @@ class SecureUssdProvider {
         'phone_number': phoneNumber,
         'service_code': serviceCode,
       });
-      
+
       // Validate inputs before starting session
       final validatedPhone = SecureUssdUtils.validatePhoneNumber(phoneNumber);
       final validatedCode = SecureUssdUtils.validateServiceCode(serviceCode);
-      
+
       // Check if user is rate limited
       if (_securityMonitor.isUserRateLimited(validatedPhone)) {
         _securityMonitor.logSecurityEvent('session_start_rate_limited', {
@@ -50,22 +50,21 @@ class SecureUssdProvider {
         });
         throw SecurityException('Rate limit exceeded. Please try again later.');
       }
-      
+
       // Start session with validated data
       final session = await _sessionService.startSession(
         phoneNumber: validatedPhone,
         serviceCode: validatedCode,
         networkCode: networkCode,
       );
-      
+
       _securityMonitor.logSecurityEvent('session_started', {
         'session_id': session.id,
         'phone_number': session.phoneNumber,
         'service_code': session.serviceCode,
       });
-      
+
       return session;
-      
     } catch (e) {
       _securityMonitor.logSecurityEvent('session_start_failed', {
         'phone_number': phoneNumber,
@@ -74,7 +73,7 @@ class SecureUssdProvider {
       rethrow;
     }
   }
-  
+
   /// Send a secure USSD request
   Future<UssdResponse> sendSecureRequest(
     String userInput,
@@ -84,21 +83,21 @@ class SecureUssdProvider {
     if (currentSession == null) {
       throw Exception('No active session');
     }
-    
+
     try {
       // Validate and sanitize user input
-      final sanitizedInput = userInput.isEmpty 
-          ? userInput 
+      final sanitizedInput = userInput.isEmpty
+          ? userInput
           : SecureUssdUtils.validateMenuSelection(userInput);
-      
+
       // Update session path
       if (sanitizedInput.isNotEmpty) {
         await _sessionService.addUserInputToPath(sanitizedInput);
       }
-      
+
       // Build text for API request
       final textInput = SecureUssdUtils.buildTextInput(currentSession.ussdPath);
-      
+
       // Create secure request
       final request = UssdRequest(
         sessionId: currentSession.id,
@@ -106,27 +105,26 @@ class SecureUssdProvider {
         text: textInput,
         serviceCode: currentSession.serviceCode,
       );
-      
+
       // Security monitoring
       _securityMonitor.detectAnomalousActivity(request);
-      
+
       // Add request to session
       await _sessionService.addRequest(request);
-      
+
       // Send secure API request
       final response = await _apiService.sendUssdRequest(request, endpoint);
-      
+
       // Add response to session
       await _sessionService.addResponse(response);
-      
+
       _securityMonitor.logSecurityEvent('request_completed', {
         'session_id': currentSession.id,
         'phone_number': currentSession.phoneNumber,
         'response_type': response.continueSession ? 'CON' : 'END',
       });
-      
+
       return response;
-      
     } catch (e) {
       _securityMonitor.logSecurityEvent('request_failed', {
         'session_id': currentSession.id,
@@ -136,7 +134,7 @@ class SecureUssdProvider {
       rethrow;
     }
   }
-  
+
   /// End current session securely
   Future<void> endSecureSession() async {
     final currentSession = _sessionService.currentSession;
@@ -144,22 +142,25 @@ class SecureUssdProvider {
       _securityMonitor.logSecurityEvent('session_ended', {
         'session_id': currentSession.id,
         'phone_number': currentSession.phoneNumber,
-        'duration_minutes': DateTime.now().difference(currentSession.createdAt).inMinutes,
+        'duration_minutes': DateTime.now()
+            .difference(currentSession.createdAt)
+            .inMinutes,
       });
-      
+
       await _sessionService.endSession();
     }
   }
-  
+
   /// Get current session
   UssdSession? get currentSession => _sessionService.currentSession;
-  
+
   /// Get session history
   List<UssdSession> get sessionHistory => _sessionService.sessionHistory;
-  
+
   /// Get security statistics
-  Map<String, dynamic> getSecurityStats() => _securityMonitor.getSecurityStats();
-  
+  Map<String, dynamic> getSecurityStats() =>
+      _securityMonitor.getSecurityStats();
+
   /// Check if user is rate limited
   bool isUserRateLimited(String phoneNumber) {
     try {
@@ -169,7 +170,7 @@ class SecureUssdProvider {
       return true; // If validation fails, treat as rate limited for safety
     }
   }
-  
+
   /// Get recent security events
   List<SecurityLog> getRecentSecurityEvents({
     int limit = 50,
@@ -180,13 +181,13 @@ class SecureUssdProvider {
       minSeverity: minSeverity,
     );
   }
-  
+
   /// Clear all security data (for testing or admin actions)
   Future<void> clearAllSecurityData() async {
     await _sessionService.clearSecureStorage();
     _securityMonitor.clearAll();
     SecureUssdUtils.clearRateLimitData();
-    
+
     _securityMonitor.logSecurityEvent('security_data_cleared', {
       'timestamp': DateTime.now().toIso8601String(),
     });
@@ -197,19 +198,19 @@ class SecureUssdProvider {
 class SecureUssdExample {
   static Future<void> demonstrateSecureUsage() async {
     final secureProvider = SecureUssdProvider();
-    
+
     try {
       // Initialize security services
       await secureProvider.initialize();
-      
+
       // Start secure session
       final session = await secureProvider.startSecureSession(
         phoneNumber: '+256700000000',
         serviceCode: '*123#',
       );
-      
+
       print('Secure session started: ${session.id}');
-      
+
       // Configure endpoint
       final endpoint = EndpointConfig(
         id: 'secure_test',
@@ -218,32 +219,31 @@ class SecureUssdExample {
         headers: {'Authorization': 'Bearer secure-token'},
         isActive: true,
       );
-      
+
       // Send secure requests
       var response = await secureProvider.sendSecureRequest('', endpoint);
       print('Initial response: ${response.message}');
-      
+
       if (response.continueSession) {
         response = await secureProvider.sendSecureRequest('1', endpoint);
         print('Menu selection response: ${response.message}');
       }
-      
+
       // End session
       await secureProvider.endSecureSession();
-      
+
       // Check security stats
       final stats = secureProvider.getSecurityStats();
       print('Security statistics: $stats');
-      
     } catch (e) {
       print('Secure USSD error: $e');
-      
+
       // Get recent security events to analyze the issue
       final events = secureProvider.getRecentSecurityEvents(
         limit: 10,
         minSeverity: SecuritySeverity.medium,
       );
-      
+
       for (final event in events) {
         print('Security event: ${event.event} - ${event.severity.name}');
       }

@@ -18,14 +18,14 @@ import 'package:shared_preferences/shared_preferences.dart';
   AccessibilityProvider,
   LanguageProvider,
   TemplateProvider,
-  
+
   // Services
   UssdApiService,
   UssdSessionService,
   EndpointConfigService,
   SessionExportService,
   TemplateService,
-  
+
   // External dependencies
   Dio,
   SharedPreferences,

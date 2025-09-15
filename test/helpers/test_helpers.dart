@@ -33,7 +33,8 @@ class TestDataFactory {
       responses: [
         UssdResponse(
           sessionId: id ?? 'test-session',
-          text: 'Welcome to USSD Service\n1. Check Balance\n2. Transfer Money\n3. Buy Airtime',
+          text:
+              'Welcome to USSD Service\n1. Check Balance\n2. Transfer Money\n3. Buy Airtime',
           continueSession: true,
         ),
       ],
@@ -48,7 +49,8 @@ class TestDataFactory {
     String? id,
     int exchangeCount = 3,
   }) {
-    final sessionId = id ?? 'multi-session-${DateTime.now().millisecondsSinceEpoch}';
+    final sessionId =
+        id ?? 'multi-session-${DateTime.now().millisecondsSinceEpoch}';
     final requests = <UssdRequest>[];
     final responses = <UssdResponse>[];
     final path = <String>[];
@@ -169,26 +171,22 @@ class TestWidgetHelpers {
         if (ussdProvider != null)
           ChangeNotifierProvider<UssdProvider>.value(value: ussdProvider),
         if (accessibilityProvider != null)
-          ChangeNotifierProvider<AccessibilityProvider>.value(value: accessibilityProvider),
+          ChangeNotifierProvider<AccessibilityProvider>.value(
+            value: accessibilityProvider,
+          ),
       ],
       child: MaterialApp(
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
         themeMode: themeMode,
-        home: Scaffold(
-          body: child,
-        ),
+        home: Scaffold(body: child),
       ),
     );
   }
 
   /// Create a test app with material design
   static Widget createMaterialTestApp(Widget child) {
-    return MaterialApp(
-      home: Scaffold(
-        body: child,
-      ),
-    );
+    return MaterialApp(home: Scaffold(body: child));
   }
 
   /// Create a test app with custom theme
@@ -198,9 +196,7 @@ class TestWidgetHelpers {
   }) {
     return MaterialApp(
       theme: theme,
-      home: Scaffold(
-        body: child,
-      ),
+      home: Scaffold(body: child),
     );
   }
 }
@@ -280,11 +276,11 @@ class TestConfig {
   static const Duration defaultTimeout = Duration(seconds: 10);
   static const Duration shortTimeout = Duration(seconds: 5);
   static const Duration longTimeout = Duration(seconds: 30);
-  
+
   static const Size mobileScreenSize = Size(375, 667);
   static const Size tabletScreenSize = Size(768, 1024);
   static const Size desktopScreenSize = Size(1920, 1080);
-  
+
   static const String testPhoneNumber = '254700000000';
   static const String testServiceCode = '*123#';
   static const String testNetworkCode = 'safaricom';

@@ -112,7 +112,7 @@ void main() {
       // Find the icon first and then tap at its location
       final accessibilityIcon = find.byIcon(Icons.accessibility_rounded);
       expect(accessibilityIcon, findsOneWidget);
-      
+
       await tester.tap(accessibilityIcon);
       await tester.pump(const Duration(seconds: 1));
       await tester.pump();

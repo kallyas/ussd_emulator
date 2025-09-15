@@ -63,15 +63,17 @@ class UssdAutomationEngine {
       for (int i = 0; i < template.steps.length && !_shouldStop; i++) {
         final step = template.steps[i];
         onStepUpdate?.call(i, 'executing');
-        onLog?.call('Executing step ${i + 1}: ${step.description ?? step.input}');
+        onLog?.call(
+          'Executing step ${i + 1}: ${step.description ?? step.input}',
+        );
 
         final stepResult = await _executeStep(
-          step, 
-          effectiveVariables, 
+          step,
+          effectiveVariables,
           i,
           template.stepDelay,
         );
-        
+
         stepResults.add(stepResult);
 
         if (!stepResult.isSuccessful && step.isCritical) {
@@ -83,8 +85,9 @@ class UssdAutomationEngine {
       }
 
       final endTime = DateTime.now();
-      final isSuccessful = stepResults.isNotEmpty && 
-                          stepResults.every((r) => r.isSuccessful || !r.step.isCritical);
+      final isSuccessful =
+          stepResults.isNotEmpty &&
+          stepResults.every((r) => r.isSuccessful || !r.step.isCritical);
 
       result = AutomationResult(
         templateId: template.id,
@@ -97,7 +100,6 @@ class UssdAutomationEngine {
       );
 
       onLog?.call('Template execution completed. Success: $isSuccessful');
-
     } catch (e) {
       final endTime = DateTime.now();
       result = AutomationResult(
@@ -148,13 +150,16 @@ class UssdAutomationEngine {
     for (int i = 0; i < templates.length && !_shouldStop; i++) {
       final template = templates[i];
       onTemplateUpdate?.call(i, 'executing');
-      onLog?.call('Executing template ${i + 1}/${templates.length}: ${template.name}');
+      onLog?.call(
+        'Executing template ${i + 1}/${templates.length}: ${template.name}',
+      );
 
       try {
         final result = await runTemplate(
           template,
           overrideVariables: globalVariables,
-          onStepUpdate: (stepIndex, status) => onStepUpdate?.call(i, stepIndex, status),
+          onStepUpdate: (stepIndex, status) =>
+              onStepUpdate?.call(i, stepIndex, status),
           onLog: onLog,
         );
 
@@ -162,24 +167,27 @@ class UssdAutomationEngine {
         onTemplateUpdate?.call(i, result.isSuccessful ? 'success' : 'failed');
 
         if (!result.isSuccessful && stopOnFirstFailure) {
-          onLog?.call('Template failed and stopOnFirstFailure is enabled, stopping batch');
+          onLog?.call(
+            'Template failed and stopOnFirstFailure is enabled, stopping batch',
+          );
           break;
         }
 
         // Brief pause between templates
         await Future.delayed(const Duration(milliseconds: 1000));
-
       } catch (e) {
         onLog?.call('Template execution error: $e');
         onTemplateUpdate?.call(i, 'error');
-        
+
         if (stopOnFirstFailure) {
           break;
         }
       }
     }
 
-    onLog?.call('Batch execution completed. ${results.length} templates executed');
+    onLog?.call(
+      'Batch execution completed. ${results.length} templates executed',
+    );
     return results;
   }
 
@@ -192,17 +200,17 @@ class UssdAutomationEngine {
 
   /// Execute a single step
   Future<StepResult> _executeStep(
-    TemplateStep step, 
+    TemplateStep step,
     Map<String, String> variables,
     int stepIndex,
     Duration defaultDelay,
   ) async {
     final stepStartTime = DateTime.now();
-    
+
     try {
       // Process variables in the input
       final processedInput = _processVariables(step.input, variables);
-      
+
       // Send the input
       await _ussdProvider.sendUssdInput(processedInput);
 
@@ -230,11 +238,14 @@ class UssdAutomationEngine {
       // Validate response if expected
       bool responseMatched = true;
       String? actualResponse;
-      
+
       if (step.hasExpectedResponse) {
         actualResponse = _getLastResponse();
         if (actualResponse != null) {
-          final expectedResponse = _processVariables(step.expectedResponse!, variables);
+          final expectedResponse = _processVariables(
+            step.expectedResponse!,
+            variables,
+          );
           responseMatched = _validateResponse(actualResponse, expectedResponse);
         } else {
           responseMatched = false;
@@ -250,7 +261,6 @@ class UssdAutomationEngine {
         actualResponse: actualResponse,
         responseMatched: responseMatched,
       );
-
     } catch (e) {
       return StepResult(
         stepIndex: stepIndex,
@@ -276,9 +286,10 @@ class UssdAutomationEngine {
   Future<void> _waitForResponse() async {
     const maxWaitTime = Duration(seconds: 30);
     const pollInterval = Duration(milliseconds: 100);
-    
+
     final startTime = DateTime.now();
-    int initialResponseCount = _ussdProvider.currentSession?.responses.length ?? 0;
+    int initialResponseCount =
+        _ussdProvider.currentSession?.responses.length ?? 0;
 
     while (DateTime.now().difference(startTime) < maxWaitTime) {
       if (_shouldStop) {
@@ -286,7 +297,8 @@ class UssdAutomationEngine {
       }
 
       // Check if we got a new response
-      final currentResponseCount = _ussdProvider.currentSession?.responses.length ?? 0;
+      final currentResponseCount =
+          _ussdProvider.currentSession?.responses.length ?? 0;
       if (currentResponseCount > initialResponseCount) {
         return;
       }
@@ -314,14 +326,16 @@ class UssdAutomationEngine {
   /// Validate response against expected text
   bool _validateResponse(String actualResponse, String expectedResponse) {
     // Simple contains check - can be enhanced with regex or fuzzy matching
-    return actualResponse.toLowerCase().contains(expectedResponse.toLowerCase());
+    return actualResponse.toLowerCase().contains(
+      expectedResponse.toLowerCase(),
+    );
   }
 
   /// Check if automation can run
   bool canRun() {
-    return !_isRunning && 
-           _ussdProvider.isInitialized && 
-           _ussdProvider.activeEndpointConfig != null;
+    return !_isRunning &&
+        _ussdProvider.isInitialized &&
+        _ussdProvider.activeEndpointConfig != null;
   }
 
   /// Get current automation status

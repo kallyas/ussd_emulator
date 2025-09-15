@@ -4,11 +4,7 @@ class ValidationException implements Exception {
   final String? field;
   final dynamic value;
 
-  const ValidationException(
-    this.message, {
-    this.field,
-    this.value,
-  });
+  const ValidationException(this.message, {this.field, this.value});
 
   @override
   String toString() {

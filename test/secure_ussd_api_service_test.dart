@@ -89,9 +89,15 @@ void main() {
     group('_generateRequestSignature', () {
       test('should generate consistent signatures', () {
         final timestamp = '1234567890';
-        final signature1 = service._generateRequestSignature(testRequest, timestamp);
-        final signature2 = service._generateRequestSignature(testRequest, timestamp);
-        
+        final signature1 = service._generateRequestSignature(
+          testRequest,
+          timestamp,
+        );
+        final signature2 = service._generateRequestSignature(
+          testRequest,
+          timestamp,
+        );
+
         expect(signature1, equals(signature2));
         expect(signature1, isNotEmpty);
         expect(signature1.length, equals(64)); // SHA256 hex length
@@ -99,24 +105,33 @@ void main() {
 
       test('should generate different signatures for different requests', () {
         final timestamp = '1234567890';
-        final signature1 = service._generateRequestSignature(testRequest, timestamp);
-        
+        final signature1 = service._generateRequestSignature(
+          testRequest,
+          timestamp,
+        );
+
         final differentRequest = UssdRequest(
           sessionId: 'different_session',
           phoneNumber: '+256700000000',
           text: '2',
           serviceCode: '*123#',
         );
-        final signature2 = service._generateRequestSignature(differentRequest, timestamp);
-        
+        final signature2 = service._generateRequestSignature(
+          differentRequest,
+          timestamp,
+        );
+
         expect(signature1, isNot(equals(signature2)));
       });
     });
 
     group('_prepareSecureHeaders', () {
       test('should include all required security headers', () async {
-        final headers = await service._prepareSecureHeaders(testConfig, testRequest);
-        
+        final headers = await service._prepareSecureHeaders(
+          testConfig,
+          testRequest,
+        );
+
         expect(headers['Content-Type'], 'application/json');
         expect(headers['User-Agent'], startsWith('USSD-Emulator/'));
         expect(headers['X-Request-ID'], isNotNull);
@@ -135,8 +150,11 @@ void main() {
           headers: {'Custom-Header': 'custom-value'},
           isActive: true,
         );
-        
-        final headers = await service._prepareSecureHeaders(configWithHeaders, testRequest);
+
+        final headers = await service._prepareSecureHeaders(
+          configWithHeaders,
+          testRequest,
+        );
         expect(headers['Custom-Header'], 'custom-value');
       });
     });
@@ -175,9 +193,9 @@ void main() {
         final interceptor = RequestSigningInterceptor('test_secret');
         final options = RequestOptions(path: '/test');
         final handler = _MockRequestInterceptorHandler();
-        
+
         interceptor.onRequest(options, handler);
-        
+
         expect(options.headers['X-Timestamp'], isNotNull);
         expect(options.headers['X-Signature'], isNotNull);
         expect(options.headers['X-Signature'], hasLength(64)); // SHA256 hex
@@ -189,20 +207,24 @@ void main() {
         final interceptor = SecurityHeadersInterceptor();
         final options = RequestOptions(path: '/test');
         final handler = _MockRequestInterceptorHandler();
-        
+
         interceptor.onRequest(options, handler);
-        
+
         expect(options.headers['X-Content-Type-Options'], 'nosniff');
         expect(options.headers['X-Frame-Options'], 'DENY');
         expect(options.headers['X-XSS-Protection'], '1; mode=block');
-        expect(options.headers['Referrer-Policy'], 'strict-origin-when-cross-origin');
+        expect(
+          options.headers['Referrer-Policy'],
+          'strict-origin-when-cross-origin',
+        );
       });
     });
   });
 }
 
 // Mock handler for interceptor tests
-class _MockRequestInterceptorHandler extends Mock implements RequestInterceptorHandler {
+class _MockRequestInterceptorHandler extends Mock
+    implements RequestInterceptorHandler {
   @override
   void next(RequestOptions requestOptions) {
     // Mock implementation

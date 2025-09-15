@@ -9,7 +9,7 @@ import '../models/template_step.dart';
 class TemplateService {
   static const String _templatesKey = 'session_templates';
   static const String _templatesFolderName = 'templates';
-  
+
   final Uuid _uuid = const Uuid();
   List<SessionTemplate> _templates = [];
 
@@ -17,7 +17,7 @@ class TemplateService {
 
   Future<void> init() async {
     await _loadTemplates();
-    
+
     // Create demo templates if no templates exist
     if (_templates.isEmpty) {
       await _createDemoTemplates();
@@ -52,7 +52,10 @@ class TemplateService {
   }
 
   /// Update an existing template
-  Future<SessionTemplate?> updateTemplate(String id, SessionTemplate updatedTemplate) async {
+  Future<SessionTemplate?> updateTemplate(
+    String id,
+    SessionTemplate updatedTemplate,
+  ) async {
     final index = _templates.indexWhere((t) => t.id == id);
     if (index == -1) return null;
 
@@ -107,18 +110,21 @@ class TemplateService {
   /// Search templates by name or description
   List<SessionTemplate> searchTemplates(String query) {
     if (query.isEmpty) return templates;
-    
+
     final lowerQuery = query.toLowerCase();
     return _templates.where((template) {
       return template.name.toLowerCase().contains(lowerQuery) ||
-             template.description.toLowerCase().contains(lowerQuery) ||
-             template.serviceCode.toLowerCase().contains(lowerQuery) ||
-             (template.category?.toLowerCase().contains(lowerQuery) ?? false);
+          template.description.toLowerCase().contains(lowerQuery) ||
+          template.serviceCode.toLowerCase().contains(lowerQuery) ||
+          (template.category?.toLowerCase().contains(lowerQuery) ?? false);
     }).toList();
   }
 
   /// Duplicate a template with a new ID and name
-  Future<SessionTemplate> duplicateTemplate(String id, {String? newName}) async {
+  Future<SessionTemplate> duplicateTemplate(
+    String id, {
+    String? newName,
+  }) async {
     final original = getTemplate(id);
     if (original == null) {
       throw Exception('Template not found');
@@ -175,7 +181,9 @@ class TemplateService {
       await templatesDir.create(recursive: true);
     }
 
-    final file = File('${templatesDir.path}/templates_export_${DateTime.now().millisecondsSinceEpoch}.json');
+    final file = File(
+      '${templatesDir.path}/templates_export_${DateTime.now().millisecondsSinceEpoch}.json',
+    );
     final exportData = {
       'version': '1.0',
       'exportDate': DateTime.now().toIso8601String(),
@@ -237,8 +245,9 @@ class TemplateService {
     final categories = getCategories();
     final totalTemplates = _templates.length;
     final validTemplates = _templates.where((t) => t.isValid).length;
-    final averageSteps = totalTemplates > 0 
-        ? _templates.map((t) => t.steps.length).reduce((a, b) => a + b) / totalTemplates
+    final averageSteps = totalTemplates > 0
+        ? _templates.map((t) => t.steps.length).reduce((a, b) => a + b) /
+              totalTemplates
         : 0.0;
 
     return {
@@ -312,9 +321,7 @@ class TemplateService {
           waitForResponse: true,
         ),
       ],
-      variables: {
-        'pin': '1234',
-      },
+      variables: {'pin': '1234'},
     );
 
     // Mobile Money Transfer Template
@@ -383,9 +390,7 @@ class TemplateService {
           waitForResponse: true,
         ),
       ],
-      variables: {
-        'amount': '5000',
-      },
+      variables: {'amount': '5000'},
     );
   }
 }

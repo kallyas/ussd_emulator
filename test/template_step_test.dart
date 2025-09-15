@@ -42,8 +42,14 @@ void main() {
 
     test('should check if step has expected response', () {
       const stepWithoutResponse = TemplateStep(input: '1');
-      const stepWithEmptyResponse = TemplateStep(input: '1', expectedResponse: '');
-      const stepWithResponse = TemplateStep(input: '1', expectedResponse: 'Enter PIN');
+      const stepWithEmptyResponse = TemplateStep(
+        input: '1',
+        expectedResponse: '',
+      );
+      const stepWithResponse = TemplateStep(
+        input: '1',
+        expectedResponse: 'Enter PIN',
+      );
 
       expect(stepWithoutResponse.hasExpectedResponse, false);
       expect(stepWithEmptyResponse.hasExpectedResponse, false);
@@ -91,10 +97,16 @@ void main() {
       );
 
       expect(copiedStep.input, originalStep.input); // unchanged
-      expect(copiedStep.expectedResponse, originalStep.expectedResponse); // unchanged
+      expect(
+        copiedStep.expectedResponse,
+        originalStep.expectedResponse,
+      ); // unchanged
       expect(copiedStep.description, 'Updated description'); // changed
       expect(copiedStep.isCritical, true); // changed
-      expect(copiedStep.waitForResponse, originalStep.waitForResponse); // unchanged
+      expect(
+        copiedStep.waitForResponse,
+        originalStep.waitForResponse,
+      ); // unchanged
     });
 
     test('should handle null custom delay in copyWith', () {

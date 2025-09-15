@@ -23,12 +23,12 @@ class SecurityLog {
   });
 
   Map<String, dynamic> toJson() => {
-        'event': event,
-        'timestamp': timestamp.toIso8601String(),
-        'context': context,
-        'severity': severity.name,
-        'user_id': userId,
-      };
+    'event': event,
+    'timestamp': timestamp.toIso8601String(),
+    'context': context,
+    'severity': severity.name,
+    'user_id': userId,
+  };
 }
 
 /// Security monitoring service for detecting and logging security events
@@ -85,7 +85,7 @@ class SecurityMonitor {
         'session_id': request.sessionId,
         'service_code': request.serviceCode,
       }, severity: SecuritySeverity.high);
-      
+
       _incrementSuspiciousActivity(phoneNumber);
       throw SecurityException('Rate limit exceeded for $phoneNumber');
     }
@@ -98,7 +98,7 @@ class SecurityMonitor {
         'input_length': request.text.length,
         'service_code': request.serviceCode,
       }, severity: SecuritySeverity.medium);
-      
+
       _incrementSuspiciousActivity(phoneNumber);
     }
 
@@ -112,24 +112,24 @@ class SecurityMonitor {
   /// Check if rate limit is exceeded
   bool _isRateLimitExceeded(String phoneNumber, DateTime now) {
     final history = _requestHistory[phoneNumber] ?? [];
-    
+
     // Clean old entries
     history.removeWhere((time) => now.difference(time) > Duration(hours: 1));
-    
+
     // Check minute-based rate limit
-    final recentRequests = history.where(
-      (time) => now.difference(time) <= Duration(minutes: 1),
-    ).length;
-    
+    final recentRequests = history
+        .where((time) => now.difference(time) <= Duration(minutes: 1))
+        .length;
+
     if (recentRequests >= MAX_REQUESTS_PER_MINUTE) {
       return true;
     }
-    
+
     // Check hour-based rate limit
     if (history.length >= MAX_REQUESTS_PER_HOUR) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -137,7 +137,7 @@ class SecurityMonitor {
   void _recordRequest(String phoneNumber, DateTime timestamp) {
     _requestHistory.putIfAbsent(phoneNumber, () => []);
     _requestHistory[phoneNumber]!.add(timestamp);
-    
+
     // Clean old entries to prevent memory leaks
     final cutoff = timestamp.subtract(Duration(hours: 1));
     _requestHistory[phoneNumber]!.removeWhere((time) => time.isBefore(cutoff));
@@ -175,19 +175,31 @@ class SecurityMonitor {
   /// Check if service code is commonly used
   bool _isCommonServiceCode(String serviceCode) {
     final commonCodes = [
-      '*123#', '*124#', '*125#', '*555#', '*777#', '*144#', '*100#',
-      '*111#', '*222#', '*333#', '*444#', '*666#', '*888#', '*999#'
+      '*123#',
+      '*124#',
+      '*125#',
+      '*555#',
+      '*777#',
+      '*144#',
+      '*100#',
+      '*111#',
+      '*222#',
+      '*333#',
+      '*444#',
+      '*666#',
+      '*888#',
+      '*999#',
     ];
     return commonCodes.contains(serviceCode);
   }
 
   /// Increment suspicious activity counter
   void _incrementSuspiciousActivity(String phoneNumber) {
-    _suspiciousActivityCount[phoneNumber] = 
+    _suspiciousActivityCount[phoneNumber] =
         (_suspiciousActivityCount[phoneNumber] ?? 0) + 1;
-    
+
     final count = _suspiciousActivityCount[phoneNumber]!;
-    
+
     if (count >= SUSPICIOUS_ACTIVITY_THRESHOLD) {
       logSecurityEvent('repeated_suspicious_activity', {
         'phone_number': phoneNumber,
@@ -204,19 +216,19 @@ class SecurityMonitor {
       'potential_attack',
       'authentication_failure',
     ];
-    
+
     final highEvents = [
       'suspicious_input_pattern',
       'unusual_session_pattern',
       'invalid_request_format',
     ];
-    
+
     final mediumEvents = [
       'unusual_service_code',
       'unusual_text_length',
       'validation_error',
     ];
-    
+
     if (criticalEvents.contains(event)) {
       return SecuritySeverity.critical;
     } else if (highEvents.contains(event)) {
@@ -231,22 +243,24 @@ class SecurityMonitor {
   /// Sanitize context to remove sensitive data
   Map<String, dynamic> _sanitizeContext(Map<String, dynamic> context) {
     final sanitized = <String, dynamic>{};
-    
+
     for (final entry in context.entries) {
       final key = entry.key.toLowerCase();
       final value = entry.value;
-      
+
       if (key.contains('phone')) {
         sanitized[entry.key] = _maskPhoneNumber(value.toString());
       } else if (key.contains('session')) {
         sanitized[entry.key] = _truncateSessionId(value.toString());
-      } else if (key.contains('password') || key.contains('secret') || key.contains('token')) {
+      } else if (key.contains('password') ||
+          key.contains('secret') ||
+          key.contains('token')) {
         sanitized[entry.key] = '[REDACTED]';
       } else {
         sanitized[entry.key] = value;
       }
     }
-    
+
     return sanitized;
   }
 
@@ -265,7 +279,7 @@ class SecurityMonitor {
   /// Add log entry to the queue
   void _addToLog(SecurityLog log) {
     _securityLogs.addLast(log);
-    
+
     // Maintain log size limit
     while (_securityLogs.length > MAX_LOG_ENTRIES) {
       _securityLogs.removeFirst();
@@ -275,7 +289,7 @@ class SecurityMonitor {
   /// Handle critical security events
   void _handleCriticalEvent(SecurityLog log) {
     print('CRITICAL_SECURITY_EVENT: ${log.event}');
-    
+
     // In a production environment, this might:
     // - Send alerts to security team
     // - Temporarily block the user
@@ -290,19 +304,22 @@ class SecurityMonitor {
     String? eventType,
   }) {
     var events = _securityLogs.toList();
-    
+
     // Filter by severity
     if (minSeverity != null) {
       final minIndex = SecuritySeverity.values.indexOf(minSeverity);
-      events = events.where((log) => 
-          SecuritySeverity.values.indexOf(log.severity) >= minIndex).toList();
+      events = events
+          .where(
+            (log) => SecuritySeverity.values.indexOf(log.severity) >= minIndex,
+          )
+          .toList();
     }
-    
+
     // Filter by event type
     if (eventType != null) {
       events = events.where((log) => log.event == eventType).toList();
     }
-    
+
     // Sort by timestamp (newest first) and limit
     events.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return events.take(limit).toList();
@@ -312,18 +329,19 @@ class SecurityMonitor {
   Map<String, dynamic> getSecurityStats() {
     final now = DateTime.now();
     final last24Hours = now.subtract(Duration(hours: 24));
-    final recentEvents = _securityLogs.where(
-      (log) => log.timestamp.isAfter(last24Hours),
-    ).toList();
-    
+    final recentEvents = _securityLogs
+        .where((log) => log.timestamp.isAfter(last24Hours))
+        .toList();
+
     final eventCounts = <String, int>{};
     final severityCounts = <String, int>{};
-    
+
     for (final event in recentEvents) {
       eventCounts[event.event] = (eventCounts[event.event] ?? 0) + 1;
-      severityCounts[event.severity.name] = (severityCounts[event.severity.name] ?? 0) + 1;
+      severityCounts[event.severity.name] =
+          (severityCounts[event.severity.name] ?? 0) + 1;
     }
-    
+
     return {
       'total_events_24h': recentEvents.length,
       'event_counts': eventCounts,
@@ -355,9 +373,9 @@ class SecurityMonitor {
 class SecurityException implements Exception {
   final String message;
   final String? code;
-  
+
   const SecurityException(this.message, {this.code});
-  
+
   @override
   String toString() => 'SecurityException: $message';
 }

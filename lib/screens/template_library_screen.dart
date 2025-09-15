@@ -40,7 +40,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Consumer<TemplateProvider>(
@@ -53,9 +53,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
             children: [
               _buildHeader(context, templateProvider),
               _buildSearchAndFilters(context, templateProvider),
-              Expanded(
-                child: _buildTemplateList(context, templateProvider),
-              ),
+              Expanded(child: _buildTemplateList(context, templateProvider)),
             ],
           );
         },
@@ -106,9 +104,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
                   children: [
                     Text(
                       l10n.templateLibrary,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       l10n.manageUssdTemplates,
@@ -148,7 +145,12 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildStatCard(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
       decoration: BoxDecoration(
@@ -157,11 +159,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: Theme.of(context).colorScheme.primary,
-            size: 20,
-          ),
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
           const SizedBox(width: UssdDesignSystem.spacingS),
           Expanded(
             child: Column(
@@ -187,7 +185,10 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     );
   }
 
-  Widget _buildSearchAndFilters(BuildContext context, TemplateProvider templateProvider) {
+  Widget _buildSearchAndFilters(
+    BuildContext context,
+    TemplateProvider templateProvider,
+  ) {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
@@ -265,7 +266,10 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     );
   }
 
-  Widget _buildTemplateList(BuildContext context, TemplateProvider templateProvider) {
+  Widget _buildTemplateList(
+    BuildContext context,
+    TemplateProvider templateProvider,
+  ) {
     final l10n = AppLocalizations.of(context);
     final templates = templateProvider.templates;
 
@@ -311,7 +315,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
             ),
             const SizedBox(height: UssdDesignSystem.spacingM),
             Text(
-              templateProvider.searchQuery.isNotEmpty || templateProvider.selectedCategory != null
+              templateProvider.searchQuery.isNotEmpty ||
+                      templateProvider.selectedCategory != null
                   ? l10n.noTemplatesFound
                   : l10n.noTemplatesYet,
               style: Theme.of(context).textTheme.titleMedium,
@@ -319,7 +324,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
             ),
             const SizedBox(height: UssdDesignSystem.spacingS),
             Text(
-              templateProvider.searchQuery.isNotEmpty || templateProvider.selectedCategory != null
+              templateProvider.searchQuery.isNotEmpty ||
+                      templateProvider.selectedCategory != null
                   ? l10n.tryDifferentSearch
                   : l10n.createFirstTemplate,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -327,7 +333,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            if (templateProvider.searchQuery.isEmpty && templateProvider.selectedCategory == null)
+            if (templateProvider.searchQuery.isEmpty &&
+                templateProvider.selectedCategory == null)
               Padding(
                 padding: const EdgeInsets.only(top: UssdDesignSystem.spacingL),
                 child: ElevatedButton.icon(
@@ -378,8 +385,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
                     width: 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: isValid 
-                          ? Colors.green 
+                      color: isValid
+                          ? Colors.green
                           : Theme.of(context).colorScheme.error,
                       shape: BoxShape.circle,
                     ),
@@ -399,7 +406,9 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
                         template.category!,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.secondaryContainer,
                     ),
                 ],
               ),
@@ -442,14 +451,22 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
                   const Spacer(),
                   IconButton(
                     icon: const Icon(Icons.play_arrow),
-                    onPressed: isValid 
-                        ? () => _executeTemplate(context, template, templateProvider)
+                    onPressed: isValid
+                        ? () => _executeTemplate(
+                            context,
+                            template,
+                            templateProvider,
+                          )
                         : null,
                     tooltip: l10n.executeTemplate,
                   ),
                   IconButton(
                     icon: const Icon(Icons.more_vert),
-                    onPressed: () => _showTemplateActions(context, template, templateProvider),
+                    onPressed: () => _showTemplateActions(
+                      context,
+                      template,
+                      templateProvider,
+                    ),
                     tooltip: l10n.moreActions,
                   ),
                 ],
@@ -464,9 +481,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
   void _navigateToTemplateBuilder(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const TemplateBuilderScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const TemplateBuilderScreen()),
     );
   }
 
@@ -489,7 +504,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     TemplateProvider templateProvider,
   ) {
     final l10n = AppLocalizations.of(context);
-    
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -511,10 +526,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
               ),
             ),
             const SizedBox(height: UssdDesignSystem.spacingL),
-            Text(
-              template.name,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(template.name, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: UssdDesignSystem.spacingL),
             ListTile(
               leading: const Icon(Icons.edit),
@@ -524,7 +536,8 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TemplateBuilderScreen(template: template),
+                    builder: (context) =>
+                        TemplateBuilderScreen(template: template),
                   ),
                 );
               },
@@ -546,14 +559,20 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              leading: Icon(
+                Icons.delete,
+                color: Theme.of(context).colorScheme.error,
+              ),
               title: Text(
                 l10n.deleteTemplate,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               onTap: () async {
                 Navigator.pop(context);
-                final confirmed = await _showDeleteConfirmation(context, template.name);
+                final confirmed = await _showDeleteConfirmation(
+                  context,
+                  template.name,
+                );
                 if (confirmed) {
                   await templateProvider.deleteTemplate(template.id);
                 }
@@ -565,28 +584,32 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     );
   }
 
-  Future<bool> _showDeleteConfirmation(BuildContext context, String templateName) async {
+  Future<bool> _showDeleteConfirmation(
+    BuildContext context,
+    String templateName,
+  ) async {
     final l10n = AppLocalizations.of(context);
-    
+
     return await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteTemplate),
-        content: Text(l10n.confirmDeleteTemplate(templateName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(l10n.deleteTemplate),
+            content: Text(l10n.confirmDeleteTemplate(templateName)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
+                child: Text(l10n.delete),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 }

@@ -58,7 +58,9 @@ class SessionTemplate {
       variables: variables ?? this.variables,
       stepDelayMs: stepDelayMs ?? this.stepDelayMs,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt == const Object() ? this.updatedAt : updatedAt as DateTime?,
+      updatedAt: updatedAt == const Object()
+          ? this.updatedAt
+          : updatedAt as DateTime?,
       category: category ?? this.category,
       version: version ?? this.version,
     );
