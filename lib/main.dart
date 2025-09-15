@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/ussd_provider.dart';
 import 'providers/accessibility_provider.dart';
 import 'providers/language_provider.dart';
+import 'providers/template_provider.dart';
 import 'screens/home_screen.dart';
 import 'utils/accessibility_themes.dart';
 import 'utils/design_system.dart';
@@ -23,6 +24,7 @@ class UssdEmulatorApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UssdProvider()),
         ChangeNotifierProvider(create: (context) => AccessibilityProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
+        ChangeNotifierProvider(create: (context) => TemplateProvider()),
       ],
       child: Consumer2<AccessibilityProvider, LanguageProvider>(
         builder: (context, accessibilityProvider, languageProvider, child) {

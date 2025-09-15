@@ -4,12 +4,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
 import '../providers/accessibility_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/template_provider.dart';
 import '../utils/design_system.dart';
 import '../utils/page_transitions.dart' hide ScaleTransition;
 import '../l10n/generated/app_localizations.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
+import 'template_library_screen.dart';
 import 'accessibility_settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       context.read<UssdProvider>().init();
       context.read<AccessibilityProvider>().init();
       context.read<LanguageProvider>().init();
+      context.read<TemplateProvider>().init(context.read<UssdProvider>());
       _navigationController.forward();
       Future.delayed(UssdDesignSystem.animationMedium, () {
         _fabController.forward();
@@ -161,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       const UssdSessionScreen(),
       const EndpointConfigScreen(),
       const SessionHistoryScreen(),
+      const TemplateLibraryScreen(),
     ];
 
     return Scaffold(
@@ -290,6 +294,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 l10n.ussdSession,
                 l10n.configuration,
                 l10n.sessionHistory,
+                l10n.templates,
               ][index];
               accessibilityProvider.announceForScreenReader(
                 l10n.navigatedToScreen(screenName),
@@ -315,6 +320,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 icon: _buildNavIcon(Icons.history_rounded, 2),
                 label: l10n.history,
                 tooltip: l10n.sessionHistoryTooltip,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.folder_special_rounded, 3),
+                label: l10n.templates,
+                tooltip: l10n.templateLibraryTooltip,
               ),
             ],
           ),
