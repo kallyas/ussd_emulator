@@ -35,7 +35,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   encrypt: ^5.0.1
   crypto: ^3.0.3
-  dio_certificate_pinning: ^4.1.1
+  # dio_certificate_pinning: ^4.1.1  # Temporarily disabled
   dio_smart_retry: ^6.0.0
   # Template and Automation Dependencies
   uuid: ^4.2.1

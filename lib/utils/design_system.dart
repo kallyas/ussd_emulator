@@ -28,6 +28,7 @@ class UssdDesignSystem {
   static const double spacingXXL = 48.0;
 
   // Border radius tokens
+  static const double radiusS = 8.0;
   static const BorderRadius borderRadiusSmall = BorderRadius.all(
     Radius.circular(8),
   );

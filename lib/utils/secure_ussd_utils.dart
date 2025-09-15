@@ -16,7 +16,7 @@ class SecureUssdUtils extends UssdUtils {
   static final RegExp SESSION_ID_PATTERN = RegExp(r'^[a-zA-Z0-9_-]+$');
   
   // Dangerous characters that should be removed/escaped
-  static final RegExp DANGEROUS_CHARS = RegExp(r'[<>"\&\'\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]');
+  static final RegExp DANGEROUS_CHARS = RegExp(r'''[<>"&'\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]''');
   
   /// Sanitize and validate USSD input with enhanced security
   static String sanitizeUssdInput(String input) {
