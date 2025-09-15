@@ -16,13 +16,13 @@ SessionTemplate _$SessionTemplateFromJson(Map<String, dynamic> json) =>
           .map((e) => TemplateStep.fromJson(e as Map<String, dynamic>))
           .toList(),
       variables: Map<String, String>.from(json['variables'] as Map),
-      stepDelayMs: json['stepDelayMs'] as int? ?? 2000,
+      stepDelayMs: (json['stepDelayMs'] as num?)?.toInt() ?? 2000,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: json['updatedAt'] == null
           ? null
           : DateTime.parse(json['updatedAt'] as String),
       category: json['category'] as String?,
-      version: json['version'] as int? ?? 1,
+      version: (json['version'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$SessionTemplateToJson(SessionTemplate instance) =>
@@ -31,7 +31,7 @@ Map<String, dynamic> _$SessionTemplateToJson(SessionTemplate instance) =>
       'name': instance.name,
       'description': instance.description,
       'serviceCode': instance.serviceCode,
-      'steps': instance.steps.map((e) => e.toJson()).toList(),
+      'steps': instance.steps,
       'variables': instance.variables,
       'stepDelayMs': instance.stepDelayMs,
       'createdAt': instance.createdAt.toIso8601String(),

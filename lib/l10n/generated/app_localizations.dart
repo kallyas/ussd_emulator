@@ -369,6 +369,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start a new USSD session to see conversation'**
   String get startNewSessionPrompt;
+
+  /// Templates navigation label
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get templates;
+
+  /// Template Library screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Template Library'**
+  String get templateLibrary;
+
+  /// Tooltip for template library tab
+  ///
+  /// In en, this message translates to:
+  /// **'Manage USSD templates'**
+  String get templateLibraryTooltip;
+
+  /// Subtitle for template library
+  ///
+  /// In en, this message translates to:
+  /// **'Manage and execute USSD templates'**
+  String get manageUssdTemplates;
+
+  /// Button to create new template
+  ///
+  /// In en, this message translates to:
+  /// **'Create Template'**
+  String get createTemplate;
+
+  /// Tooltip for create template button
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new USSD template'**
+  String get createNewTemplate;
+
+  /// Label for total templates count
+  ///
+  /// In en, this message translates to:
+  /// **'Total Templates'**
+  String get totalTemplates;
+
+  /// Label for categories count
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// Hint text for template search
+  ///
+  /// In en, this message translates to:
+  /// **'Search templates...'**
+  String get searchTemplates;
+
+  /// Filter option for all categories
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get allCategories;
+
+  /// Message when search returns no results
+  ///
+  /// In en, this message translates to:
+  /// **'No templates found'**
+  String get noTemplatesFound;
+
+  /// Message when no templates exist
+  ///
+  /// In en, this message translates to:
+  /// **'No templates yet'**
+  String get noTemplatesYet;
+
+  /// Suggestion when no search results
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search or filter'**
+  String get tryDifferentSearch;
+
+  /// Prompt to create first template
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first template to get started'**
+  String get createFirstTemplate;
+
+  /// Number of steps in template
+  ///
+  /// In en, this message translates to:
+  /// **'{count} steps'**
+  String stepCount(int count);
+
+  /// Button to execute template
+  ///
+  /// In en, this message translates to:
+  /// **'Execute Template'**
+  String get executeTemplate;
+
+  /// Tooltip for more actions button
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get moreActions;
+
+  /// Action to edit template
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Template'**
+  String get editTemplate;
+
+  /// Action to duplicate template
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate Template'**
+  String get duplicateTemplate;
+
+  /// Action to export template
+  ///
+  /// In en, this message translates to:
+  /// **'Export Template'**
+  String get exportTemplate;
+
+  /// Action to delete template
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Template'**
+  String get deleteTemplate;
+
+  /// Confirmation message for template deletion
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \'{name}\'?'**
+  String confirmDeleteTemplate(String name);
+
+  /// Section title for template details
+  ///
+  /// In en, this message translates to:
+  /// **'Template Details'**
+  String get templateDetails;
+
+  /// Label for template name field
+  ///
+  /// In en, this message translates to:
+  /// **'Template Name'**
+  String get templateName;
+
+  /// Hint for template name field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter template name'**
+  String get enterTemplateName;
+
+  /// Validation message for template name
+  ///
+  /// In en, this message translates to:
+  /// **'Template name is required'**
+  String get templateNameRequired;
+
+  /// Hint for template description field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter template description'**
+  String get enterTemplateDescription;
+
+  /// Validation message for description
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get descriptionRequired;
+
+  /// Label for service code field
+  ///
+  /// In en, this message translates to:
+  /// **'Service Code'**
+  String get serviceCode;
+
+  /// Validation message for service code
+  ///
+  /// In en, this message translates to:
+  /// **'Service code is required'**
+  String get serviceCodeRequired;
+
+  /// Label for category field
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// Hint for category field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter category (optional)'**
+  String get enterCategory;
+
+  /// Section title for template steps
+  ///
+  /// In en, this message translates to:
+  /// **'Template Steps'**
+  String get templateSteps;
+
+  /// Button to add new step
+  ///
+  /// In en, this message translates to:
+  /// **'Add Step'**
+  String get addStep;
+
+  /// Title for coming soon message
+  ///
+  /// In en, this message translates to:
+  /// **'Template Builder Coming Soon'**
+  String get templateBuilderComingSoon;
+
+  /// Description for template builder feature
+  ///
+  /// In en, this message translates to:
+  /// **'The full template builder with step editor, variables, and validation will be available in the next update.'**
+  String get templateBuilderDescription;
+
+  /// Title for execution coming soon message
+  ///
+  /// In en, this message translates to:
+  /// **'Template Execution Coming Soon'**
+  String get templateExecutionComingSoon;
+
+  /// Description for template execution feature
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time template execution with step-by-step feedback and automation will be available in the next update.'**
+  String get templateExecutionDescription;
+
+  /// Generic coming soon message
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is coming soon!'**
+  String get featureComingSoon;
 }
 
 class _AppLocalizationsDelegate

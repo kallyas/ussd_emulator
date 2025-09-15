@@ -81,7 +81,10 @@ class TemplateProvider with ChangeNotifier {
   }
 
   /// Update an existing template
-  Future<bool> updateTemplate(String id, SessionTemplate updatedTemplate) async {
+  Future<bool> updateTemplate(
+    String id,
+    SessionTemplate updatedTemplate,
+  ) async {
     _setLoading(true);
     _clearError();
 
@@ -128,12 +131,18 @@ class TemplateProvider with ChangeNotifier {
   }
 
   /// Duplicate a template
-  Future<SessionTemplate?> duplicateTemplate(String id, {String? newName}) async {
+  Future<SessionTemplate?> duplicateTemplate(
+    String id, {
+    String? newName,
+  }) async {
     _setLoading(true);
     _clearError();
 
     try {
-      final duplicated = await _templateService.duplicateTemplate(id, newName: newName);
+      final duplicated = await _templateService.duplicateTemplate(
+        id,
+        newName: newName,
+      );
       notifyListeners();
       return duplicated;
     } catch (e) {
@@ -223,7 +232,8 @@ class TemplateProvider with ChangeNotifier {
           notifyListeners();
         },
         onStepUpdate: (templateIndex, stepIndex, status) {
-          _automationStatus = 'Template ${templateIndex + 1}, Step ${stepIndex + 1}: $status';
+          _automationStatus =
+              'Template ${templateIndex + 1}, Step ${stepIndex + 1}: $status';
           notifyListeners();
         },
         onLog: (message) {
@@ -316,7 +326,9 @@ class TemplateProvider with ChangeNotifier {
 
     // Apply category filter
     if (_selectedCategory != null) {
-      filtered = filtered.where((t) => t.category == _selectedCategory).toList();
+      filtered = filtered
+          .where((t) => t.category == _selectedCategory)
+          .toList();
     }
 
     return filtered;

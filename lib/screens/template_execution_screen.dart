@@ -14,7 +14,8 @@ class TemplateExecutionScreen extends StatefulWidget {
   const TemplateExecutionScreen({super.key, required this.template});
 
   @override
-  State<TemplateExecutionScreen> createState() => _TemplateExecutionScreenState();
+  State<TemplateExecutionScreen> createState() =>
+      _TemplateExecutionScreenState();
 }
 
 class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
@@ -38,7 +39,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
 
   void _initializeVariableControllers() {
     for (final entry in widget.template.variables.entries) {
-      _variableControllers[entry.key] = TextEditingController(text: entry.value);
+      _variableControllers[entry.key] = TextEditingController(
+        text: entry.value,
+      );
     }
   }
 
@@ -92,7 +95,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                   padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
+                    borderRadius: BorderRadius.circular(
+                      UssdDesignSystem.radiusM,
+                    ),
                   ),
                   child: Icon(
                     Icons.play_circle_outline,
@@ -113,7 +118,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                         const SizedBox(height: UssdDesignSystem.spacingXS),
                         Chip(
                           label: Text(widget.template.category!),
-                          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.secondaryContainer,
                         ),
                       ],
                     ],
@@ -159,7 +166,12 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
     );
   }
 
-  Widget _buildInfoChip(BuildContext context, IconData icon, String text, Color color) {
+  Widget _buildInfoChip(
+    BuildContext context,
+    IconData icon,
+    String text,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: UssdDesignSystem.spacingS,
@@ -216,7 +228,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
             const SizedBox(height: UssdDesignSystem.spacingL),
             ...widget.template.variables.keys.map((key) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: UssdDesignSystem.spacingM),
+                padding: const EdgeInsets.only(
+                  bottom: UssdDesignSystem.spacingM,
+                ),
                 child: TextFormField(
                   controller: _variableControllers[key],
                   decoration: InputDecoration(
@@ -312,7 +326,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(UssdDesignSystem.radiusS),
+                    borderRadius: BorderRadius.circular(
+                      UssdDesignSystem.radiusS,
+                    ),
                   ),
                   child: Text(
                     'Input: ${_processVariablesForPreview(step.input)}',
@@ -364,8 +380,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
     TemplateProvider templateProvider,
     UssdProvider ussdProvider,
   ) {
-    final canExecute = templateProvider.automationStatus == 'Ready' && 
-                       ussdProvider.activeEndpointConfig != null;
+    final canExecute =
+        templateProvider.automationStatus == 'Ready' &&
+        ussdProvider.activeEndpointConfig != null;
 
     return Card(
       child: Padding(
@@ -407,17 +424,23 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                         children: [
                           Text(
                             'Cannot execute template',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onErrorContainer,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onErrorContainer,
+                                ),
                           ),
                           Text(
                             ussdProvider.activeEndpointConfig == null
                                 ? 'No active endpoint configuration. Please configure an endpoint first.'
                                 : templateProvider.automationStatus,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onErrorContainer,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onErrorContainer,
+                                ),
                           ),
                         ],
                       ),
@@ -431,7 +454,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                   padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(UssdDesignSystem.radiusS),
+                    borderRadius: BorderRadius.circular(
+                      UssdDesignSystem.radiusS,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -452,15 +477,21 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                           children: [
                             Text(
                               'Executing template...',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                              ),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                                  ),
                             ),
                             Text(
                               templateProvider.automationStatus,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                                  ),
                             ),
                           ],
                         ),
@@ -475,7 +506,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                         child: Text(
                           'Stop',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ),
@@ -511,7 +544,7 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
 
   Widget _buildExecutionResults(BuildContext context) {
     final result = _executionResult!;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
@@ -522,7 +555,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
               children: [
                 Icon(
                   result.isSuccessful ? Icons.check_circle : Icons.error,
-                  color: result.isSuccessful ? Colors.green : Theme.of(context).colorScheme.error,
+                  color: result.isSuccessful
+                      ? Colors.green
+                      : Theme.of(context).colorScheme.error,
                 ),
                 const SizedBox(width: UssdDesignSystem.spacingS),
                 Text(
@@ -540,8 +575,8 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: UssdDesignSystem.spacingM),
-              ...result.stepResults.map((stepResult) => 
-                _buildStepResult(context, stepResult)
+              ...result.stepResults.map(
+                (stepResult) => _buildStepResult(context, stepResult),
               ),
             ],
             if (result.hasErrors) ...[
@@ -553,16 +588,18 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                 ),
               ),
               const SizedBox(height: UssdDesignSystem.spacingM),
-              ...result.allErrorMessages.map((error) => 
-                Padding(
-                  padding: const EdgeInsets.only(bottom: UssdDesignSystem.spacingS),
+              ...result.allErrorMessages.map(
+                (error) => Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: UssdDesignSystem.spacingS,
+                  ),
                   child: Text(
                     '• $error',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
-                )
+                ),
               ),
             ],
           ],
@@ -575,7 +612,7 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
     return Container(
       padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
       decoration: BoxDecoration(
-        color: result.isSuccessful 
+        color: result.isSuccessful
             ? Colors.green.withOpacity(0.1)
             : Theme.of(context).colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(UssdDesignSystem.radiusS),
@@ -585,10 +622,21 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildResultStat(context, 'Success Rate', '${result.successRate.toStringAsFixed(1)}%'),
-              _buildResultStat(context, 'Steps', '${result.successfulSteps}/${result.totalSteps}'),
-              _buildResultStat(context, 'Duration', 
-                result.executionDuration?.inSeconds.toString() ?? 'N/A'),
+              _buildResultStat(
+                context,
+                'Success Rate',
+                '${result.successRate.toStringAsFixed(1)}%',
+              ),
+              _buildResultStat(
+                context,
+                'Steps',
+                '${result.successfulSteps}/${result.totalSteps}',
+              ),
+              _buildResultStat(
+                context,
+                'Duration',
+                result.executionDuration?.inSeconds.toString() ?? 'N/A',
+              ),
             ],
           ),
         ],
@@ -601,9 +649,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
           label,
@@ -622,7 +670,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
         children: [
           Icon(
             stepResult.isSuccessful ? Icons.check_circle : Icons.error,
-            color: stepResult.isSuccessful ? Colors.green : Theme.of(context).colorScheme.error,
+            color: stepResult.isSuccessful
+                ? Colors.green
+                : Theme.of(context).colorScheme.error,
             size: 20,
           ),
           const SizedBox(width: UssdDesignSystem.spacingS),
@@ -647,7 +697,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
   String _processVariablesForPreview(String input) {
     String result = input;
     for (final entry in _variableControllers.entries) {
-      final value = entry.value.text.isNotEmpty ? entry.value.text : '${entry.key}_value';
+      final value = entry.value.text.isNotEmpty
+          ? entry.value.text
+          : '${entry.key}_value';
       result = result.replaceAll('\${${entry.key}}', value);
     }
     return result;
@@ -655,7 +707,7 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
 
   void _executeTemplate() async {
     final templateProvider = context.read<TemplateProvider>();
-    
+
     setState(() {
       _isExecuting = true;
       _executionResult = null;
@@ -689,7 +741,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
       } else if (result != null && !result.isSuccessful && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Template execution failed: ${result.errorMessage ?? "Unknown error"}'),
+            content: Text(
+              'Template execution failed: ${result.errorMessage ?? "Unknown error"}',
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

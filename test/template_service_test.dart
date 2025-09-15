@@ -209,9 +209,7 @@ void main() {
         name: 'Original Template',
         description: 'Original description',
         serviceCode: '*123#',
-        steps: [
-          const TemplateStep(input: '1'),
-        ],
+        steps: [const TemplateStep(input: '1')],
         variables: {'pin': '1234'},
       );
 
@@ -289,9 +287,7 @@ void main() {
         name: 'Valid Template',
         description: 'Valid description',
         serviceCode: '*123#',
-        steps: [
-          const TemplateStep(input: '1'),
-        ],
+        steps: [const TemplateStep(input: '1')],
       );
 
       final invalidTemplate = SessionTemplate(

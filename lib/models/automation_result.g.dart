@@ -28,29 +28,29 @@ Map<String, dynamic> _$AutomationResultToJson(AutomationResult instance) =>
       'templateName': instance.templateName,
       'startTime': instance.startTime.toIso8601String(),
       'endTime': instance.endTime?.toIso8601String(),
-      'stepResults': instance.stepResults.map((e) => e.toJson()).toList(),
+      'stepResults': instance.stepResults,
       'isCompleted': instance.isCompleted,
       'isSuccessful': instance.isSuccessful,
       'errorMessage': instance.errorMessage,
     };
 
 StepResult _$StepResultFromJson(Map<String, dynamic> json) => StepResult(
-      stepIndex: json['stepIndex'] as int,
-      step: TemplateStep.fromJson(json['step'] as Map<String, dynamic>),
-      startTime: DateTime.parse(json['startTime'] as String),
-      endTime: json['endTime'] == null
-          ? null
-          : DateTime.parse(json['endTime'] as String),
-      isSuccessful: json['isSuccessful'] as bool,
-      errorMessage: json['errorMessage'] as String?,
-      actualResponse: json['actualResponse'] as String?,
-      responseMatched: json['responseMatched'] as bool? ?? true,
-    );
+  stepIndex: (json['stepIndex'] as num).toInt(),
+  step: TemplateStep.fromJson(json['step'] as Map<String, dynamic>),
+  startTime: DateTime.parse(json['startTime'] as String),
+  endTime: json['endTime'] == null
+      ? null
+      : DateTime.parse(json['endTime'] as String),
+  isSuccessful: json['isSuccessful'] as bool,
+  errorMessage: json['errorMessage'] as String?,
+  actualResponse: json['actualResponse'] as String?,
+  responseMatched: json['responseMatched'] as bool? ?? true,
+);
 
 Map<String, dynamic> _$StepResultToJson(StepResult instance) =>
     <String, dynamic>{
       'stepIndex': instance.stepIndex,
-      'step': instance.step.toJson(),
+      'step': instance.step,
       'startTime': instance.startTime.toIso8601String(),
       'endTime': instance.endTime?.toIso8601String(),
       'isSuccessful': instance.isSuccessful,

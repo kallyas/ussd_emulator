@@ -68,7 +68,10 @@ void main() {
         description: 'Updated description',
       );
 
-      final success = await templateProvider.updateTemplate(created.id, updated);
+      final success = await templateProvider.updateTemplate(
+        created.id,
+        updated,
+      );
 
       expect(success, true);
       final retrieved = templateProvider.getTemplate(created.id);
@@ -88,7 +91,7 @@ void main() {
       );
 
       expect(created, isNotNull);
-      
+
       final initialCount = templateProvider.templates.length;
       final success = await templateProvider.deleteTemplate(created!.id);
 
@@ -199,9 +202,7 @@ void main() {
         name: 'Valid Template',
         description: 'Valid description',
         serviceCode: '*123#',
-        steps: [
-          const TemplateStep(input: '1'),
-        ],
+        steps: [const TemplateStep(input: '1')],
         variables: {},
         createdAt: DateTime.now(),
       );
@@ -257,7 +258,7 @@ void main() {
             'customDelayMs': null,
             'waitForResponse': true,
             'isCritical': false,
-          }
+          },
         ],
         'variables': {'pin': '1234'},
         'stepDelayMs': 2000,

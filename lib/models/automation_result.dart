@@ -65,10 +65,12 @@ class AutomationResult {
   int get totalSteps => stepResults.length;
 
   /// Get the success rate as a percentage
-  double get successRate => totalSteps > 0 ? (successfulSteps / totalSteps) * 100 : 0.0;
+  double get successRate =>
+      totalSteps > 0 ? (successfulSteps / totalSteps) * 100 : 0.0;
 
   /// Check if the result has any errors
-  bool get hasErrors => !isSuccessful || stepResults.any((s) => !s.isSuccessful);
+  bool get hasErrors =>
+      !isSuccessful || stepResults.any((s) => !s.isSuccessful);
 
   /// Get all error messages from failed steps
   List<String> get allErrorMessages {

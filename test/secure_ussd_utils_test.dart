@@ -41,15 +41,33 @@ void main() {
 
     group('validatePhoneNumber', () {
       test('should validate correct phone numbers', () {
-        expect(SecureUssdUtils.validatePhoneNumber('+256700000000'), '+256700000000');
-        expect(SecureUssdUtils.validatePhoneNumber('+1234567890'), '+1234567890');
-        expect(SecureUssdUtils.validatePhoneNumber('256700000000'), '256700000000');
+        expect(
+          SecureUssdUtils.validatePhoneNumber('+256700000000'),
+          '+256700000000',
+        );
+        expect(
+          SecureUssdUtils.validatePhoneNumber('+1234567890'),
+          '+1234567890',
+        );
+        expect(
+          SecureUssdUtils.validatePhoneNumber('256700000000'),
+          '256700000000',
+        );
       });
 
       test('should clean phone number formatting', () {
-        expect(SecureUssdUtils.validatePhoneNumber('+256 700 000 000'), '+256700000000');
-        expect(SecureUssdUtils.validatePhoneNumber('+256-700-000-000'), '+256700000000');
-        expect(SecureUssdUtils.validatePhoneNumber('+256(700)000.000'), '+256700000000');
+        expect(
+          SecureUssdUtils.validatePhoneNumber('+256 700 000 000'),
+          '+256700000000',
+        );
+        expect(
+          SecureUssdUtils.validatePhoneNumber('+256-700-000-000'),
+          '+256700000000',
+        );
+        expect(
+          SecureUssdUtils.validatePhoneNumber('+256(700)000.000'),
+          '+256700000000',
+        );
       });
 
       test('should reject invalid phone numbers', () {
@@ -170,16 +188,25 @@ void main() {
     group('containsSuspiciousPatterns', () {
       test('should detect suspicious patterns', () {
         expect(SecureUssdUtils.containsSuspiciousPatterns('<script>'), true);
-        expect(SecureUssdUtils.containsSuspiciousPatterns('SELECT * FROM'), true);
+        expect(
+          SecureUssdUtils.containsSuspiciousPatterns('SELECT * FROM'),
+          true,
+        );
         expect(SecureUssdUtils.containsSuspiciousPatterns('javascript:'), true);
-        expect(SecureUssdUtils.containsSuspiciousPatterns('$(curl'), true);
-        expect(SecureUssdUtils.containsSuspiciousPatterns('%3Cscript%3E'), true);
+        expect(SecureUssdUtils.containsSuspiciousPatterns(r'$(curl'), true);
+        expect(
+          SecureUssdUtils.containsSuspiciousPatterns('%3Cscript%3E'),
+          true,
+        );
       });
 
       test('should not flag normal input', () {
         expect(SecureUssdUtils.containsSuspiciousPatterns('*123#'), false);
         expect(SecureUssdUtils.containsSuspiciousPatterns('1'), false);
-        expect(SecureUssdUtils.containsSuspiciousPatterns('menu option'), false);
+        expect(
+          SecureUssdUtils.containsSuspiciousPatterns('menu option'),
+          false,
+        );
       });
     });
 
@@ -210,7 +237,7 @@ void main() {
           SecureUssdUtils.checkRateLimit('user1');
         }
         expect(SecureUssdUtils.checkRateLimit('user1'), true);
-        
+
         // User2 should still be allowed
         expect(SecureUssdUtils.checkRateLimit('user2'), false);
       });

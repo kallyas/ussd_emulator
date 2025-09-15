@@ -7,13 +7,13 @@ part of 'template_step.dart';
 // **************************************************************************
 
 TemplateStep _$TemplateStepFromJson(Map<String, dynamic> json) => TemplateStep(
-      input: json['input'] as String,
-      expectedResponse: json['expectedResponse'] as String?,
-      description: json['description'] as String?,
-      customDelayMs: json['customDelayMs'] as int?,
-      waitForResponse: json['waitForResponse'] as bool? ?? true,
-      isCritical: json['isCritical'] as bool? ?? false,
-    );
+  input: json['input'] as String,
+  expectedResponse: json['expectedResponse'] as String?,
+  description: json['description'] as String?,
+  customDelayMs: (json['customDelayMs'] as num?)?.toInt(),
+  waitForResponse: json['waitForResponse'] as bool? ?? true,
+  isCritical: json['isCritical'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$TemplateStepToJson(TemplateStep instance) =>
     <String, dynamic>{

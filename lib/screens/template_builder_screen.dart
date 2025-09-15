@@ -21,7 +21,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
   final _descriptionController = TextEditingController();
   final _serviceCodeController = TextEditingController();
   final _categoryController = TextEditingController();
-  
+
   List<TemplateStep> _steps = [];
   Map<String, String> _variables = {};
   int _stepDelayMs = 2000;
@@ -58,12 +58,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? l10n.editTemplate : l10n.createTemplate),
-        actions: [
-          TextButton(
-            onPressed: _saveTemplate,
-            child: Text(l10n.save),
-          ),
-        ],
+        actions: [TextButton(onPressed: _saveTemplate, child: Text(l10n.save))],
       ),
       body: Form(
         key: _formKey,
@@ -168,10 +163,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
       children: [
         Row(
           children: [
-            Text(
-              'Variables',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text('Variables', style: Theme.of(context).textTheme.headlineSmall),
             const Spacer(),
             ElevatedButton.icon(
               onPressed: _addVariable,
@@ -185,7 +177,9 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
           Container(
             padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
               border: Border.all(
                 color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -210,7 +204,9 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             ),
           )
         else
-          ...Map.entries(_variables).map((entry) => _buildVariableItem(entry.key, entry.value)),
+          ...Map.entries(
+            _variables,
+          ).map((entry) => _buildVariableItem(entry.key, entry.value)),
       ],
     );
   }
@@ -241,10 +237,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             ),
             const SizedBox(width: UssdDesignSystem.spacingM),
             Expanded(
-              child: Text(
-                value,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+              child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
             ),
             IconButton(
               icon: const Icon(Icons.edit),
@@ -285,7 +278,9 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
           Container(
             padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
               border: Border.all(
                 color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -375,15 +370,22 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
                               vertical: UssdDesignSystem.spacingXS,
                             ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondaryContainer,
-                              borderRadius: BorderRadius.circular(UssdDesignSystem.radiusS),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondaryContainer,
+                              borderRadius: BorderRadius.circular(
+                                UssdDesignSystem.radiusS,
+                              ),
                             ),
                             child: Text(
                               'Input: ${step.input}',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontFamily: 'monospace',
-                                color: Theme.of(context).colorScheme.onSecondaryContainer,
-                              ),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontFamily: 'monospace',
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSecondaryContainer,
+                                  ),
                             ),
                           ),
                           if (step.hasExpectedResponse) ...[
@@ -433,10 +435,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Settings',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        Text('Settings', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: UssdDesignSystem.spacingL),
         Row(
           children: [
@@ -534,7 +533,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             onPressed: () {
               final varKey = keyController.text.trim();
               final varValue = valueController.text.trim();
-              
+
               if (varKey.isNotEmpty && varValue.isNotEmpty) {
                 setState(() {
                   if (isEditing && key != varKey) {
@@ -578,8 +577,12 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
 
   void _showStepDialog({TemplateStep? step, int? index}) {
     final inputController = TextEditingController(text: step?.input ?? '');
-    final descriptionController = TextEditingController(text: step?.description ?? '');
-    final expectedResponseController = TextEditingController(text: step?.expectedResponse ?? '');
+    final descriptionController = TextEditingController(
+      text: step?.description ?? '',
+    );
+    final expectedResponseController = TextEditingController(
+      text: step?.expectedResponse ?? '',
+    );
     bool waitForResponse = step?.waitForResponse ?? true;
     bool isCritical = step?.isCritical ?? false;
     int? customDelayMs = step?.customDelayMs;
@@ -619,7 +622,9 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
                 const SizedBox(height: UssdDesignSystem.spacingM),
                 CheckboxListTile(
                   title: const Text('Wait for response'),
-                  subtitle: const Text('Should wait for USSD response before continuing'),
+                  subtitle: const Text(
+                    'Should wait for USSD response before continuing',
+                  ),
                   value: waitForResponse,
                   onChanged: (value) {
                     setDialogState(() {
@@ -648,15 +653,16 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             TextButton(
               onPressed: () {
                 final input = inputController.text.trim();
-                
+
                 if (input.isNotEmpty) {
                   final newStep = TemplateStep(
                     input: input,
-                    description: descriptionController.text.trim().isEmpty 
-                        ? null 
+                    description: descriptionController.text.trim().isEmpty
+                        ? null
                         : descriptionController.text.trim(),
-                    expectedResponse: expectedResponseController.text.trim().isEmpty 
-                        ? null 
+                    expectedResponse:
+                        expectedResponseController.text.trim().isEmpty
+                        ? null
                         : expectedResponseController.text.trim(),
                     waitForResponse: waitForResponse,
                     isCritical: isCritical,
@@ -684,27 +690,27 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
   void _saveTemplate() async {
     if (_formKey.currentState!.validate()) {
       final templateProvider = context.read<TemplateProvider>();
-      
+
       SessionTemplate? result;
-      
+
       if (isEditing) {
         final updatedTemplate = widget.template!.copyWith(
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           serviceCode: _serviceCodeController.text.trim(),
-          category: _categoryController.text.trim().isEmpty 
-              ? null 
+          category: _categoryController.text.trim().isEmpty
+              ? null
               : _categoryController.text.trim(),
           steps: _steps,
           variables: _variables,
           stepDelayMs: _stepDelayMs,
         );
-        
+
         final success = await templateProvider.updateTemplate(
           widget.template!.id,
           updatedTemplate,
         );
-        
+
         if (success) {
           result = updatedTemplate;
         }
@@ -713,19 +719,19 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           serviceCode: _serviceCodeController.text.trim(),
-          category: _categoryController.text.trim().isEmpty 
-              ? null 
+          category: _categoryController.text.trim().isEmpty
+              ? null
               : _categoryController.text.trim(),
           stepDelayMs: _stepDelayMs,
         );
-        
+
         if (result != null) {
           // Update the created template with steps and variables
           final updatedTemplate = result.copyWith(
             steps: _steps,
             variables: _variables,
           );
-          
+
           await templateProvider.updateTemplate(result.id, updatedTemplate);
         }
       }
@@ -733,9 +739,11 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
       if (result != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(isEditing 
-                ? 'Template updated successfully' 
-                : 'Template created successfully'),
+            content: Text(
+              isEditing
+                  ? 'Template updated successfully'
+                  : 'Template created successfully',
+            ),
           ),
         );
         Navigator.pop(context);
