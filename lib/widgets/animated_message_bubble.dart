@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../models/ussd_response.dart';
 import '../models/ussd_request.dart';
@@ -206,14 +205,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-
-    // Don't repeat in test environment to avoid pumpAndSettle timeouts
-    if (kDebugMode) {
-      // In debug/test mode, just play once
-      _controller.forward();
-    } else {
-      _controller.repeat();
-    }
+    _controller.repeat();
   }
 
   @override
@@ -334,7 +326,7 @@ class SkeletonMessageBubble extends StatelessWidget {
             width: 200,
             height: 48,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceVariant,
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(18),
             ),
           ).animate().shimmer(
