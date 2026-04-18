@@ -9,6 +9,7 @@ import 'screens/home_screen.dart';
 import 'services/connectivity_service.dart';
 import 'services/ussd_cache_service.dart';
 import 'services/offline_queue_service.dart';
+import 'services/analytics_service.dart';
 import 'utils/accessibility_themes.dart';
 import 'utils/design_system.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -27,19 +28,22 @@ class UssdEmulatorApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ConnectivityService()),
         ChangeNotifierProvider(create: (context) => UssdCacheService()),
         ChangeNotifierProvider(create: (context) => OfflineQueueService()),
-        ChangeNotifierProxyProvider3<ConnectivityService, UssdCacheService,
-            OfflineQueueService, UssdProvider>(
+        ChangeNotifierProvider(create: (context) => AnalyticsService()),
+        ChangeNotifierProxyProvider4<ConnectivityService, UssdCacheService,
+            OfflineQueueService, AnalyticsService, UssdProvider>(
           create: (context) => UssdProvider(
             connectivityService: context.read<ConnectivityService>(),
             cacheService: context.read<UssdCacheService>(),
             queueService: context.read<OfflineQueueService>(),
+            analyticsService: context.read<AnalyticsService>(),
           ),
-          update: (context, connectivity, cache, queue, previous) =>
+          update: (context, connectivity, cache, queue, analytics, previous) =>
               previous ??
               UssdProvider(
                 connectivityService: connectivity,
                 cacheService: cache,
                 queueService: queue,
+                analyticsService: analytics,
               ),
         ),
 

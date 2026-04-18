@@ -14,6 +14,7 @@ import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
 import 'template_library_screen.dart';
 import 'accessibility_settings_screen.dart';
+import 'analytics_dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -166,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       const EndpointConfigScreen(),
       const SessionHistoryScreen(),
       const TemplateLibraryScreen(),
+      const AnalyticsDashboardScreen(),
     ];
 
     return Scaffold(
@@ -297,6 +299,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 l10n.configuration,
                 l10n.sessionHistory,
                 l10n.templates,
+                'Analytics',
               ][index];
               accessibilityProvider.announceForScreenReader(
                 l10n.navigatedToScreen(screenName),
@@ -327,6 +330,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 icon: _buildNavIcon(Icons.folder_special_rounded, 3),
                 label: l10n.templates,
                 tooltip: l10n.templateLibraryTooltip,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.bar_chart_rounded, 4),
+                label: 'Analytics',
+                tooltip: 'Session analytics and performance',
               ),
             ],
           ),
