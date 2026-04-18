@@ -179,7 +179,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             decoration: BoxDecoration(
               color: Theme.of(
                 context,
-              ).colorScheme.surfaceVariant.withOpacity(0.3),
+              ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
               borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
               border: Border.all(
                 color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -280,7 +280,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             decoration: BoxDecoration(
               color: Theme.of(
                 context,
-              ).colorScheme.surfaceVariant.withOpacity(0.3),
+              ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
               borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
               border: Border.all(
                 color: Theme.of(context).colorScheme.outline.withOpacity(0.2),

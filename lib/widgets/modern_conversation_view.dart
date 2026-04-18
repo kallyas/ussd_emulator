@@ -424,7 +424,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                 vertical: UssdDesignSystem.spacingS,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: UssdDesignSystem.borderRadiusMedium,
                 border: Border.all(
                   color: Theme.of(context).colorScheme.outline.withOpacity(0.2),

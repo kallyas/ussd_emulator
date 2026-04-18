@@ -29,6 +29,9 @@ class UssdDesignSystem {
 
   // Border radius tokens
   static const double radiusS = 8.0;
+  static const double radiusM = 12.0;
+  static const double radiusL = 16.0;
+  static const double radiusXL = 24.0;
   static const BorderRadius borderRadiusSmall = BorderRadius.all(
     Radius.circular(8),
   );
@@ -59,54 +62,48 @@ class UssdDesignSystem {
   static const Curve curveDefault = Curves.ease;
   static const Duration animationMedium = Duration(milliseconds: 300);
   // Modern, visually appealing color scheme
-  static ColorScheme lightColorScheme = ColorScheme(
+  static ColorScheme lightColorScheme = const ColorScheme(
     brightness: Brightness.light,
-    primary: const Color(0xFF0057B8), // Deep blue
+    primary: Color(0xFF0057B8), // Deep blue
     onPrimary: Colors.white,
-    secondary: const Color(0xFF00B894), // Teal
+    secondary: Color(0xFF00B894), // Teal
     onSecondary: Colors.white,
-    error: const Color(0xFFD7263D), // Vivid red
+    error: Color(0xFFD7263D), // Vivid red
     onError: Colors.white,
-    background: const Color(0xFFF6F8FA),
-    onBackground: const Color(0xFF22223B),
-    surface: const Color(0xFFFFFFFF),
-    onSurface: const Color(0xFF22223B),
-    surfaceVariant: const Color(0xFFE0E7EF),
-    onSurfaceVariant: const Color(0xFF4A4E69),
-    outline: const Color(0xFFBFC9D1),
-    primaryContainer: const Color(0xFFB3D0FF),
-    onPrimaryContainer: const Color(0xFF003366),
-    secondaryContainer: const Color(0xFFB2F7EF),
-    onSecondaryContainer: const Color(0xFF00332E),
-    errorContainer: const Color(0xFFFFD6D6),
-    onErrorContainer: const Color(0xFF7A0019),
-    surfaceContainer: const Color(0xFFF0F4F8),
-    surfaceContainerHighest: const Color(0xFFE0E7EF),
+    surface: Color(0xFFFFFFFF),
+    onSurface: Color(0xFF22223B),
+    onSurfaceVariant: Color(0xFF4A4E69),
+    outline: Color(0xFFBFC9D1),
+    primaryContainer: Color(0xFFB3D0FF),
+    onPrimaryContainer: Color(0xFF003366),
+    secondaryContainer: Color(0xFFB2F7EF),
+    onSecondaryContainer: Color(0xFF00332E),
+    errorContainer: Color(0xFFFFD6D6),
+    onErrorContainer: Color(0xFF7A0019),
+    surfaceContainer: Color(0xFFF0F4F8),
+    surfaceContainerHighest: Color(0xFFE0E7EF),
   );
 
-  static ColorScheme darkColorScheme = ColorScheme(
+  static ColorScheme darkColorScheme = const ColorScheme(
     brightness: Brightness.dark,
-    primary: const Color(0xFF64A8FF), // Lighter blue
-    onPrimary: const Color(0xFF001F3F),
-    secondary: const Color(0xFF00E6C3),
-    onSecondary: const Color(0xFF00332E),
-    error: const Color(0xFFFF5C77),
-    onError: const Color(0xFF7A0019),
-    background: const Color(0xFF181A1B),
-    onBackground: const Color(0xFFF6F8FA),
-    surface: const Color(0xFF23272E),
-    onSurface: const Color(0xFFF6F8FA),
-    surfaceVariant: const Color(0xFF2C3140),
-    onSurfaceVariant: const Color(0xFFBFC9D1),
-    outline: const Color(0xFF4A4E69),
-    primaryContainer: const Color(0xFF003366),
-    onPrimaryContainer: const Color(0xFFB3D0FF),
-    secondaryContainer: const Color(0xFF00332E),
-    onSecondaryContainer: const Color(0xFFB2F7EF),
-    errorContainer: const Color(0xFF7A0019),
-    onErrorContainer: const Color(0xFFFFD6D6),
-    surfaceContainer: const Color(0xFF23272E),
-    surfaceContainerHighest: const Color(0xFF2C3140),
+    primary: Color(0xFF64A8FF), // Lighter blue
+    onPrimary: Color(0xFF001F3F),
+    secondary: Color(0xFF00E6C3),
+    onSecondary: Color(0xFF00332E),
+    error: Color(0xFFFF5C77),
+    onError: Color(0xFF7A0019),
+    surface: Color(0xFF23272E),
+    onSurface: Color(0xFFF6F8FA),
+    onSurfaceVariant: Color(0xFFBFC9D1),
+    outline: Color(0xFF4A4E69),
+    primaryContainer: Color(0xFF003366),
+    onPrimaryContainer: Color(0xFFB3D0FF),
+    secondaryContainer: Color(0xFF00332E),
+    onSecondaryContainer: Color(0xFFB2F7EF),
+    errorContainer: Color(0xFF7A0019),
+    onErrorContainer: Color(0xFFFFD6D6),
+    surfaceContainer: Color(0xFF23272E),
+    surfaceContainerHighest: Color(0xFF2C3140),
   );
 
   // Typography Scale using Inter font

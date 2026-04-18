@@ -257,7 +257,7 @@ class _UssdSessionFormState extends State<UssdSessionForm> {
             Container(
                   padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceVariant,
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: UssdDesignSystem.borderRadiusLarge,
                     border: Border.all(
                       color: colorScheme.outline.withOpacity(0.2),
