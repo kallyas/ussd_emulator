@@ -7,6 +7,7 @@ import '../providers/language_provider.dart';
 import '../providers/template_provider.dart';
 import '../utils/design_system.dart';
 import '../utils/page_transitions.dart' hide ScaleTransition;
+import '../widgets/offline_banner.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
@@ -256,6 +257,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ],
               ),
             ),
+            const OfflineBanner(),
             Expanded(
               child: AnimatedSwitcher(
                 duration: UssdDesignSystem.animationMedium,

@@ -9,6 +9,7 @@ import '../utils/ussd_utils.dart';
 import '../utils/design_system.dart';
 import '../widgets/animated_message_bubble.dart';
 import '../widgets/modern_input_field.dart';
+import '../widgets/offline_banner.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'ussd_keypad.dart';
 import 'ussd_debug_panel.dart';
@@ -297,6 +298,11 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
             final request = index < session.requests.length
                 ? session.requests[index]
                 : null;
+            final isLastResponse =
+                index == session.responses.length - 1;
+            final provider = context.read<UssdProvider>();
+            final fromCache =
+                isLastResponse && provider.lastResponseFromCache;
 
             return AnimationConfiguration.staggeredList(
               position: index,
@@ -315,6 +321,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                     response: response,
                     isUser: false,
                     index: index * 2 + 1,
+                    fromCache: fromCache,
                     onTap: () {
                       accessibilityProvider.speak(response.text);
                     },

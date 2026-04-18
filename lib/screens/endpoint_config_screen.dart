@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
 import '../models/endpoint_config.dart';
 import '../utils/design_system.dart';
+import '../utils/page_transitions.dart';
+import 'cache_management_screen.dart';
 
 class EndpointConfigScreen extends StatelessWidget {
   const EndpointConfigScreen({super.key});
@@ -42,26 +44,49 @@ class EndpointConfigScreen extends StatelessWidget {
           Positioned(
             bottom: 24,
             right: 24,
-            child: FloatingActionButton.extended(
-              onPressed: () => _addEndpoint(context, provider),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add Endpoint'),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-              ),
-            )
-                .animate()
-                .scale(
-                  begin: const Offset(0.0, 0.0),
-                  end: const Offset(1.0, 1.0),
-                  duration: UssdDesignSystem.animationMedium,
-                  curve: Curves.elasticOut,
-                  delay: const Duration(milliseconds: 300),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  heroTag: 'cache_fab',
+                  onPressed: () => Navigator.push(
+                    context,
+                    PageTransitions.slideFromRight(
+                      const CacheManagementScreen(),
+                    ),
+                  ),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  tooltip: 'Offline & Cache',
+                  child: const Icon(Icons.offline_bolt_rounded),
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton.extended(
+                  heroTag: 'add_endpoint_fab',
+                  onPressed: () => _addEndpoint(context, provider),
+                  icon: const Icon(Icons.add_rounded),
+                  label: const Text('Add Endpoint'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
+                  ),
                 )
-                .fadeIn(delay: const Duration(milliseconds: 200)),
+                    .animate()
+                    .scale(
+                      begin: const Offset(0.0, 0.0),
+                      end: const Offset(1.0, 1.0),
+                      duration: UssdDesignSystem.animationMedium,
+                      curve: Curves.elasticOut,
+                      delay: const Duration(milliseconds: 300),
+                    )
+                    .fadeIn(delay: const Duration(milliseconds: 200)),
+              ],
+            ),
           ),
         ],
       ),
