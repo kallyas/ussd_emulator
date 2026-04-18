@@ -6,6 +6,9 @@ import 'providers/accessibility_provider.dart';
 import 'providers/language_provider.dart';
 import 'providers/template_provider.dart';
 import 'screens/home_screen.dart';
+import 'services/connectivity_service.dart';
+import 'services/ussd_cache_service.dart';
+import 'services/offline_queue_service.dart';
 import 'utils/accessibility_themes.dart';
 import 'utils/design_system.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -21,7 +24,25 @@ class UssdEmulatorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UssdProvider()),
+        ChangeNotifierProvider(create: (context) => ConnectivityService()),
+        ChangeNotifierProvider(create: (context) => UssdCacheService()),
+        ChangeNotifierProvider(create: (context) => OfflineQueueService()),
+        ChangeNotifierProxyProvider3<ConnectivityService, UssdCacheService,
+            OfflineQueueService, UssdProvider>(
+          create: (context) => UssdProvider(
+            connectivityService: context.read<ConnectivityService>(),
+            cacheService: context.read<UssdCacheService>(),
+            queueService: context.read<OfflineQueueService>(),
+          ),
+          update: (context, connectivity, cache, queue, previous) =>
+              previous ??
+              UssdProvider(
+                connectivityService: connectivity,
+                cacheService: cache,
+                queueService: queue,
+              ),
+        ),
+
         ChangeNotifierProvider(create: (context) => AccessibilityProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
         ChangeNotifierProvider(create: (context) => TemplateProvider()),

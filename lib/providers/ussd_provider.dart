@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import '../models/ussd_session.dart';
 import '../models/ussd_request.dart';
+import '../models/ussd_response.dart';
 import '../models/endpoint_config.dart';
 import '../services/ussd_session_service.dart';
 import '../services/ussd_api_service.dart';
 import '../services/endpoint_config_service.dart';
+import '../services/connectivity_service.dart';
+import '../services/ussd_cache_service.dart';
+import '../services/offline_queue_service.dart';
 import '../utils/ussd_utils.dart';
 
 class UssdProvider with ChangeNotifier {
@@ -12,26 +16,52 @@ class UssdProvider with ChangeNotifier {
   final UssdApiService _apiService = UssdApiService();
   final EndpointConfigService _configService = EndpointConfigService();
 
+  final ConnectivityService _connectivityService;
+  final UssdCacheService _cacheService;
+  final OfflineQueueService _queueService;
+
+  UssdProvider({
+    ConnectivityService? connectivityService,
+    UssdCacheService? cacheService,
+    OfflineQueueService? queueService,
+  })  : _connectivityService = connectivityService ?? ConnectivityService(),
+        _cacheService = cacheService ?? UssdCacheService(),
+        _queueService = queueService ?? OfflineQueueService() {
+    _connectivityService.addListener(_onConnectivityChanged);
+  }
+
   bool _isInitialized = false;
   bool _isLoading = false;
   String? _error;
+  bool _lastResponseFromCache = false;
 
   bool get isInitialized => _isInitialized;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isOffline => _connectivityService.isOffline;
+  bool get lastResponseFromCache => _lastResponseFromCache;
+  int get queuedRequestCount => _queueService.length;
 
   UssdSession? get currentSession => _sessionService.currentSession;
   List<UssdSession> get sessionHistory => _sessionService.sessionHistory;
   List<EndpointConfig> get endpointConfigs => _configService.configs;
   EndpointConfig? get activeEndpointConfig => _configService.activeConfig;
 
+  UssdCacheService get cacheService => _cacheService;
+  OfflineQueueService get queueService => _queueService;
+
   Future<void> init() async {
     if (_isInitialized) return;
 
     _setLoading(true);
     try {
-      await _sessionService.init();
-      await _configService.init();
+      await Future.wait([
+        _sessionService.init(),
+        _configService.init(),
+        _connectivityService.init(),
+        _cacheService.init(),
+        _queueService.init(),
+      ]);
       _isInitialized = true;
       _clearError();
     } catch (e) {
@@ -82,20 +112,18 @@ class UssdProvider with ChangeNotifier {
 
     _setLoading(true);
     _clearError();
+    _lastResponseFromCache = false;
 
     try {
-      // Check if this is the very first request (no previous requests)
       final isInitialRequest = currentSession!.requests.isEmpty;
 
-      // Add user input to path (except for initial request)
       if (!isInitialRequest) {
         await _sessionService.addUserInputToPath(cleanInput);
         notifyListeners();
       }
 
-      // Build the text field using the updated path
       final textForRequest = isInitialRequest
-          ? '' // Empty text for initial USSD request
+          ? ''
           : UssdUtils.buildTextInput(currentSession!.ussdPath);
 
       final request = UssdRequest(
@@ -108,10 +136,7 @@ class UssdProvider with ChangeNotifier {
       await _sessionService.addRequest(request);
       notifyListeners();
 
-      final response = await _apiService.sendUssdRequest(
-        request,
-        activeEndpointConfig!,
-      );
+      final response = await _sendWithOfflineFallback(request);
 
       await _sessionService.addResponse(response);
       notifyListeners();
@@ -120,6 +145,57 @@ class UssdProvider with ChangeNotifier {
     } finally {
       _setLoading(false);
     }
+  }
+
+  /// Attempts a live request; falls back to cache or queues for later.
+  Future<UssdResponse> _sendWithOfflineFallback(UssdRequest request) async {
+    final config = activeEndpointConfig!;
+
+    if (_connectivityService.isOffline) {
+      final cached = await _cacheService.getCachedResponse(request);
+      if (cached != null) {
+        _lastResponseFromCache = true;
+        return cached;
+      }
+      await _queueService.enqueue(request, config);
+      return const UssdResponse(
+        text: 'You are offline. This request has been queued and will be '
+            'sent automatically when connectivity is restored.',
+        continueSession: false,
+      );
+    }
+
+    try {
+      final response = await _apiService.sendUssdRequest(request, config);
+      await _cacheService.cacheResponse(request, response);
+      return response;
+    } catch (e) {
+      final cached = await _cacheService.getCachedResponse(request);
+      if (cached != null) {
+        _lastResponseFromCache = true;
+        return cached;
+      }
+      await _queueService.enqueue(request, config);
+      rethrow;
+    }
+  }
+
+  void _onConnectivityChanged() {
+    if (_connectivityService.isOnline && !_queueService.isEmpty) {
+      _processQueue();
+    }
+    notifyListeners();
+  }
+
+  Future<void> _processQueue() async {
+    await _queueService.processQueue((queued) async {
+      final response = await _apiService.sendUssdRequest(
+        queued.request,
+        queued.config,
+      );
+      await _cacheService.cacheResponse(queued.request, response);
+    });
+    notifyListeners();
   }
 
   Future<void> endSession() async {
@@ -156,6 +232,7 @@ class UssdProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _setError('Failed to add endpoint config: ${e.toString()}');
+      rethrow;
     }
   }
 
@@ -165,6 +242,7 @@ class UssdProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _setError('Failed to update endpoint config: ${e.toString()}');
+      rethrow;
     }
   }
 
@@ -191,8 +269,7 @@ class UssdProvider with ChangeNotifier {
     _clearError();
 
     try {
-      final result = await _apiService.testEndpoint(config);
-      return result;
+      return await _apiService.testEndpoint(config);
     } catch (e) {
       _setError('Failed to test endpoint: ${e.toString()}');
       return false;
@@ -216,7 +293,11 @@ class UssdProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearError() {
-    _clearError();
+  void clearError() => _clearError();
+
+  @override
+  void dispose() {
+    _connectivityService.removeListener(_onConnectivityChanged);
+    super.dispose();
   }
 }

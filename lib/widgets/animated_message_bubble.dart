@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../models/ussd_response.dart';
 import '../models/ussd_request.dart';
 import '../utils/design_system.dart';
+import 'offline_banner.dart';
 
 /// Enhanced animated message bubble with slide and fade transitions
 class AnimatedMessageBubble extends StatelessWidget {
@@ -11,6 +12,7 @@ class AnimatedMessageBubble extends StatelessWidget {
   final bool isUser;
   final int index;
   final VoidCallback? onTap;
+  final bool fromCache;
 
   const AnimatedMessageBubble({
     Key? key,
@@ -19,6 +21,7 @@ class AnimatedMessageBubble extends StatelessWidget {
     required this.isUser,
     required this.index,
     this.onTap,
+    this.fromCache = false,
   }) : super(key: key);
 
   @override
@@ -83,7 +86,13 @@ class AnimatedMessageBubble extends StatelessWidget {
     if (isUser) {
       return _buildUserMessage(context, colorScheme, textTheme, messageText);
     } else {
-      return _buildSystemMessage(context, colorScheme, textTheme, messageText);
+      return _buildSystemMessage(
+        context,
+        colorScheme,
+        textTheme,
+        messageText,
+        fromCache: fromCache,
+      );
     }
   }
 
@@ -122,8 +131,9 @@ class AnimatedMessageBubble extends StatelessWidget {
     BuildContext context,
     ColorScheme colorScheme,
     TextTheme textTheme,
-    String messageText,
-  ) {
+    String messageText, {
+    bool fromCache = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -169,6 +179,10 @@ class AnimatedMessageBubble extends StatelessWidget {
                   duration: UssdDesignSystem.animationFast,
                   delay: UssdDesignSystem.animationMedium,
                 ),
+                if (fromCache) ...[
+                  const SizedBox(width: UssdDesignSystem.spacingS),
+                  const CacheHitChip(),
+                ],
               ],
             ),
             const SizedBox(height: 12),
