@@ -9,6 +9,7 @@ import '../services/endpoint_config_service.dart';
 import '../services/connectivity_service.dart';
 import '../services/ussd_cache_service.dart';
 import '../services/offline_queue_service.dart';
+import '../services/analytics_service.dart';
 import '../utils/ussd_utils.dart';
 
 class UssdProvider with ChangeNotifier {
@@ -19,14 +20,17 @@ class UssdProvider with ChangeNotifier {
   final ConnectivityService _connectivityService;
   final UssdCacheService _cacheService;
   final OfflineQueueService _queueService;
+  final AnalyticsService _analyticsService;
 
   UssdProvider({
     ConnectivityService? connectivityService,
     UssdCacheService? cacheService,
     OfflineQueueService? queueService,
+    AnalyticsService? analyticsService,
   })  : _connectivityService = connectivityService ?? ConnectivityService(),
         _cacheService = cacheService ?? UssdCacheService(),
-        _queueService = queueService ?? OfflineQueueService() {
+        _queueService = queueService ?? OfflineQueueService(),
+        _analyticsService = analyticsService ?? AnalyticsService() {
     _connectivityService.addListener(_onConnectivityChanged);
   }
 
@@ -49,6 +53,7 @@ class UssdProvider with ChangeNotifier {
 
   UssdCacheService get cacheService => _cacheService;
   OfflineQueueService get queueService => _queueService;
+  AnalyticsService get analyticsService => _analyticsService;
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -61,6 +66,7 @@ class UssdProvider with ChangeNotifier {
         _connectivityService.init(),
         _cacheService.init(),
         _queueService.init(),
+        _analyticsService.init(),
       ]);
       _isInitialized = true;
       _clearError();
@@ -86,6 +92,14 @@ class UssdProvider with ChangeNotifier {
         networkCode: networkCode,
       );
       notifyListeners();
+      // Track after session is created so we have the session ID.
+      if (currentSession != null) {
+        await _analyticsService.trackSessionStart(
+          sessionId: currentSession!.id,
+          serviceCode: serviceCode,
+          endpointName: activeEndpointConfig?.name ?? 'unknown',
+        );
+      }
     } catch (e) {
       _setError('Failed to start session: ${e.toString()}');
     } finally {
@@ -165,11 +179,33 @@ class UssdProvider with ChangeNotifier {
       );
     }
 
+    final timerId = _analyticsService.startTimer();
     try {
       final response = await _apiService.sendUssdRequest(request, config);
+      await _analyticsService.endTimer(
+        timerId: timerId,
+        sessionId: request.sessionId,
+        endpointName: config.name,
+        serviceCode: request.serviceCode,
+        success: true,
+      );
       await _cacheService.cacheResponse(request, response);
       return response;
     } catch (e) {
+      await _analyticsService.endTimer(
+        timerId: timerId,
+        sessionId: request.sessionId,
+        endpointName: config.name,
+        serviceCode: request.serviceCode,
+        success: false,
+        errorMessage: e.toString(),
+      );
+      await _analyticsService.trackError(
+        sessionId: request.sessionId,
+        serviceCode: request.serviceCode,
+        endpointName: config.name,
+        error: e.toString(),
+      );
       final cached = await _cacheService.getCachedResponse(request);
       if (cached != null) {
         _lastResponseFromCache = true;
@@ -202,9 +238,20 @@ class UssdProvider with ChangeNotifier {
     _setLoading(true);
     _clearError();
 
+    // Capture before the session is cleared.
+    final session = currentSession;
+
     try {
       await _sessionService.endSession();
       notifyListeners();
+      if (session != null) {
+        await _analyticsService.trackSessionEnd(
+          sessionId: session.id,
+          serviceCode: session.serviceCode,
+          endpointName: activeEndpointConfig?.name ?? 'unknown',
+          messageCount: session.responses.length,
+        );
+      }
     } catch (e) {
       _setError('Failed to end session: ${e.toString()}');
     } finally {
