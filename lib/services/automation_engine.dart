@@ -320,7 +320,7 @@ class UssdAutomationEngine {
     if (session == null || session.responses.isEmpty) {
       return null;
     }
-    return session.responses.last.message;
+    return session.responses.last.text;
   }
 
   /// Validate response against expected text

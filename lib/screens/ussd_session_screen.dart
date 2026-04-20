@@ -56,7 +56,9 @@ class UssdSessionScreen extends StatelessWidget {
               Card(
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 elevation: 1,
-                margin: const EdgeInsets.only(bottom: 16),
+                margin: EdgeInsets.only(
+                  bottom: provider.currentSession != null ? 20 : 16,
+                ),
                 child: ListTile(
                   leading: Icon(
                     Icons.cloud_done_rounded,
@@ -89,9 +91,9 @@ class UssdSessionScreen extends StatelessWidget {
               ),
             if (provider.currentSession != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Align(
-                  alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(bottom: 20),
+                child: SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.stop_circle_outlined),
                     label: Text(l10n.endSession),
@@ -112,6 +114,7 @@ class UssdSessionScreen extends StatelessWidget {
                     ),
                     onPressed: () async {
                       await provider.endSession();
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(l10n.ussdSessionEnded)),
                       );
@@ -119,12 +122,15 @@ class UssdSessionScreen extends StatelessWidget {
                   ),
                 ),
               ),
+            if (provider.currentSession != null) const SizedBox(height: 8),
             Expanded(
-              child: AnimatedSwitcher(
-                duration: UssdDesignSystem.animationMedium,
-                child: provider.currentSession == null
-                    ? const UssdSessionForm()
-                    : const ModernUssdConversationView(),
+              child: ClipRect(
+                child: AnimatedSwitcher(
+                  duration: UssdDesignSystem.animationMedium,
+                  child: provider.currentSession == null
+                      ? const UssdSessionForm()
+                      : const ModernUssdConversationView(),
+                ),
               ),
             ),
           ],
