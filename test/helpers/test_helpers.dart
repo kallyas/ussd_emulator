@@ -94,10 +94,8 @@ class TestDataFactory {
     bool isActive = true,
   }) {
     return EndpointConfig(
-      id: 'config-${DateTime.now().millisecondsSinceEpoch}',
       name: name ?? 'Test Endpoint',
-      baseUrl: baseUrl ?? 'http://localhost:8080',
-      timeout: const Duration(seconds: 30),
+      url: baseUrl ?? 'http://localhost:8080',
       isActive: isActive,
       headers: {'Content-Type': 'application/json'},
     );
