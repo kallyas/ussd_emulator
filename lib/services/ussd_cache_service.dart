@@ -28,9 +28,7 @@ class CacheEntry {
   };
 
   factory CacheEntry.fromJson(Map<String, dynamic> json) => CacheEntry(
-    response: UssdResponse.fromJson(
-      json['response'] as Map<String, dynamic>,
-    ),
+    response: UssdResponse.fromJson(json['response'] as Map<String, dynamic>),
     timestamp: DateTime.parse(json['timestamp'] as String),
     ttl: Duration(milliseconds: json['ttlMs'] as int),
     hitCount: (json['hitCount'] as int?) ?? 0,
@@ -86,9 +84,7 @@ class UssdCacheService extends ChangeNotifier {
 
   Future<void> _saveToPrefs() async {
     try {
-      final encoded = jsonEncode(
-        _cache.map((k, v) => MapEntry(k, v.toJson())),
-      );
+      final encoded = jsonEncode(_cache.map((k, v) => MapEntry(k, v.toJson())));
       await _prefs?.setString(_prefsKey, encoded);
     } catch (e) {
       debugPrint('UssdCacheService: failed to save cache: $e');

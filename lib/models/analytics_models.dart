@@ -1,6 +1,12 @@
 /// Analytics data models — no code generation needed, plain JSON serialization.
 
-enum SessionEventType { sessionStart, sessionEnd, requestSent, responseReceived, error }
+enum SessionEventType {
+  sessionStart,
+  sessionEnd,
+  requestSent,
+  responseReceived,
+  error,
+}
 
 class SessionEvent {
   final String id;

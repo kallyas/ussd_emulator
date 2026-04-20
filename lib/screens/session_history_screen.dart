@@ -32,17 +32,17 @@ class _EmptyHistoryView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.history_rounded,
-              size: 56,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          )
+                padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.history_rounded,
+                  size: 56,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              )
               .animate()
               .scale(
                 begin: const Offset(0.5, 0.5),
@@ -53,23 +53,23 @@ class _EmptyHistoryView extends StatelessWidget {
               .fadeIn(duration: UssdDesignSystem.animationMedium),
           const SizedBox(height: UssdDesignSystem.spacingL),
           Text(
-            'No session history yet',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          )
+                'No session history yet',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
               .animate(delay: const Duration(milliseconds: 150))
               .fadeIn()
               .slideY(begin: 0.3, end: 0.0),
           const SizedBox(height: UssdDesignSystem.spacingS),
           Text(
-            'Your recent USSD sessions will appear here.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          )
+                'Your recent USSD sessions will appear here.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              )
               .animate(delay: const Duration(milliseconds: 250))
               .fadeIn()
               .slideY(begin: 0.3, end: 0.0),
@@ -111,117 +111,120 @@ class _SessionCard extends StatelessWidget {
     final isActive = session.isActive as bool;
 
     return Card(
-      elevation: isActive ? 3 : 1,
-      color: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-        side: isActive
-            ? BorderSide(color: colorScheme.primary, width: 1.5)
-            : BorderSide.none,
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-        onTap: () => UssdSessionDetails.show(context, session),
-        child: Padding(
-          padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(UssdDesignSystem.spacingS),
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? colorScheme.primaryContainer
-                          : colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(
-                        UssdDesignSystem.radiusM,
-                      ),
-                    ),
-                    child: Icon(
-                      isActive
-                          ? Icons.phone_in_talk_rounded
-                          : Icons.phone_missed_rounded,
-                      size: 20,
-                      color: isActive
-                          ? colorScheme.onPrimaryContainer
-                          : colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(width: UssdDesignSystem.spacingM),
-                  Expanded(
-                    child: Text(
-                      session.phoneNumber as String,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: UssdDesignSystem.spacingS),
-                  _StatusBadge(isActive: isActive),
-                ],
-              ),
-              const SizedBox(height: UssdDesignSystem.spacingM),
-              _MetaRow(
-                icon: Icons.access_time_rounded,
-                label: 'Started',
-                value: _formatDateTime(session.createdAt as DateTime),
-                colorScheme: colorScheme,
-              ),
-              if (session.endedAt != null) ...[
-                const SizedBox(height: UssdDesignSystem.spacingXS),
-                _MetaRow(
-                  icon: Icons.stop_circle_outlined,
-                  label: 'Ended',
-                  value: _formatDateTime(session.endedAt as DateTime),
-                  colorScheme: colorScheme,
-                ),
-              ],
-              const SizedBox(height: UssdDesignSystem.spacingM),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      (session.responses as List).isNotEmpty
-                          ? (session.responses as List).last.text as String
-                          : 'No responses',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                  ),
-                  const SizedBox(width: UssdDesignSystem.spacingS),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: UssdDesignSystem.spacingM,
-                      vertical: UssdDesignSystem.spacingXS,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(
-                        UssdDesignSystem.radiusS,
-                      ),
-                    ),
-                    child: Text(
-                      '${(session.responses as List).length} responses',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          elevation: isActive ? 3 : 1,
+          color: colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
+            side: isActive
+                ? BorderSide(color: colorScheme.primary, width: 1.5)
+                : BorderSide.none,
           ),
-        ),
-      ),
-    )
+          child: InkWell(
+            borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
+            onTap: () => UssdSessionDetails.show(context, session),
+            child: Padding(
+              padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(
+                          UssdDesignSystem.spacingS,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? colorScheme.primaryContainer
+                              : colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(
+                            UssdDesignSystem.radiusM,
+                          ),
+                        ),
+                        child: Icon(
+                          isActive
+                              ? Icons.phone_in_talk_rounded
+                              : Icons.phone_missed_rounded,
+                          size: 20,
+                          color: isActive
+                              ? colorScheme.onPrimaryContainer
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(width: UssdDesignSystem.spacingM),
+                      Expanded(
+                        child: Text(
+                          session.phoneNumber as String,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onSurface,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: UssdDesignSystem.spacingS),
+                      _StatusBadge(isActive: isActive),
+                    ],
+                  ),
+                  const SizedBox(height: UssdDesignSystem.spacingM),
+                  _MetaRow(
+                    icon: Icons.access_time_rounded,
+                    label: 'Started',
+                    value: _formatDateTime(session.createdAt as DateTime),
+                    colorScheme: colorScheme,
+                  ),
+                  if (session.endedAt != null) ...[
+                    const SizedBox(height: UssdDesignSystem.spacingXS),
+                    _MetaRow(
+                      icon: Icons.stop_circle_outlined,
+                      label: 'Ended',
+                      value: _formatDateTime(session.endedAt as DateTime),
+                      colorScheme: colorScheme,
+                    ),
+                  ],
+                  const SizedBox(height: UssdDesignSystem.spacingM),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          (session.responses as List).isNotEmpty
+                              ? (session.responses as List).last.text as String
+                              : 'No responses',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                      const SizedBox(width: UssdDesignSystem.spacingS),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: UssdDesignSystem.spacingM,
+                          vertical: UssdDesignSystem.spacingXS,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(
+                            UssdDesignSystem.radiusS,
+                          ),
+                        ),
+                        child: Text(
+                          '${(session.responses as List).length} responses',
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
         .animate(delay: Duration(milliseconds: index * 60))
         .fadeIn(duration: UssdDesignSystem.animationMedium)
         .slideY(
@@ -261,13 +264,13 @@ class _StatusBadge extends StatelessWidget {
         children: [
           if (isActive) ...[
             Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: colorScheme.onPrimary,
-                shape: BoxShape.circle,
-              ),
-            )
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: colorScheme.onPrimary,
+                    shape: BoxShape.circle,
+                  ),
+                )
                 .animate(onPlay: (c) => c.repeat())
                 .fadeIn(duration: const Duration(milliseconds: 600))
                 .then()
@@ -318,9 +321,9 @@ class _MetaRow extends StatelessWidget {
         ),
         Text(
           value,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurface,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurface),
         ),
       ],
     );

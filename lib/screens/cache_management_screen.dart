@@ -74,9 +74,9 @@ class _StatsCard extends StatelessWidget {
           children: [
             Text(
               'Statistics',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: UssdDesignSystem.spacingM),
             Row(
@@ -333,9 +333,9 @@ class _ActionsSection extends StatelessWidget {
           children: [
             Text(
               'Actions',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: UssdDesignSystem.spacingM),
             OutlinedButton.icon(
@@ -358,12 +358,12 @@ class _ActionsSection extends StatelessWidget {
               onPressed: cache.entryCount == 0
                   ? null
                   : () => _confirmClear(
-                        context,
-                        title: 'Clear cache',
-                        message:
-                            'Remove all ${cache.entryCount} cached responses?',
-                        onConfirm: () => cache.clearAll(),
-                      ),
+                      context,
+                      title: 'Clear cache',
+                      message:
+                          'Remove all ${cache.entryCount} cached responses?',
+                      onConfirm: () => cache.clearAll(),
+                    ),
               icon: const Icon(Icons.delete_sweep_rounded),
               label: const Text('Clear all cache'),
               style: FilledButton.styleFrom(
@@ -377,12 +377,11 @@ class _ActionsSection extends StatelessWidget {
               onPressed: queue.isEmpty
                   ? null
                   : () => _confirmClear(
-                        context,
-                        title: 'Clear queue',
-                        message:
-                            'Discard all ${queue.length} queued requests?',
-                        onConfirm: () => queue.clearAll(),
-                      ),
+                      context,
+                      title: 'Clear queue',
+                      message: 'Discard all ${queue.length} queued requests?',
+                      onConfirm: () => queue.clearAll(),
+                    ),
               icon: const Icon(Icons.clear_all_rounded),
               label: const Text('Clear offline queue'),
               style: FilledButton.styleFrom(

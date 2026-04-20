@@ -19,60 +19,62 @@ class OfflineBanner extends StatelessWidget {
     final queueCount = provider.queuedRequestCount;
 
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        vertical: UssdDesignSystem.spacingS,
-        horizontal: UssdDesignSystem.spacingM,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.errorContainer,
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.error.withOpacity(0.3),
-            width: 1,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            vertical: UssdDesignSystem.spacingS,
+            horizontal: UssdDesignSystem.spacingM,
           ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.cloud_off_rounded,
-            size: 16,
-            color: colorScheme.onErrorContainer,
-          ),
-          const SizedBox(width: UssdDesignSystem.spacingS),
-          Expanded(
-            child: Text(
-              queueCount > 0
-                  ? 'Offline — $queueCount request${queueCount == 1 ? '' : 's'} queued'
-                  : 'Offline — requests will be queued until reconnected',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onErrorContainer,
-                fontWeight: FontWeight.w500,
+          decoration: BoxDecoration(
+            color: colorScheme.errorContainer,
+            border: Border(
+              bottom: BorderSide(
+                color: colorScheme.error.withOpacity(0.3),
+                width: 1,
               ),
             ),
           ),
-          if (queueCount > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: UssdDesignSystem.spacingS,
-                vertical: 2,
+          child: Row(
+            children: [
+              Icon(
+                Icons.cloud_off_rounded,
+                size: 16,
+                color: colorScheme.onErrorContainer,
               ),
-              decoration: BoxDecoration(
-                color: colorScheme.error,
-                borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
-              ),
-              child: Text(
-                '$queueCount',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colorScheme.onError,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(width: UssdDesignSystem.spacingS),
+              Expanded(
+                child: Text(
+                  queueCount > 0
+                      ? 'Offline — $queueCount request${queueCount == 1 ? '' : 's'} queued'
+                      : 'Offline — requests will be queued until reconnected',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
-        ],
-      ),
-    )
+              if (queueCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: UssdDesignSystem.spacingS,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.error,
+                    borderRadius: BorderRadius.circular(
+                      UssdDesignSystem.radiusM,
+                    ),
+                  ),
+                  child: Text(
+                    '$queueCount',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onError,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        )
         .animate()
         .slideY(
           begin: -1.0,

@@ -27,10 +27,10 @@ class UssdProvider with ChangeNotifier {
     UssdCacheService? cacheService,
     OfflineQueueService? queueService,
     AnalyticsService? analyticsService,
-  })  : _connectivityService = connectivityService ?? ConnectivityService(),
-        _cacheService = cacheService ?? UssdCacheService(),
-        _queueService = queueService ?? OfflineQueueService(),
-        _analyticsService = analyticsService ?? AnalyticsService() {
+  }) : _connectivityService = connectivityService ?? ConnectivityService(),
+       _cacheService = cacheService ?? UssdCacheService(),
+       _queueService = queueService ?? OfflineQueueService(),
+       _analyticsService = analyticsService ?? AnalyticsService() {
     _connectivityService.addListener(_onConnectivityChanged);
   }
 
@@ -173,7 +173,8 @@ class UssdProvider with ChangeNotifier {
       }
       await _queueService.enqueue(request, config);
       return const UssdResponse(
-        text: 'You are offline. This request has been queued and will be '
+        text:
+            'You are offline. This request has been queued and will be '
             'sent automatically when connectivity is restored.',
         continueSession: false,
       );

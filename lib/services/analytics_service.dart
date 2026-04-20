@@ -99,14 +99,16 @@ class AnalyticsService extends ChangeNotifier {
     required String endpointName,
   }) async {
     if (!_enabled) return;
-    await _addEvent(SessionEvent(
-      id: _uuid.v4(),
-      type: SessionEventType.sessionStart,
-      timestamp: DateTime.now(),
-      sessionId: sessionId,
-      serviceCode: serviceCode,
-      endpointName: endpointName,
-    ));
+    await _addEvent(
+      SessionEvent(
+        id: _uuid.v4(),
+        type: SessionEventType.sessionStart,
+        timestamp: DateTime.now(),
+        sessionId: sessionId,
+        serviceCode: serviceCode,
+        endpointName: endpointName,
+      ),
+    );
   }
 
   Future<void> trackSessionEnd({
@@ -116,15 +118,17 @@ class AnalyticsService extends ChangeNotifier {
     required int messageCount,
   }) async {
     if (!_enabled) return;
-    await _addEvent(SessionEvent(
-      id: _uuid.v4(),
-      type: SessionEventType.sessionEnd,
-      timestamp: DateTime.now(),
-      sessionId: sessionId,
-      serviceCode: serviceCode,
-      endpointName: endpointName,
-      metadata: {'messageCount': messageCount},
-    ));
+    await _addEvent(
+      SessionEvent(
+        id: _uuid.v4(),
+        type: SessionEventType.sessionEnd,
+        timestamp: DateTime.now(),
+        sessionId: sessionId,
+        serviceCode: serviceCode,
+        endpointName: endpointName,
+        metadata: {'messageCount': messageCount},
+      ),
+    );
   }
 
   Future<void> trackError({
@@ -134,15 +138,17 @@ class AnalyticsService extends ChangeNotifier {
     required String error,
   }) async {
     if (!_enabled) return;
-    await _addEvent(SessionEvent(
-      id: _uuid.v4(),
-      type: SessionEventType.error,
-      timestamp: DateTime.now(),
-      sessionId: sessionId,
-      serviceCode: serviceCode,
-      endpointName: endpointName,
-      metadata: {'error': error},
-    ));
+    await _addEvent(
+      SessionEvent(
+        id: _uuid.v4(),
+        type: SessionEventType.error,
+        timestamp: DateTime.now(),
+        sessionId: sessionId,
+        serviceCode: serviceCode,
+        endpointName: endpointName,
+        metadata: {'error': error},
+      ),
+    );
   }
 
   Future<void> _addEvent(SessionEvent event) async {
@@ -223,7 +229,9 @@ class AnalyticsService extends ChangeNotifier {
     // Avg response time by endpoint
     final timesByEndpoint = <String, List<int>>{};
     for (final m in _metrics) {
-      timesByEndpoint.putIfAbsent(m.endpointName, () => []).add(m.responseTimeMs);
+      timesByEndpoint
+          .putIfAbsent(m.endpointName, () => [])
+          .add(m.responseTimeMs);
     }
     final avgByEndpoint = timesByEndpoint.map(
       (k, v) => MapEntry(k, v.reduce((a, b) => a + b) / v.length),
@@ -245,12 +253,9 @@ class AnalyticsService extends ChangeNotifier {
     // Total session duration (sum of start→end pairs per sessionId)
     var totalDuration = Duration.zero;
     for (final start in starts) {
-      final end = ends
-          .where((e) => e.sessionId == start.sessionId)
-          .toList();
+      final end = ends.where((e) => e.sessionId == start.sessionId).toList();
       if (end.isNotEmpty) {
-        totalDuration +=
-            end.first.timestamp.difference(start.timestamp).abs();
+        totalDuration += end.first.timestamp.difference(start.timestamp).abs();
       }
     }
 

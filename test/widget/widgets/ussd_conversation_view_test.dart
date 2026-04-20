@@ -74,7 +74,9 @@ void main() {
       expect(find.byType(TextField), findsOneWidget);
     });
 
-    testWidgets('should handle user input and send USSD command', (tester) async {
+    testWidgets('should handle user input and send USSD command', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       final inputField = find.byType(TextField);
@@ -92,7 +94,9 @@ void main() {
       verify(mockUssdProvider.sendUssdInput('1')).called(1);
     });
 
-    testWidgets('should handle keyboard enter key for sending input', (tester) async {
+    testWidgets('should handle keyboard enter key for sending input', (
+      tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
 
       final inputField = find.byType(TextField);
@@ -119,7 +123,9 @@ void main() {
       expect(textField.controller?.text, isEmpty);
     });
 
-    testWidgets('should display multiple conversation exchanges', (tester) async {
+    testWidgets('should display multiple conversation exchanges', (
+      tester,
+    ) async {
       final multiExchangeSession = UssdSession(
         id: 'test-session-2',
         phoneNumber: '254700000000',
@@ -161,7 +167,10 @@ void main() {
       await tester.pumpWidget(createTestWidget());
 
       expect(find.textContaining('Welcome'), findsOneWidget);
-      expect(find.textContaining('Your balance is KES 1,000.00'), findsOneWidget);
+      expect(
+        find.textContaining('Your balance is KES 1,000.00'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should support dark theme', (tester) async {
@@ -171,7 +180,9 @@ void main() {
       expect(find.text('*123#'), findsOneWidget);
     });
 
-    testWidgets('should handle long response text with scrolling', (tester) async {
+    testWidgets('should handle long response text with scrolling', (
+      tester,
+    ) async {
       final longResponseSession = testSession.copyWith(
         responses: [
           UssdResponse(

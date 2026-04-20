@@ -90,7 +90,8 @@ void main() {
       expect(
         textWidgets.evaluate().length,
         lessThan(200),
-        reason: 'Should efficiently manage text widgets for large conversations',
+        reason:
+            'Should efficiently manage text widgets for large conversations',
       );
     });
 

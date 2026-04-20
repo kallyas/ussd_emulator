@@ -248,7 +248,9 @@ class _ResponseTimeBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final maxMs = metrics.map((m) => m.responseTimeMs).fold(1, (a, b) => a > b ? a : b);
+    final maxMs = metrics
+        .map((m) => m.responseTimeMs)
+        .fold(1, (a, b) => a > b ? a : b);
 
     return SizedBox(
       height: 48,
@@ -303,7 +305,9 @@ class _TopServiceCodesCard extends StatelessWidget {
               children: top.map((entry) {
                 final frac = entry.value / total;
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: UssdDesignSystem.spacingS),
+                  padding: const EdgeInsets.only(
+                    bottom: UssdDesignSystem.spacingS,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -330,7 +334,9 @@ class _TopServiceCodesCard extends StatelessWidget {
                           value: frac,
                           minHeight: 6,
                           backgroundColor: colorScheme.surfaceContainerHighest,
-                          valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                          valueColor: AlwaysStoppedAnimation(
+                            colorScheme.primary,
+                          ),
                         ),
                       ),
                     ],
@@ -375,12 +381,15 @@ class _EndpointPerformanceCard extends StatelessWidget {
                   leading: Icon(
                     Icons.circle,
                     size: 10,
-                    color: isSlowish ? colorScheme.error : colorScheme.secondary,
+                    color: isSlowish
+                        ? colorScheme.error
+                        : colorScheme.secondary,
                   ),
                   title: Text(
                     entry.key,
-                    style: Theme.of(context).textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   trailing: Row(
@@ -454,9 +463,9 @@ class _RecentErrorsCard extends StatelessWidget {
                 const SizedBox(width: UssdDesignSystem.spacingS),
                 Text(
                   'No errors recorded.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.secondary,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: colorScheme.secondary),
                 ),
               ],
             )
@@ -542,7 +551,8 @@ class _ActionsCard extends StatelessWidget {
               const SizedBox(width: UssdDesignSystem.spacingS),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: analytics.events.isEmpty && analytics.metrics.isEmpty
+                  onPressed:
+                      analytics.events.isEmpty && analytics.metrics.isEmpty
                       ? null
                       : () => _export(context, 'json'),
                   icon: const Icon(Icons.data_object_rounded, size: 18),
@@ -580,10 +590,9 @@ class _ActionsCard extends StatelessWidget {
         '${dir.path}/ussd_analytics_${DateTime.now().millisecondsSinceEpoch}.$ext',
       );
       await file.writeAsString(content);
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'USSD Analytics Export',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'USSD Analytics Export');
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -662,9 +671,9 @@ class _DashCard extends StatelessWidget {
                 const SizedBox(width: UssdDesignSystem.spacingS),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -710,9 +719,9 @@ class _MetricPill extends StatelessWidget {
           ),
           Text(
             label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color.withOpacity(0.8),
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: color.withOpacity(0.8)),
           ),
         ],
       ),

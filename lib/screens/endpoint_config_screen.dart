@@ -56,26 +56,30 @@ class EndpointConfigScreen extends StatelessWidget {
                       const CacheManagementScreen(),
                     ),
                   ),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
-                  foregroundColor:
-                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.secondaryContainer,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onSecondaryContainer,
                   tooltip: 'Offline & Cache',
                   child: const Icon(Icons.offline_bolt_rounded),
                 ),
                 const SizedBox(height: 12),
                 FloatingActionButton.extended(
-                  heroTag: 'add_endpoint_fab',
-                  onPressed: () => _addEndpoint(context, provider),
-                  icon: const Icon(Icons.add_rounded),
-                  label: const Text('Add Endpoint'),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-                  ),
-                )
+                      heroTag: 'add_endpoint_fab',
+                      onPressed: () => _addEndpoint(context, provider),
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text('Add Endpoint'),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          UssdDesignSystem.radiusL,
+                        ),
+                      ),
+                    )
                     .animate()
                     .scale(
                       begin: const Offset(0.0, 0.0),
@@ -108,17 +112,17 @@ class _EmptyConfigView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.cloud_off_rounded,
-              size: 56,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          )
+                padding: const EdgeInsets.all(UssdDesignSystem.spacingXL),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.cloud_off_rounded,
+                  size: 56,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              )
               .animate()
               .scale(
                 begin: const Offset(0.5, 0.5),
@@ -129,23 +133,23 @@ class _EmptyConfigView extends StatelessWidget {
               .fadeIn(),
           const SizedBox(height: UssdDesignSystem.spacingL),
           Text(
-            'No endpoints configured',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          )
+                'No endpoints configured',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
               .animate(delay: const Duration(milliseconds: 150))
               .fadeIn()
               .slideY(begin: 0.3, end: 0.0),
           const SizedBox(height: UssdDesignSystem.spacingS),
           Text(
-            'Add an endpoint to connect to a USSD service.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          )
+                'Add an endpoint to connect to a USSD service.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              )
               .animate(delay: const Duration(milliseconds: 250))
               .fadeIn()
               .slideY(begin: 0.3, end: 0.0),
@@ -173,147 +177,151 @@ class _EndpointCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      elevation: isActive ? 4 : 1,
-      color: isActive ? colorScheme.primaryContainer : colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-        side: isActive
-            ? BorderSide(color: colorScheme.primary, width: 2)
-            : BorderSide.none,
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
-        onTap: () {
-          if (!isActive) provider.setActiveEndpointConfig(config);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
-          child: Row(
-            children: [
-              _StatusIcon(isActive: isActive),
-              const SizedBox(width: UssdDesignSystem.spacingM),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      config.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight:
-                            isActive ? FontWeight.bold : FontWeight.normal,
-                        color: isActive
-                            ? colorScheme.onPrimaryContainer
-                            : colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: UssdDesignSystem.spacingXS),
-                    Text(
-                      config.url,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: isActive
-                            ? colorScheme.onPrimaryContainer.withOpacity(0.7)
-                            : colorScheme.onSurfaceVariant,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (config.headers.isNotEmpty) ...[
-                      const SizedBox(height: UssdDesignSystem.spacingXS),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.label_outline_rounded,
-                            size: 12,
-                            color: isActive
-                                ? colorScheme.onPrimaryContainer.withOpacity(
-                                    0.6,
-                                  )
-                                : colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${config.headers.length} header${config.headers.length == 1 ? '' : 's'}',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isActive
-                                  ? colorScheme.onPrimaryContainer.withOpacity(
-                                      0.6,
-                                    )
-                                  : colorScheme.onSurfaceVariant,
-                            ),
+          elevation: isActive ? 4 : 1,
+          color: isActive ? colorScheme.primaryContainer : colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
+            side: isActive
+                ? BorderSide(color: colorScheme.primary, width: 2)
+                : BorderSide.none,
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
+            onTap: () {
+              if (!isActive) provider.setActiveEndpointConfig(config);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(UssdDesignSystem.spacingL),
+              child: Row(
+                children: [
+                  _StatusIcon(isActive: isActive),
+                  const SizedBox(width: UssdDesignSystem.spacingM),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          config.name,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: isActive
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isActive
+                                    ? colorScheme.onPrimaryContainer
+                                    : colorScheme.onSurface,
+                              ),
+                        ),
+                        const SizedBox(height: UssdDesignSystem.spacingXS),
+                        Text(
+                          config.url,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: isActive
+                                    ? colorScheme.onPrimaryContainer
+                                          .withOpacity(0.7)
+                                    : colorScheme.onSurfaceVariant,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (config.headers.isNotEmpty) ...[
+                          const SizedBox(height: UssdDesignSystem.spacingXS),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.label_outline_rounded,
+                                size: 12,
+                                color: isActive
+                                    ? colorScheme.onPrimaryContainer
+                                          .withOpacity(0.6)
+                                    : colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${config.headers.length} header${config.headers.length == 1 ? '' : 's'}',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: isActive
+                                          ? colorScheme.onPrimaryContainer
+                                                .withOpacity(0.6)
+                                          : colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
                           ),
                         ],
+                      ],
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                      color: isActive
+                          ? colorScheme.onPrimaryContainer
+                          : colorScheme.onSurfaceVariant,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        UssdDesignSystem.radiusM,
+                      ),
+                    ),
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'activate':
+                          provider.setActiveEndpointConfig(config);
+                        case 'test':
+                          _testEndpoint(context, provider, config);
+                        case 'edit':
+                          _editEndpoint(context, provider, config, index);
+                        case 'delete':
+                          _deleteEndpoint(context, provider, index);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      if (!isActive)
+                        const PopupMenuItem(
+                          value: 'activate',
+                          child: ListTile(
+                            leading: Icon(Icons.check_circle_outline_rounded),
+                            title: Text('Activate'),
+                            contentPadding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ),
+                      const PopupMenuItem(
+                        value: 'test',
+                        child: ListTile(
+                          leading: Icon(Icons.wifi_tethering_rounded),
+                          title: Text('Test'),
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: ListTile(
+                          leading: Icon(Icons.edit_rounded),
+                          title: Text('Edit'),
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: ListTile(
+                          leading: Icon(Icons.delete_outline_rounded),
+                          title: Text('Delete'),
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                        ),
                       ),
                     ],
-                  ],
-                ),
-              ),
-              PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.more_vert_rounded,
-                  color: isActive
-                      ? colorScheme.onPrimaryContainer
-                      : colorScheme.onSurfaceVariant,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
-                ),
-                onSelected: (value) {
-                  switch (value) {
-                    case 'activate':
-                      provider.setActiveEndpointConfig(config);
-                    case 'test':
-                      _testEndpoint(context, provider, config);
-                    case 'edit':
-                      _editEndpoint(context, provider, config, index);
-                    case 'delete':
-                      _deleteEndpoint(context, provider, index);
-                  }
-                },
-                itemBuilder: (context) => [
-                  if (!isActive)
-                    const PopupMenuItem(
-                      value: 'activate',
-                      child: ListTile(
-                        leading: Icon(Icons.check_circle_outline_rounded),
-                        title: Text('Activate'),
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                  const PopupMenuItem(
-                    value: 'test',
-                    child: ListTile(
-                      leading: Icon(Icons.wifi_tethering_rounded),
-                      title: Text('Test'),
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'edit',
-                    child: ListTile(
-                      leading: Icon(Icons.edit_rounded),
-                      title: Text('Edit'),
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: ListTile(
-                      leading: Icon(Icons.delete_outline_rounded),
-                      title: Text('Delete'),
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
-                    ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    )
+        )
         .animate(delay: Duration(milliseconds: index * 60))
         .fadeIn(duration: UssdDesignSystem.animationMedium)
         .slideY(
@@ -357,9 +365,7 @@ class _EndpointCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(UssdDesignSystem.radiusL),
           ),
           icon: Icon(
-            success
-                ? Icons.check_circle_rounded
-                : Icons.error_outline_rounded,
+            success ? Icons.check_circle_rounded : Icons.error_outline_rounded,
             color: success
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).colorScheme.error,
@@ -391,11 +397,7 @@ class _EndpointCard extends StatelessWidget {
     _showEndpointDialog(context, provider, config: config, index: index);
   }
 
-  void _deleteEndpoint(
-    BuildContext context,
-    UssdProvider provider,
-    int index,
-  ) {
+  void _deleteEndpoint(BuildContext context, UssdProvider provider, int index) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -444,17 +446,17 @@ class _StatusIcon extends StatelessWidget {
 
     if (isActive) {
       return Container(
-        padding: const EdgeInsets.all(UssdDesignSystem.spacingS),
-        decoration: BoxDecoration(
-          color: colorScheme.primary,
-          borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
-        ),
-        child: Icon(
-          Icons.check_rounded,
-          color: colorScheme.onPrimary,
-          size: 20,
-        ),
-      )
+            padding: const EdgeInsets.all(UssdDesignSystem.spacingS),
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
+              borderRadius: BorderRadius.circular(UssdDesignSystem.radiusM),
+            ),
+            child: Icon(
+              Icons.check_rounded,
+              color: colorScheme.onPrimary,
+              size: 20,
+            ),
+          )
           .animate(onPlay: (c) => c.repeat(reverse: true))
           .shimmer(
             duration: const Duration(milliseconds: 2000),
@@ -487,9 +489,8 @@ void _showEndpointDialog(
   final nameController = TextEditingController(text: config?.name ?? '');
   final urlController = TextEditingController(text: config?.url ?? '');
   final headersController = TextEditingController(
-    text: config?.headers.entries
-            .map((e) => '${e.key}: ${e.value}')
-            .join('\n') ??
+    text:
+        config?.headers.entries.map((e) => '${e.key}: ${e.value}').join('\n') ??
         '',
   );
 
