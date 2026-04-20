@@ -3,15 +3,16 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:ui' as _i7;
+import 'dart:async' as _i8;
+import 'dart:ui' as _i9;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:ussd_emulator/models/accessibility_settings.dart' as _i2;
-import 'package:ussd_emulator/models/endpoint_config.dart' as _i5;
-import 'package:ussd_emulator/models/ussd_session.dart' as _i4;
-import 'package:ussd_emulator/providers/accessibility_provider.dart' as _i8;
-import 'package:ussd_emulator/providers/ussd_provider.dart' as _i3;
+import 'package:ussd_emulator/models/endpoint_config.dart' as _i7;
+import 'package:ussd_emulator/models/ussd_session.dart' as _i6;
+import 'package:ussd_emulator/providers/ussd_provider.dart' as _i5;
+import 'package:ussd_emulator/services/analytics_service.dart' as _i4;
+import 'package:ussd_emulator/services/offline_queue_service.dart' as _i3;
+import 'package:ussd_emulator/services/ussd_cache_service.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -28,16 +29,28 @@ import 'package:ussd_emulator/providers/ussd_provider.dart' as _i3;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAccessibilitySettings_0 extends _i1.SmartFake
-    implements _i2.AccessibilitySettings {
-  _FakeAccessibilitySettings_0(Object parent, Invocation parentInvocation)
+class _FakeUssdCacheService_0 extends _i1.SmartFake
+    implements _i2.UssdCacheService {
+  _FakeUssdCacheService_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeOfflineQueueService_1 extends _i1.SmartFake
+    implements _i3.OfflineQueueService {
+  _FakeOfflineQueueService_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeAnalyticsService_2 extends _i1.SmartFake
+    implements _i4.AnalyticsService {
+  _FakeAnalyticsService_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [UssdProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUssdProvider extends _i1.Mock implements _i3.UssdProvider {
+class MockUssdProvider extends _i1.Mock implements _i5.UssdProvider {
   MockUssdProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -53,20 +66,74 @@ class MockUssdProvider extends _i1.Mock implements _i3.UssdProvider {
           as bool);
 
   @override
-  List<_i4.UssdSession> get sessionHistory =>
-      (super.noSuchMethod(
-            Invocation.getter(#sessionHistory),
-            returnValue: <_i4.UssdSession>[],
-          )
-          as List<_i4.UssdSession>);
+  bool get isOffline =>
+      (super.noSuchMethod(Invocation.getter(#isOffline), returnValue: false)
+          as bool);
 
   @override
-  List<_i5.EndpointConfig> get endpointConfigs =>
+  bool get lastResponseFromCache =>
+      (super.noSuchMethod(
+            Invocation.getter(#lastResponseFromCache),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  int get queuedRequestCount =>
+      (super.noSuchMethod(
+            Invocation.getter(#queuedRequestCount),
+            returnValue: 0,
+          )
+          as int);
+
+  @override
+  List<_i6.UssdSession> get sessionHistory =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionHistory),
+            returnValue: <_i6.UssdSession>[],
+          )
+          as List<_i6.UssdSession>);
+
+  @override
+  List<_i7.EndpointConfig> get endpointConfigs =>
       (super.noSuchMethod(
             Invocation.getter(#endpointConfigs),
-            returnValue: <_i5.EndpointConfig>[],
+            returnValue: <_i7.EndpointConfig>[],
           )
-          as List<_i5.EndpointConfig>);
+          as List<_i7.EndpointConfig>);
+
+  @override
+  _i2.UssdCacheService get cacheService =>
+      (super.noSuchMethod(
+            Invocation.getter(#cacheService),
+            returnValue: _FakeUssdCacheService_0(
+              this,
+              Invocation.getter(#cacheService),
+            ),
+          )
+          as _i2.UssdCacheService);
+
+  @override
+  _i3.OfflineQueueService get queueService =>
+      (super.noSuchMethod(
+            Invocation.getter(#queueService),
+            returnValue: _FakeOfflineQueueService_1(
+              this,
+              Invocation.getter(#queueService),
+            ),
+          )
+          as _i3.OfflineQueueService);
+
+  @override
+  _i4.AnalyticsService get analyticsService =>
+      (super.noSuchMethod(
+            Invocation.getter(#analyticsService),
+            returnValue: _FakeAnalyticsService_2(
+              this,
+              Invocation.getter(#analyticsService),
+            ),
+          )
+          as _i4.AnalyticsService);
 
   @override
   bool get hasListeners =>
@@ -74,16 +141,16 @@ class MockUssdProvider extends _i1.Mock implements _i3.UssdProvider {
           as bool);
 
   @override
-  _i6.Future<void> init() =>
+  _i8.Future<void> init() =>
       (super.noSuchMethod(
             Invocation.method(#init, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> startSession({
+  _i8.Future<void> startSession({
     required String? phoneNumber,
     required String? serviceCode,
     String? networkCode,
@@ -94,84 +161,84 @@ class MockUssdProvider extends _i1.Mock implements _i3.UssdProvider {
               #serviceCode: serviceCode,
               #networkCode: networkCode,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> sendUssdInput(String? input) =>
+  _i8.Future<void> sendUssdInput(String? input) =>
       (super.noSuchMethod(
             Invocation.method(#sendUssdInput, [input]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> endSession() =>
+  _i8.Future<void> endSession() =>
       (super.noSuchMethod(
             Invocation.method(#endSession, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> clearSessionHistory() =>
+  _i8.Future<void> clearSessionHistory() =>
       (super.noSuchMethod(
             Invocation.method(#clearSessionHistory, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> addEndpointConfig(_i5.EndpointConfig? config) =>
+  _i8.Future<void> addEndpointConfig(_i7.EndpointConfig? config) =>
       (super.noSuchMethod(
             Invocation.method(#addEndpointConfig, [config]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> updateEndpointConfig(
+  _i8.Future<void> updateEndpointConfig(
     int? index,
-    _i5.EndpointConfig? config,
+    _i7.EndpointConfig? config,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateEndpointConfig, [index, config]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> deleteEndpointConfig(int? index) =>
+  _i8.Future<void> deleteEndpointConfig(int? index) =>
       (super.noSuchMethod(
             Invocation.method(#deleteEndpointConfig, [index]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> setActiveEndpointConfig(_i5.EndpointConfig? config) =>
+  _i8.Future<void> setActiveEndpointConfig(_i7.EndpointConfig? config) =>
       (super.noSuchMethod(
             Invocation.method(#setActiveEndpointConfig, [config]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<bool> testEndpointConfig(_i5.EndpointConfig? config) =>
+  _i8.Future<bool> testEndpointConfig(_i7.EndpointConfig? config) =>
       (super.noSuchMethod(
             Invocation.method(#testEndpointConfig, [config]),
-            returnValue: _i6.Future<bool>.value(false),
+            returnValue: _i8.Future<bool>.value(false),
           )
-          as _i6.Future<bool>);
+          as _i8.Future<bool>);
 
   @override
   void clearError() => super.noSuchMethod(
@@ -180,193 +247,19 @@ class MockUssdProvider extends _i1.Mock implements _i3.UssdProvider {
   );
 
   @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
   void dispose() => super.noSuchMethod(
     Invocation.method(#dispose, []),
     returnValueForMissingStub: null,
   );
 
   @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
-}
-
-/// A class which mocks [AccessibilityProvider].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockAccessibilityProvider extends _i1.Mock
-    implements _i8.AccessibilityProvider {
-  MockAccessibilityProvider() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.AccessibilitySettings get settings =>
-      (super.noSuchMethod(
-            Invocation.getter(#settings),
-            returnValue: _FakeAccessibilitySettings_0(
-              this,
-              Invocation.getter(#settings),
-            ),
-          )
-          as _i2.AccessibilitySettings);
-
-  @override
-  bool get isInitialized =>
-      (super.noSuchMethod(Invocation.getter(#isInitialized), returnValue: false)
-          as bool);
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
-
-  @override
-  _i6.Future<void> toggleAccessibilityEnabled() =>
-      (super.noSuchMethod(
-            Invocation.method(#toggleAccessibilityEnabled, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> init() =>
-      (super.noSuchMethod(
-            Invocation.method(#init, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> updateSettings(_i2.AccessibilitySettings? newSettings) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateSettings, [newSettings]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> toggleHighContrast() =>
-      (super.noSuchMethod(
-            Invocation.method(#toggleHighContrast, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> toggleVoiceInput() =>
-      (super.noSuchMethod(
-            Invocation.method(#toggleVoiceInput, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> toggleTextToSpeech() =>
-      (super.noSuchMethod(
-            Invocation.method(#toggleTextToSpeech, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setTextScaleFactor(double? factor) =>
-      (super.noSuchMethod(
-            Invocation.method(#setTextScaleFactor, [factor]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setInputTimeout(Duration? timeout) =>
-      (super.noSuchMethod(
-            Invocation.method(#setInputTimeout, [timeout]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> toggleHapticFeedback() =>
-      (super.noSuchMethod(
-            Invocation.method(#toggleHapticFeedback, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  void hapticFeedback() => super.noSuchMethod(
-    Invocation.method(#hapticFeedback, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void announceForScreenReader(String? text) => super.noSuchMethod(
-    Invocation.method(#announceForScreenReader, [text]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i6.Future<void> speak(String? text) =>
-      (super.noSuchMethod(
-            Invocation.method(#speak, [text]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<String?> startVoiceInput() =>
-      (super.noSuchMethod(
-            Invocation.method(#startVoiceInput, []),
-            returnValue: _i6.Future<String?>.value(),
-          )
-          as _i6.Future<String?>);
-
-  @override
-  _i6.Future<void> stopVoiceInput() =>
-      (super.noSuchMethod(
-            Invocation.method(#stopVoiceInput, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );

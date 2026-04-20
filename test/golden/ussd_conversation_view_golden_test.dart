@@ -4,27 +4,21 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:ussd_emulator/providers/ussd_provider.dart';
-import 'package:ussd_emulator/providers/accessibility_provider.dart';
 import 'package:ussd_emulator/widgets/ussd_conversation_view.dart';
 import 'package:ussd_emulator/models/ussd_session.dart';
 import 'package:ussd_emulator/models/ussd_request.dart';
 import 'package:ussd_emulator/models/ussd_response.dart';
-import 'package:ussd_emulator/models/accessibility_settings.dart';
 
-// Import the generated mocks
 import '../widgets/ussd_conversation_view_test.mocks.dart';
 
 void main() {
   group('UssdConversationView Golden Tests', () {
     late MockUssdProvider mockUssdProvider;
-    late MockAccessibilityProvider mockAccessibilityProvider;
     late UssdSession testSession;
 
     setUp(() {
       mockUssdProvider = MockUssdProvider();
-      mockAccessibilityProvider = MockAccessibilityProvider();
 
-      // Create test session with sample USSD conversation
       testSession = UssdSession(
         id: 'test-session-golden',
         phoneNumber: '254700000000',
@@ -62,28 +56,15 @@ void main() {
         isActive: true,
       );
 
-      // Setup default mocks
       when(mockUssdProvider.currentSession).thenReturn(testSession);
       when(mockUssdProvider.isLoading).thenReturn(false);
       when(mockUssdProvider.error).thenReturn(null);
-      when(mockAccessibilityProvider.settings).thenReturn(
-        const AccessibilitySettings(
-          accessibilityEnabled: false,
-          useHighContrast: false,
-          textScaleFactor: 1.0,
-          enableTextToSpeech: false,
-          enableVoiceInput: false,
-        ),
-      );
     });
 
     Widget createTestWidget({ThemeMode themeMode = ThemeMode.light}) {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider<UssdProvider>.value(value: mockUssdProvider),
-          ChangeNotifierProvider<AccessibilityProvider>.value(
-            value: mockAccessibilityProvider,
-          ),
         ],
         child: MaterialApp(
           theme: ThemeData.light(),
@@ -122,7 +103,6 @@ void main() {
     testGoldens('UssdConversationView - Loading State', (tester) async {
       await loadAppFonts();
 
-      // Setup loading state
       when(mockUssdProvider.isLoading).thenReturn(true);
 
       await tester.pumpWidgetBuilder(
@@ -136,7 +116,6 @@ void main() {
     testGoldens('UssdConversationView - Error State', (tester) async {
       await loadAppFonts();
 
-      // Setup error state
       when(mockUssdProvider.error).thenReturn('Network connection failed');
 
       await tester.pumpWidgetBuilder(
@@ -150,7 +129,6 @@ void main() {
     testGoldens('UssdConversationView - No Session', (tester) async {
       await loadAppFonts();
 
-      // Setup no session state
       when(mockUssdProvider.currentSession).thenReturn(null);
 
       await tester.pumpWidgetBuilder(
@@ -164,7 +142,6 @@ void main() {
     testGoldens('UssdConversationView - Long Conversation', (tester) async {
       await loadAppFonts();
 
-      // Create a session with a long conversation
       final longSession = UssdSession(
         id: 'long-session',
         phoneNumber: '254700000000',
@@ -223,50 +200,6 @@ void main() {
       );
 
       await screenMatchesGolden(tester, 'conversation_view_long_conversation');
-    });
-
-    testGoldens('UssdConversationView - High Contrast Theme', (tester) async {
-      await loadAppFonts();
-
-      // Setup high contrast accessibility settings
-      when(mockAccessibilityProvider.settings).thenReturn(
-        const AccessibilitySettings(
-          accessibilityEnabled: true,
-          useHighContrast: true,
-          textScaleFactor: 1.2,
-          enableTextToSpeech: true,
-          enableVoiceInput: false,
-        ),
-      );
-
-      await tester.pumpWidgetBuilder(
-        createTestWidget(themeMode: ThemeMode.light),
-        surfaceSize: const Size(400, 600),
-      );
-
-      await screenMatchesGolden(tester, 'conversation_view_high_contrast');
-    });
-
-    testGoldens('UssdConversationView - Large Text Scale', (tester) async {
-      await loadAppFonts();
-
-      // Setup large text scale accessibility settings
-      when(mockAccessibilityProvider.settings).thenReturn(
-        const AccessibilitySettings(
-          accessibilityEnabled: true,
-          useHighContrast: false,
-          textScaleFactor: 1.5,
-          enableTextToSpeech: false,
-          enableVoiceInput: false,
-        ),
-      );
-
-      await tester.pumpWidgetBuilder(
-        createTestWidget(themeMode: ThemeMode.light),
-        surfaceSize: const Size(400, 700),
-      );
-
-      await screenMatchesGolden(tester, 'conversation_view_large_text');
     });
   });
 }

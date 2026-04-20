@@ -3,36 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:ussd_emulator/providers/ussd_provider.dart';
-import 'package:ussd_emulator/providers/accessibility_provider.dart';
 import 'package:ussd_emulator/widgets/ussd_conversation_view.dart';
 import 'package:ussd_emulator/models/ussd_session.dart';
 import 'package:ussd_emulator/models/ussd_request.dart';
 import 'package:ussd_emulator/models/ussd_response.dart';
-import 'package:ussd_emulator/models/accessibility_settings.dart';
 
-// Import the generated mocks
 import '../widget/widgets/ussd_conversation_view_test.mocks.dart';
 
 void main() {
   group('USSD Emulator Performance Tests', () {
     late MockUssdProvider mockUssdProvider;
-    late MockAccessibilityProvider mockAccessibilityProvider;
 
     setUp(() {
       mockUssdProvider = MockUssdProvider();
-      mockAccessibilityProvider = MockAccessibilityProvider();
 
       when(mockUssdProvider.isLoading).thenReturn(false);
       when(mockUssdProvider.error).thenReturn(null);
-      when(mockAccessibilityProvider.settings).thenReturn(
-        const AccessibilitySettings(
-          accessibilityEnabled: false,
-          useHighContrast: false,
-          textScaleFactor: 1.0,
-          enableTextToSpeech: false,
-          enableVoiceInput: false,
-        ),
-      );
     });
 
     Widget createTestWidget(UssdSession session) {
@@ -41,9 +27,6 @@ void main() {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider<UssdProvider>.value(value: mockUssdProvider),
-          ChangeNotifierProvider<AccessibilityProvider>.value(
-            value: mockAccessibilityProvider,
-          ),
         ],
         child: MaterialApp(home: Scaffold(body: UssdConversationView())),
       );
@@ -52,26 +35,20 @@ void main() {
     testWidgets(
       'Conversation view scrolling performance with large conversation',
       (tester) async {
-        // Create a session with many conversation exchanges
         final largeSession = _createLargeConversationSession();
 
         await tester.pumpWidget(createTestWidget(largeSession));
 
-        // Find scrollable widget
         final scrollableFinder = find.byType(ListView);
         if (!scrollableFinder.hasFound) {
-          // Alternative: look for SingleChildScrollView
           final altScrollable = find.byType(SingleChildScrollView);
           if (!altScrollable.hasFound) {
-            // Skip test if no scrollable found
             return;
           }
         }
 
-        // Perform scrolling actions and measure basic performance
         final stopwatch = Stopwatch()..start();
 
-        // Perform fast scrolling actions
         await tester.fling(
           scrollableFinder.hasFound
               ? scrollableFinder
@@ -92,7 +69,6 @@ void main() {
 
         stopwatch.stop();
 
-        // Verify reasonable performance (should complete within 2 seconds)
         expect(
           stopwatch.elapsedMilliseconds,
           lessThan(2000),
@@ -106,18 +82,15 @@ void main() {
 
       await tester.pumpWidget(createTestWidget(largeSession));
 
-      // Pump multiple times to ensure all widgets are built
       for (int i = 0; i < 10; i++) {
         await tester.pump();
       }
 
-      // Verify the widget tree is built efficiently
       final textWidgets = find.byType(Text);
       expect(
         textWidgets.evaluate().length,
         lessThan(200),
-        reason:
-            'Should efficiently manage text widgets for large conversations',
+        reason: 'Should efficiently manage text widgets for large conversations',
       );
     });
 
@@ -131,9 +104,7 @@ void main() {
       final inputField = find.byType(TextField);
 
       if (inputField.hasFound) {
-        // Simulate rapid user input
         for (int i = 0; i < 10; i++) {
-          // Reduced iterations for simpler test
           await tester.enterText(inputField, 'Input $i');
           await tester.pump();
 
@@ -147,7 +118,6 @@ void main() {
 
       stopwatch.stop();
 
-      // Verify responsive input handling (should complete within 3 seconds)
       expect(
         stopwatch.elapsedMilliseconds,
         lessThan(3000),
@@ -162,9 +132,7 @@ void main() {
 
       final stopwatch = Stopwatch()..start();
 
-      // Trigger multiple rebuilds by changing mock data
       for (int i = 0; i < 5; i++) {
-        // Reduced iterations
         final updatedSession = session.copyWith(
           responses: [
             ...session.responses,
@@ -178,13 +146,11 @@ void main() {
 
         when(mockUssdProvider.currentSession).thenReturn(updatedSession);
 
-        // Trigger rebuild
         await tester.pump();
       }
 
       stopwatch.stop();
 
-      // Verify efficient rebuilds (should complete within 2 seconds)
       expect(
         stopwatch.elapsedMilliseconds,
         lessThan(2000),
@@ -199,9 +165,6 @@ void main() {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider<UssdProvider>.value(value: mockUssdProvider),
-            ChangeNotifierProvider<AccessibilityProvider>.value(
-              value: mockAccessibilityProvider,
-            ),
           ],
           child: MaterialApp(
             theme: ThemeData.light(),
@@ -218,7 +181,6 @@ void main() {
 
       final stopwatch = Stopwatch()..start();
 
-      // Switch between themes
       await tester.pumpWidget(createThemedWidget(ThemeMode.dark));
       await tester.pump();
 
@@ -227,50 +189,10 @@ void main() {
 
       stopwatch.stop();
 
-      // Verify smooth theme transitions (should complete within 1 second)
       expect(
         stopwatch.elapsedMilliseconds,
         lessThan(1000),
         reason: 'Theme switching should be fast',
-      );
-    });
-
-    testWidgets('Text scale factor performance', (tester) async {
-      final session = _createBasicSession();
-
-      Widget createScaledWidget(double scaleFactor) {
-        when(mockAccessibilityProvider.settings).thenReturn(
-          AccessibilitySettings(
-            accessibilityEnabled: true,
-            useHighContrast: false,
-            textScaleFactor: scaleFactor,
-            enableTextToSpeech: false,
-            enableVoiceInput: false,
-          ),
-        );
-
-        return createTestWidget(session);
-      }
-
-      await tester.pumpWidget(createScaledWidget(1.0));
-
-      final stopwatch = Stopwatch()..start();
-
-      // Test different text scale factors
-      final scaleFactors = [1.2, 1.5, 2.0, 1.0];
-
-      for (final factor in scaleFactors) {
-        await tester.pumpWidget(createScaledWidget(factor));
-        await tester.pump();
-      }
-
-      stopwatch.stop();
-
-      // Verify smooth text scaling (should complete within 2 seconds)
-      expect(
-        stopwatch.elapsedMilliseconds,
-        lessThan(2000),
-        reason: 'Text scaling should be efficient',
       );
     });
 
@@ -281,9 +203,7 @@ void main() {
 
       final stopwatch = Stopwatch()..start();
 
-      // Toggle loading state multiple times
       for (int i = 0; i < 3; i++) {
-        // Reduced iterations
         when(mockUssdProvider.isLoading).thenReturn(true);
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 100));
@@ -295,7 +215,6 @@ void main() {
 
       stopwatch.stop();
 
-      // Verify smooth loading animations (should complete within 2 seconds)
       expect(
         stopwatch.elapsedMilliseconds,
         lessThan(2000),
@@ -305,7 +224,6 @@ void main() {
 
     group('Memory Leak Tests', () {
       testWidgets('No memory leaks during session changes', (tester) async {
-        // Create multiple sessions to test memory management
         final sessions = List.generate(
           5,
           (i) => _createBasicSession(id: 'session-$i'),
@@ -315,11 +233,9 @@ void main() {
           await tester.pumpWidget(createTestWidget(session));
           await tester.pump();
 
-          // Force garbage collection simulation
           await tester.pump(const Duration(milliseconds: 100));
         }
 
-        // Final session should still work properly
         final finalSession = sessions.last;
         expect(find.text(finalSession.serviceCode), findsOneWidget);
       });
@@ -331,13 +247,10 @@ void main() {
 
         await tester.pumpWidget(createTestWidget(session));
 
-        // Verify widget builds correctly
         expect(find.byType(UssdConversationView), findsOneWidget);
 
-        // Remove widget and verify cleanup
         await tester.pumpWidget(Container());
 
-        // Should not throw errors after disposal
         await tester.pump();
       });
     });
@@ -376,7 +289,6 @@ UssdSession _createLargeConversationSession() {
   final responses = <UssdResponse>[];
   final path = <String>[];
 
-  // Create 50 conversation exchanges
   for (int i = 0; i < 50; i++) {
     requests.add(
       UssdRequest(

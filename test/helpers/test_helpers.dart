@@ -4,9 +4,7 @@ import 'package:ussd_emulator/models/ussd_session.dart';
 import 'package:ussd_emulator/models/ussd_request.dart';
 import 'package:ussd_emulator/models/ussd_response.dart';
 import 'package:ussd_emulator/models/endpoint_config.dart';
-import 'package:ussd_emulator/models/accessibility_settings.dart';
 import 'package:ussd_emulator/providers/ussd_provider.dart';
-import 'package:ussd_emulator/providers/accessibility_provider.dart';
 
 /// Test data factory for creating consistent test objects
 class TestDataFactory {
@@ -105,22 +103,6 @@ class TestDataFactory {
     );
   }
 
-  /// Create accessibility settings for testing
-  static AccessibilitySettings createAccessibilitySettings({
-    bool accessibilityEnabled = false,
-    bool useHighContrast = false,
-    double textScaleFactor = 1.0,
-    bool enableTextToSpeech = false,
-  }) {
-    return AccessibilitySettings(
-      accessibilityEnabled: accessibilityEnabled,
-      useHighContrast: useHighContrast,
-      textScaleFactor: textScaleFactor,
-      enableTextToSpeech: enableTextToSpeech,
-      enableVoiceInput: false,
-    );
-  }
-
   /// Create a session with error state
   static UssdSession createErrorSession() {
     return UssdSession(
@@ -163,17 +145,12 @@ class TestWidgetHelpers {
   static Widget createTestApp({
     required Widget child,
     UssdProvider? ussdProvider,
-    AccessibilityProvider? accessibilityProvider,
     ThemeMode themeMode = ThemeMode.light,
   }) {
     return MultiProvider(
       providers: [
         if (ussdProvider != null)
           ChangeNotifierProvider<UssdProvider>.value(value: ussdProvider),
-        if (accessibilityProvider != null)
-          ChangeNotifierProvider<AccessibilityProvider>.value(
-            value: accessibilityProvider,
-          ),
       ],
       child: MaterialApp(
         theme: ThemeData.light(),
@@ -241,16 +218,6 @@ class MockResponseGenerator {
 
 /// Test assertions helpers
 class TestAssertions {
-  /// Assert that a widget is accessible
-  static void assertAccessible(
-    dynamic finder, {
-    String? expectedLabel,
-    bool shouldBeFocusable = true,
-  }) {
-    // This would contain accessibility-specific assertions
-    // Implementation depends on specific accessibility requirements
-  }
-
   /// Assert that UI performance is acceptable
   static void assertPerformance(
     Duration duration, {
