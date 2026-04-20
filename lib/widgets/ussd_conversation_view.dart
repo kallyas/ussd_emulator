@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/ussd_provider.dart';
-import '../providers/accessibility_provider.dart';
 import '../utils/ussd_utils.dart';
 import 'ussd_keypad.dart';
 import 'ussd_debug_panel.dart';
@@ -35,30 +33,16 @@ class _UssdConversationViewState extends State<UssdConversationView> {
 
   void _checkForNewResponse() {
     final provider = context.read<UssdProvider>();
-    final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session != null && session.responses.length > _lastResponseCount) {
       _lastResponseCount = session.responses.length;
-
-      // Speak the latest response if TTS is enabled
-      if (session.responses.isNotEmpty) {
-        final latestResponse = session.responses.last;
-        accessibilityProvider.speak(latestResponse.text);
-
-        // Also announce the session status
-        String statusMessage = latestResponse.continueSession
-            ? 'Session continues, input required'
-            : 'Session ended';
-        accessibilityProvider.announceForScreenReader(statusMessage);
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    final accessibilityProvider = context.watch<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) {
@@ -209,10 +193,6 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                             hint: response.continueSession
                                 ? 'Session continues, input required'
                                 : 'Session ended, no input required',
-                            onTap: () {
-                              // Speak the response when tapped (if TTS is enabled)
-                              accessibilityProvider.speak(response.text);
-                            },
                             child: Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -335,30 +315,12 @@ class _UssdConversationViewState extends State<UssdConversationView> {
                             suffixIcon: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (accessibilityProvider
-                                    .settings
-                                    .enableVoiceInput)
-                                  Semantics(
-                                    label: 'Voice input button',
-                                    hint:
-                                        'Tap to use voice input for USSD command',
-                                    child: IconButton(
-                                      icon: const Icon(Icons.mic),
-                                      onPressed: provider.isLoading
-                                          ? null
-                                          : () => _startVoiceInput(
-                                              accessibilityProvider,
-                                            ),
-                                      tooltip: 'Voice Input',
-                                    ),
-                                  ),
                                 Semantics(
                                   label: 'Keypad button',
                                   hint: 'Open on-screen keypad',
                                   child: IconButton(
                                     icon: const Icon(Icons.dialpad),
                                     onPressed: () {
-                                      accessibilityProvider.hapticFeedback();
                                       UssdKeypadBottomSheet.show(
                                         context,
                                         textController: _inputController,
@@ -482,13 +444,9 @@ class _UssdConversationViewState extends State<UssdConversationView> {
     if (input.isEmpty) return;
 
     final provider = context.read<UssdProvider>();
-    final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) return;
-
-    // Provide haptic feedback
-    accessibilityProvider.hapticFeedback();
 
     // Validate input based on session state
     if (session.isInitialRequest) {
@@ -520,9 +478,6 @@ class _UssdConversationViewState extends State<UssdConversationView> {
       }
     }
 
-    // Announce the input for screen readers
-    accessibilityProvider.announceForScreenReader('Sending input: $input');
-
     provider.sendUssdInput(input);
     _inputController.clear();
 
@@ -533,84 +488,5 @@ class _UssdConversationViewState extends State<UssdConversationView> {
         curve: Curves.easeOut,
       );
     });
-  }
-
-  Future<void> _startVoiceInput(
-    AccessibilityProvider accessibilityProvider,
-  ) async {
-    accessibilityProvider.hapticFeedback();
-
-    // Announce that voice input is starting
-    accessibilityProvider.announceForScreenReader(
-      'Starting voice input. Please speak now.',
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.mic, color: Colors.white),
-            SizedBox(width: 8),
-            Text('Listening... Speak your USSD command'),
-          ],
-        ),
-        duration: Duration(seconds: 3),
-      ),
-    );
-
-    try {
-      final result = await accessibilityProvider.startVoiceInput();
-
-      if (result != null && result.isNotEmpty) {
-        _inputController.text = result;
-
-        // Announce successful recognition
-        accessibilityProvider.announceForScreenReader(
-          'Voice input recognized: $result',
-        );
-
-        // Provide success feedback
-        accessibilityProvider.hapticFeedback();
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Voice input: "$result"'),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        }
-      } else {
-        // Announce failure
-        accessibilityProvider.announceForScreenReader(
-          'Voice input failed. No speech detected.',
-        );
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No speech detected. Please try again.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('Voice input error: $e');
-
-      accessibilityProvider.announceForScreenReader(
-        'Voice input error occurred.',
-      );
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Voice input failed. Please try again.'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    }
   }
 }

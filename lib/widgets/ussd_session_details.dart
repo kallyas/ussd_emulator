@@ -22,6 +22,7 @@ class UssdSessionDetails extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (context) =>
           UssdSessionDetails(session: session, endpointConfig: endpointConfig),

@@ -28,63 +28,65 @@ class UssdKeypad extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle bar
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
 
-          // Title
-          Text(
-            'Virtual Keypad',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 16),
-
-          // Keypad grid
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.2,
+            // Title
+            Text(
+              'Virtual Keypad',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            itemCount: keys.length,
-            itemBuilder: (context, index) {
-              final key = keys[index];
-              return _buildKeypadButton(context, key);
-            },
-          ),
+            const SizedBox(height: 16),
 
-          const SizedBox(height: 16),
+            // Keypad grid
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.2,
+              ),
+              itemCount: keys.length,
+              itemBuilder: (context, index) {
+                final key = keys[index];
+                return _buildKeypadButton(context, key);
+              },
+            ),
 
-          // Quick USSD codes
-          Text(
-            'Quick USSD Codes',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: 8),
+            const SizedBox(height: 16),
 
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: UssdUtils.getCommonUssdCodes().map((code) {
-              return _buildQuickCodeButton(context, code);
-            }).toList(),
-          ),
-        ],
+            // Quick USSD codes
+            Text(
+              'Quick USSD Codes',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: UssdUtils.getCommonUssdCodes().map((code) {
+                return _buildQuickCodeButton(context, code);
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

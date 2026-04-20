@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../providers/ussd_provider.dart';
-import '../providers/accessibility_provider.dart';
 import '../utils/ussd_utils.dart';
 import '../utils/design_system.dart';
 import '../widgets/animated_message_bubble.dart';
 import '../widgets/modern_input_field.dart';
-import '../widgets/offline_banner.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'ussd_keypad.dart';
 import 'ussd_debug_panel.dart';
@@ -65,7 +62,6 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
 
   void _checkForNewResponse() {
     final provider = context.read<UssdProvider>();
-    final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session != null && session.responses.length > _lastResponseCount) {
@@ -77,48 +73,37 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
           _showTypingIndicator = false;
         });
       }
-
-      // Speak the latest response if TTS is enabled
-      if (session.responses.isNotEmpty) {
-        final latestResponse = session.responses.last;
-        accessibilityProvider.speak(latestResponse.text);
-
-        // Also announce the session status
-        String statusMessage = latestResponse.continueSession
-            ? 'Session continues, input required'
-            : 'Session ended';
-        accessibilityProvider.announceForScreenReader(statusMessage);
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UssdProvider>();
-    final accessibilityProvider = context.watch<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) {
       return _buildEmptyState();
     }
 
-    return Column(
-      children: [
-        // Animated conversation header
-        _buildAnimatedHeader(session),
+    return ClipRect(
+      child: Column(
+        children: [
+          // Animated conversation header
+          _buildAnimatedHeader(session),
 
-        // Enhanced conversation area with staggered animations
-        Expanded(child: _buildConversationArea(session, accessibilityProvider)),
+          // Enhanced conversation area with staggered animations
+          Expanded(child: _buildConversationArea(session)),
 
-        // Modern input area or session ended state
-        if (session.isActive)
-          _buildModernInputArea(provider, accessibilityProvider, session)
-        else
-          _buildSessionEndedState(),
+          // Modern input area or session ended state
+          if (session.isActive)
+            _buildModernInputArea(provider, session)
+          else
+            _buildSessionEndedState(),
 
-        // Debug panel
-        _buildDebugPanel(session),
-      ],
+          // Debug panel
+          _buildDebugPanel(session),
+        ],
+      ),
     );
   }
 
@@ -254,19 +239,19 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                   curve: Curves.elasticOut,
                 ),
                 const SizedBox(width: UssdDesignSystem.spacingS),
-                PulseButton(
-                  onPressed: () => UssdSessionDetails.show(context, session),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: UssdDesignSystem.borderRadiusSmall,
-                    ),
-                    child: Icon(
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: UssdDesignSystem.borderRadiusSmall,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
                       Icons.info_outline_rounded,
                       size: 20,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
+                    tooltip: 'Session Details',
+                    onPressed: () => UssdSessionDetails.show(context, session),
                   ),
                 ),
               ],
@@ -277,10 +262,7 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
     );
   }
 
-  Widget _buildConversationArea(
-    session,
-    AccessibilityProvider accessibilityProvider,
-  ) {
+  Widget _buildConversationArea(session) {
     return Semantics(
       label: 'USSD conversation history',
       hint: 'Scroll to view all messages',
@@ -298,11 +280,9 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
             final request = index < session.requests.length
                 ? session.requests[index]
                 : null;
-            final isLastResponse =
-                index == session.responses.length - 1;
+            final isLastResponse = index == session.responses.length - 1;
             final provider = context.read<UssdProvider>();
-            final fromCache =
-                isLastResponse && provider.lastResponseFromCache;
+            final fromCache = isLastResponse && provider.lastResponseFromCache;
 
             return AnimationConfiguration.staggeredList(
               position: index,
@@ -322,9 +302,6 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
                     isUser: false,
                     index: index * 2 + 1,
                     fromCache: fromCache,
-                    onTap: () {
-                      accessibilityProvider.speak(response.text);
-                    },
                   ),
                   const SizedBox(height: UssdDesignSystem.spacingM),
                 ],
@@ -336,22 +313,16 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
     );
   }
 
-  Widget _buildModernInputArea(
-    UssdProvider provider,
-    AccessibilityProvider accessibilityProvider,
-    session,
-  ) {
+  Widget _buildModernInputArea(UssdProvider provider, session) {
     return ModernInputArea(
       controller: _inputController,
       hintText: session.requests.isEmpty
           ? 'Enter USSD code (e.g., *123#)'
           : 'Enter your menu selection...',
       isLoading: provider.isLoading,
-      enableVoiceInput: accessibilityProvider.settings.enableVoiceInput,
+      enableVoiceInput: false,
       onSend: _sendInput,
-      onVoiceInput: () => _startVoiceInput(accessibilityProvider),
       onKeypad: () {
-        accessibilityProvider.hapticFeedback();
         UssdKeypadBottomSheet.show(
           context,
           textController: _inputController,
@@ -466,13 +437,9 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
     if (input.isEmpty) return;
 
     final provider = context.read<UssdProvider>();
-    final accessibilityProvider = context.read<AccessibilityProvider>();
     final session = provider.currentSession;
 
     if (session == null) return;
-
-    // Provide haptic feedback
-    accessibilityProvider.hapticFeedback();
 
     // Validate input based on session state
     if (session.isInitialRequest) {
@@ -509,9 +476,6 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
       _showTypingIndicator = true;
     });
 
-    // Announce the input for screen readers
-    accessibilityProvider.announceForScreenReader('Sending input: $input');
-
     provider.sendUssdInput(input);
     _inputController.clear();
 
@@ -523,87 +487,5 @@ class _ModernUssdConversationViewState extends State<ModernUssdConversationView>
         curve: UssdDesignSystem.curveDefault,
       );
     });
-  }
-
-  Future<void> _startVoiceInput(
-    AccessibilityProvider accessibilityProvider,
-  ) async {
-    accessibilityProvider.hapticFeedback();
-
-    // Announce that voice input is starting
-    accessibilityProvider.announceForScreenReader(
-      'Starting voice input. Please speak now.',
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.mic_rounded, color: Colors.white),
-            const SizedBox(width: UssdDesignSystem.spacingS),
-            const Text('Listening... Speak your USSD command'),
-          ],
-        ),
-        duration: const Duration(seconds: 3),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-    );
-
-    try {
-      final result = await accessibilityProvider.startVoiceInput();
-
-      if (result != null && result.isNotEmpty) {
-        _inputController.text = result;
-
-        // Announce successful recognition
-        accessibilityProvider.announceForScreenReader(
-          'Voice input recognized: $result',
-        );
-
-        // Provide success feedback
-        accessibilityProvider.hapticFeedback();
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Voice input: "$result"'),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        }
-      } else {
-        // Announce failure
-        accessibilityProvider.announceForScreenReader(
-          'Voice input failed. No speech detected.',
-        );
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('No speech detected. Please try again.'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('Voice input error: $e');
-
-      accessibilityProvider.announceForScreenReader(
-        'Voice input error occurred.',
-      );
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Voice input failed. Please try again.'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    }
   }
 }
