@@ -299,8 +299,8 @@ void main() {
 
       expect(stats['totalTemplates'], greaterThanOrEqualTo(2));
       expect(stats['categories'], greaterThanOrEqualTo(2));
-      expect(stats, containsKey('validTemplates'));
-      expect(stats, containsKey('averageStepsPerTemplate'));
+      expect(stats.containsKey('validTemplates'), isTrue);
+      expect(stats.containsKey('averageStepsPerTemplate'), isTrue);
     });
 
     test('should handle errors gracefully', () async {
