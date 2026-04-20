@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../models/session_template.dart';
 import '../models/automation_result.dart';
 import '../providers/template_provider.dart';
@@ -51,8 +50,16 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.executeTemplate),
-        subtitle: Text(widget.template.name),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.executeTemplate),
+            Text(
+              widget.template.name,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
       body: Consumer2<TemplateProvider, UssdProvider>(
         builder: (context, templateProvider, ussdProvider, child) {
@@ -136,7 +143,9 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
               ),
             ),
             const SizedBox(height: UssdDesignSystem.spacingM),
-            Row(
+            Wrap(
+              spacing: UssdDesignSystem.spacingM,
+              runSpacing: UssdDesignSystem.spacingS,
               children: [
                 _buildInfoChip(
                   context,
@@ -144,14 +153,12 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
                   widget.template.serviceCode,
                   Theme.of(context).colorScheme.primary,
                 ),
-                const SizedBox(width: UssdDesignSystem.spacingM),
                 _buildInfoChip(
                   context,
                   Icons.list_rounded,
                   '${widget.template.steps.length} steps',
                   Theme.of(context).colorScheme.secondary,
                 ),
-                const SizedBox(width: UssdDesignSystem.spacingM),
                 _buildInfoChip(
                   context,
                   Icons.timer_outlined,
@@ -190,7 +197,7 @@ class _TemplateExecutionScreenState extends State<TemplateExecutionScreen> {
             text,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: color,
-              fontWeight: FontWeight.medium,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

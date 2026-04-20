@@ -154,7 +154,9 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
     return Container(
       padding: const EdgeInsets.all(UssdDesignSystem.spacingM),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         borderRadius: BorderRadius.circular(UssdDesignSystem.radiusS),
       ),
       child: Row(
@@ -296,7 +298,7 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
             const SizedBox(height: UssdDesignSystem.spacingM),
             ElevatedButton(
               onPressed: () => templateProvider.clearError(),
-              child: Text(l10n.dismiss),
+              child: Text(l10n.dismissError),
             ),
           ],
         ),
@@ -598,14 +600,16 @@ class _TemplateLibraryScreenState extends State<TemplateLibraryScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.cancel),
+                child: Text(
+                  MaterialLocalizations.of(context).cancelButtonLabel,
+                ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
-                child: Text(l10n.delete),
+                child: Text(l10n.deleteTemplate),
               ),
             ],
           ),

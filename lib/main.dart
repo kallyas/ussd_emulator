@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/ussd_provider.dart';
-import 'providers/accessibility_provider.dart';
 import 'providers/language_provider.dart';
 import 'providers/template_provider.dart';
 import 'screens/home_screen.dart';
@@ -10,7 +9,6 @@ import 'services/connectivity_service.dart';
 import 'services/ussd_cache_service.dart';
 import 'services/offline_queue_service.dart';
 import 'services/analytics_service.dart';
-import 'utils/accessibility_themes.dart';
 import 'utils/design_system.dart';
 import 'l10n/generated/app_localizations.dart';
 
@@ -29,8 +27,13 @@ class UssdEmulatorApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UssdCacheService()),
         ChangeNotifierProvider(create: (context) => OfflineQueueService()),
         ChangeNotifierProvider(create: (context) => AnalyticsService()),
-        ChangeNotifierProxyProvider4<ConnectivityService, UssdCacheService,
-            OfflineQueueService, AnalyticsService, UssdProvider>(
+        ChangeNotifierProxyProvider4<
+          ConnectivityService,
+          UssdCacheService,
+          OfflineQueueService,
+          AnalyticsService,
+          UssdProvider
+        >(
           create: (context) => UssdProvider(
             connectivityService: context.read<ConnectivityService>(),
             cacheService: context.read<UssdCacheService>(),
@@ -47,14 +50,11 @@ class UssdEmulatorApp extends StatelessWidget {
               ),
         ),
 
-        ChangeNotifierProvider(create: (context) => AccessibilityProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
         ChangeNotifierProvider(create: (context) => TemplateProvider()),
       ],
-      child: Consumer2<AccessibilityProvider, LanguageProvider>(
-        builder: (context, accessibilityProvider, languageProvider, child) {
-          final settings = accessibilityProvider.settings;
-
+      child: Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
           return MaterialApp(
             title: 'USSD Emulator',
             debugShowCheckedModeBanner: false,
@@ -76,31 +76,15 @@ class UssdEmulatorApp extends StatelessWidget {
               return const Locale('en', 'US');
             },
 
-            // Dynamic theme based on accessibility settings
-            theme: (!settings.accessibilityEnabled)
-                ? UssdDesignSystem.getLightTheme()
-                : settings.useHighContrast
-                ? AccessibilityThemes.getHighContrastLightTheme()
-                : UssdDesignSystem.getLightTheme(),
-
-            darkTheme: (!settings.accessibilityEnabled)
-                ? UssdDesignSystem.getDarkTheme()
-                : settings.useHighContrast
-                ? AccessibilityThemes.getHighContrastDarkTheme()
-                : UssdDesignSystem.getDarkTheme(),
+            theme: UssdDesignSystem.getLightTheme(),
+            darkTheme: UssdDesignSystem.getDarkTheme(),
 
             themeMode: ThemeMode.system,
 
-            // Apply text scale factor for accessibility
             builder: (context, child) {
               return Directionality(
                 textDirection: languageProvider.textDirection,
-                child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    textScaler: TextScaler.linear(settings.textScaleFactor),
-                  ),
-                  child: child!,
-                ),
+                child: child!,
               );
             },
 

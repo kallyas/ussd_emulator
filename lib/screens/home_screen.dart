@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/ussd_provider.dart';
-import '../providers/accessibility_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/template_provider.dart';
 import '../utils/design_system.dart';
-import '../utils/page_transitions.dart' hide ScaleTransition;
 import '../widgets/offline_banner.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'ussd_session_screen.dart';
 import 'endpoint_config_screen.dart';
 import 'session_history_screen.dart';
 import 'template_library_screen.dart';
-import 'accessibility_settings_screen.dart';
 import 'analytics_dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,8 +23,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
   late AnimationController _navigationController;
-  late AnimationController _fabController;
-  late Animation<double> _fabAnimation;
 
   @override
   void initState() {
@@ -38,31 +33,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       duration: UssdDesignSystem.animationMedium,
       vsync: this,
     );
-    _fabController = AnimationController(
-      duration: UssdDesignSystem.animationMedium,
-      vsync: this,
-    );
-
-    _fabAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fabController, curve: Curves.elasticOut),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UssdProvider>().init();
-      context.read<AccessibilityProvider>().init();
       context.read<LanguageProvider>().init();
       context.read<TemplateProvider>().init(context.read<UssdProvider>());
       _navigationController.forward();
-      Future.delayed(UssdDesignSystem.animationMedium, () {
-        _fabController.forward();
-      });
     });
   }
 
   @override
   void dispose() {
     _navigationController.dispose();
-    _fabController.dispose();
     super.dispose();
   }
 
@@ -179,7 +161,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -209,52 +190,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                       ),
                     ],
-                  ),
-                  Semantics(
-                    label: l10n.openAccessibilitySettings,
-                    hint: l10n.configureAccessibilityOptions,
-                    child: ScaleTransition(
-                      scale: _fabAnimation,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () {
-                            final accessibilityProvider = context
-                                .read<AccessibilityProvider>();
-                            accessibilityProvider.hapticFeedback();
-                            Navigator.push(
-                              context,
-                              PageTransitions.slideFromRight(
-                                const AccessibilitySettingsScreen(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.secondaryContainer,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: UssdDesignSystem.getShadow(
-                                1,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.secondaryContainer,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.accessibility_rounded,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSecondaryContainer,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -287,23 +222,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: (index) {
-              final accessibilityProvider = context
-                  .read<AccessibilityProvider>();
-              accessibilityProvider.hapticFeedback();
               setState(() {
                 _selectedIndex = index;
               });
-              // Announce navigation change for screen readers
-              String screenName = [
-                l10n.ussdSession,
-                l10n.configuration,
-                l10n.sessionHistory,
-                l10n.templates,
-                'Analytics',
-              ][index];
-              accessibilityProvider.announceForScreenReader(
-                l10n.navigatedToScreen(screenName),
-              );
             },
             type: BottomNavigationBarType.fixed,
             backgroundColor: Theme.of(context).colorScheme.surface,

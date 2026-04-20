@@ -58,7 +58,12 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? l10n.editTemplate : l10n.createTemplate),
-        actions: [TextButton(onPressed: _saveTemplate, child: Text(l10n.save))],
+        actions: [
+          TextButton(
+            onPressed: _saveTemplate,
+            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -108,7 +113,7 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
         TextFormField(
           controller: _descriptionController,
           decoration: InputDecoration(
-            labelText: l10n.description,
+            labelText: l10n.enterTemplateDescription,
             hintText: l10n.enterTemplateDescription,
             prefixIcon: const Icon(Icons.description_outlined),
           ),
@@ -204,9 +209,9 @@ class _TemplateBuilderScreenState extends State<TemplateBuilderScreen> {
             ),
           )
         else
-          ...Map.entries(
-            _variables,
-          ).map((entry) => _buildVariableItem(entry.key, entry.value)),
+          ..._variables.entries.map(
+            (entry) => _buildVariableItem(entry.key, entry.value),
+          ),
       ],
     );
   }
