@@ -9,7 +9,7 @@ import 'package:ussd_emulator/models/ussd_session.dart';
 import 'package:ussd_emulator/models/ussd_request.dart';
 import 'package:ussd_emulator/models/ussd_response.dart';
 
-import '../widgets/ussd_conversation_view_test.mocks.dart';
+import '../widget/widgets/ussd_conversation_view_test.mocks.dart';
 
 void main() {
   group('UssdConversationView Golden Tests', () {

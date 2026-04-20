@@ -22,9 +22,8 @@ void main() {
     setUp(() {
       service = SecureUssdApiService();
       testConfig = EndpointConfig(
-        id: 'test',
         name: 'Test Endpoint',
-        url: 'https://api.example.com/ussd',
+        baseUrl: 'https://api.example.com/ussd',
         headers: {},
         isActive: true,
       );
@@ -146,7 +145,7 @@ void main() {
         final configWithHeaders = EndpointConfig(
           id: 'test',
           name: 'Test Endpoint',
-          url: 'https://api.example.com/ussd',
+baseUrl: 'https://api.example.com/ussd',
           headers: {'Custom-Header': 'custom-value'},
           isActive: true,
         );
