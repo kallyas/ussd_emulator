@@ -39,7 +39,7 @@ An open-source Flutter app for testing USSD services during development.
 ### Set up an Endpoint
 - Go to **Config** → **Add endpoint**
 - Enter name, URL (must start with http/https), and optional headers
-- Tap **Save**
+- Tap **Save** 
 
 ### Start Testing
 - Enter phone number (e.g., `+256700000000`)
